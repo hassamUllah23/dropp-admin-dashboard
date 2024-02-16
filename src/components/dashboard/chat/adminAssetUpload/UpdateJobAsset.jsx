@@ -1,15 +1,16 @@
-import LoadingSvg from "@/components/common/LoadingSvg";
-import React, { useState, useRef, useEffect } from "react";
-import { useDispatch, useSelector } from "@/lib";
-import { setJob } from "@/lib/slices/job/jobActions";
+import LoadingSvg from '@/components/common/LoadingSvg';
+import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from '@/lib';
+import { setJob } from '@/lib/slices/job/jobActions';
+import Script from 'next/script';
 export default function UpdateJobAsset({
   onUploadAdminAsset,
   index,
   url,
   message,
+  type,
 }) {
-  console.log(url);
-  const [videoUrl, setVideoUrl] = useState(url || "");
+  const [videoUrl, setVideoUrl] = useState(url || '');
   const [uploadedVideoCount, setUploadedVideoCount] = useState(!!url ? 1 : 0);
   const [showLoading, setShowLoading] = useState(false);
   const fileInputRef = useRef();
@@ -46,6 +47,7 @@ export default function UpdateJobAsset({
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    console.log(file);
     handleFiles(file);
   };
 
@@ -55,38 +57,41 @@ export default function UpdateJobAsset({
 
   useEffect(() => {
     setSavedVideos(output);
-    console.log(savedVideos);
     dispatch(setJob(false, null, null));
   }, []);
   return (
     <>
-      <div className="pl-0 pr-2 md:px-5 pb-1 mt-3 md:mt-10 text-white">
+      <Script
+        type='module'
+        src='https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
+      />
+      <div className='pl-0 pr-2 md:px-5 pb-1 mt-3 md:mt-10 text-white'>
         <div>
-          <div className=" flex space-x-2">
-            <div className="text-white flex justify-center items-start uppercase  w-8 md:w-12 mr-2">
+          <div className=' flex space-x-2'>
+            <div className='text-white flex justify-center items-start uppercase  w-8 md:w-12 mr-2'>
               <img
-                src="/assets/images/chat/ai.png"
-                alt="AiImage"
-                className="w-8 md:w-12"
+                src='/assets/images/chat/ai.png'
+                alt='AiImage'
+                className='w-8 md:w-12'
               />
             </div>
-            <div className="w-full">
-              <div className=" p-3 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl">
-                <div className=" absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer">
+            <div className='w-full'>
+              <div className=' p-3 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl'>
+                <div className=' absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer'>
                   <img
-                    src="/assets/images/chat/info.svg"
-                    className=" w-4 h-4 md:w-7 md:h-7"
+                    src='/assets/images/chat/info.svg'
+                    className=' w-4 h-4 md:w-7 md:h-7'
                   />
                 </div>
 
                 {savedVideos != null && (
-                  <div className="media-container max-w-[32rem] m-auto text-center relative">
-                    <div className="media-item inline-block mx-2 my-1 md:mx-3 md:my-3 rounded-md relative">
+                  <div className='media-container max-w-[32rem] m-auto text-center relative'>
+                    <div className='media-item inline-block mx-2 my-1 md:mx-3 md:my-3 rounded-md relative'>
                       <video
                         controls
-                        className=" max-w-56 md:max-w-96 rounded-md object-cover "
+                        className=' max-w-56 md:max-w-96 rounded-md object-cover '
                       >
-                        <source src={savedVideos} type="video/mp4" />
+                        <source src={savedVideos} type='video/mp4' />
                         Your browser does not support the video tag.
                       </video>
                     </div>
@@ -104,50 +109,72 @@ export default function UpdateJobAsset({
                 {savedVideos == null && (
                   <div>
                     {showLoading ? (
-                      <div className="flexCenter relative loadingArea py-16">
-                        <LoadingSvg color={"#fafafa"} />
+                      <div className='flexCenter relative loadingArea py-16'>
+                        <LoadingSvg color={'#fafafa'} />
                       </div>
                     ) : (
-                      <div className="w-full">
+                      <div className='w-full'>
                         {uploadedVideoCount === 0 && (
                           <div
-                            className="flex justify-center items-center cursor-pointer"
+                            className='flex justify-center items-center cursor-pointer'
                             onDrop={handleDrop}
                             onDragOver={handleDragOver}
                             onClick={openFileDialog}
                           >
-                            <div className="flex flex-col items-center">
+                            <div className='flex flex-col items-center'>
                               <input
-                                type="file"
-                                accept="video/*"
+                                type='file'
+                                accept='video/*,.glb'
                                 ref={fileInputRef}
                                 onChange={handleFileChange}
-                                className="hidden"
+                                className='hidden'
                               />
                               <img
-                                src="/assets/images/auth/upload.png"
-                                alt="upload"
-                                className=" w-28 h-28  mx-auto"
+                                src='/assets/images/auth/upload.png'
+                                alt='upload'
+                                className=' w-28 h-28  mx-auto'
                               />
-                              <p className="pt-5">
-                                {message || "Upload assets here..."}
+                              <p className='pt-5'>
+                                {message || 'Upload assets here...'}
                               </p>
                             </div>
                           </div>
                         )}
 
-                        <div className="media-container max-w-[32rem] m-auto text-center">
-                          {uploadedVideoCount > 0 && (
-                            <div className="media-item inline-block mx-2 my-1 md:mx-3 md:my-3 rounded-md relative">
-                              <video
-                                controls
-                                className=" max-w-56 md:max-w-96 rounded-md object-cover "
-                              >
-                                <source src={videoUrl} type="video/mp4" />
-                                Your browser does not support the video tag.
-                              </video>
-                            </div>
-                          )}
+                        <div className='media-container max-w-[32rem] m-auto text-center'>
+                          {uploadedVideoCount > 0 &&
+                            (type === 'video' ? (
+                              <div className='media-item inline-block mx-2 my-1 md:mx-3 md:my-3 rounded-md relative'>
+                                <video
+                                  controls
+                                  className=' max-w-56 md:max-w-96 rounded-md object-cover '
+                                >
+                                  <source src={videoUrl} type='video/mp4' />
+                                  Your browser does not support the video tag.
+                                </video>
+                              </div>
+                            ) : (
+                              <div className='w-full'>
+                                <model-viewer
+                                  alt='3d modal'
+                                  src={url}
+                                  ar
+                                  shadow-intensity='0.5'
+                                  style={{ width: '100%', height: '385px' }}
+                                  camera-controls
+                                  auto-rotate-delay='2000'
+                                  interaction-prompt='when-focused'
+                                  interaction-policy='allow-when-focused'
+                                  loading='eager'
+                                  default-progress-bar
+                                  touch-action='pan-y'
+                                  autoplay
+                                  animation-name='Running'
+                                  ar-modes='webxr scene-viewer'
+                                  camera-orbit='0deg 180deg 5m'
+                                ></model-viewer>
+                              </div>
+                            ))}
                         </div>
                       </div>
                     )}

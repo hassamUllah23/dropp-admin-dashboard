@@ -2,16 +2,11 @@ import React from 'react';
 
 const GetInitials = ({ fullName }) => {
   const getInitials = (fullName) => {
-    const words = fullName.split(' ');
-    const initials = words.map(word => word.charAt(0).toUpperCase()).join('');
+    const initials = fullName ? fullName?.charAt(0).toUpperCase() : 'A';
     return initials;
   };
 
-  return (
-    <div>
-      {getInitials(fullName)}
-    </div>
-  );
+  return <div>{getInitials(fullName)}</div>;
 };
 
 export default GetInitials;
