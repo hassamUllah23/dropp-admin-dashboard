@@ -12,6 +12,9 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang='en'>
+      <head>
+        <title>Dropp Phygital CMS</title>
+      </head>
       <body className='relative '>
         <StoreProvider>
           {pathname === '/' || pathname === '/join-waitlist' ? (
