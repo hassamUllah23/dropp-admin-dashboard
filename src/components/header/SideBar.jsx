@@ -263,30 +263,6 @@ export default function SideBar({ onClose }) {
               </p>
             </div>
           </div>
-
-          <div className=' pb-2 flex-1 overflow-auto min-h-32'>
-            <div className='flex-grow overflow-y-auto'>
-              <p className='pt-4 py-1 font-semibold pb-3'>Chat History</p>
-
-              <div className='text-xs leading-6 text-white/80 py-1 h-full overflow-y-auto'>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-                <p>I want to create a 3d model</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

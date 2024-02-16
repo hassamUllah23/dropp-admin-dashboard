@@ -34,7 +34,7 @@ export default function Chat() {
 
       if (result?.status === 200) {
         toast.success('The output has been attached with this job.');
-        getJob();
+        router.push(`/dashboard`);
       }
     }
   };
