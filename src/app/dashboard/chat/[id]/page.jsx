@@ -58,7 +58,7 @@ export default function Chat() {
       getJob();
     }
   }, [id]);
-
+  console.log('job', job)
   const handleTokenisation = async () => {
     try {
       if (job?.outputs?.length === 0) {
@@ -99,6 +99,8 @@ export default function Chat() {
                 type={
                   !!job && !!job.outputs.length ? job.outputs[0].type : null
                 }
+                user={job?.user}
+                artifacts={job?.artifacts}
               />
               {job?.outputs?.length > 0 && job.status !== JOB_COMPLETED && (
                 <UpdateJobAsset
@@ -112,6 +114,7 @@ export default function Chat() {
                       : null
                   }
                   message={'Upload final output here'}
+                  user={job?.user}
                 />
               )}
             </>

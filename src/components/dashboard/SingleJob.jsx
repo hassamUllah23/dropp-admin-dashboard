@@ -287,7 +287,7 @@ export default function SingleJob({ jobKeys }) {
           }`}
         >
           {jobKeys?.artifacts.slice(0, 3).map((artifacts, index) =>
-            artifacts.type === 'image' ? (
+            artifacts?.type === 'image' ? (
               <img
                 key={index}
                 src={artifacts.url}
