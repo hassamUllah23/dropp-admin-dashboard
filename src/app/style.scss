@@ -385,7 +385,9 @@ input:-webkit-autofill:active {
   display: inline-block;
   padding: 10px 0;
 }
-.canvas canvas{width: 100% !important;}
+.canvas canvas {
+  width: 100% !important;
+}
 .ellipsis {
   white-space: nowrap;
   overflow: hidden;
@@ -421,8 +423,12 @@ input:-webkit-autofill:active {
   background-color: #5f6369;
   color: #ffffff;
 }
-.iconAreaSm{flex: 0 0 30px;}
-.iconAreaMd{flex: 0 0 48px;}
+.iconAreaSm {
+  flex: 0 0 30px;
+}
+.iconAreaMd {
+  flex: 0 0 48px;
+}
 
 .Toastify__toast--error {
   position: relative;
@@ -488,4 +494,11 @@ input:-webkit-autofill:active {
   .Toastify__close-button {
     color: 2f96b4;
   }
+}
+
+.screenHeightForNotifications {
+  max-height: calc(100vh - 300px);
+}
+.notificationItem:last-child {
+  border: 0 none;
 }

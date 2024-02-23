@@ -1,24 +1,51 @@
 'use client';
-import React, { useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import SingleJob from '@/components/dashboard/SingleJob';
 import useApiHook from '@/hooks/useApiHook';
+import { RotatingLines } from 'react-loader-spinner';
+
 export default function Dashboard() {
   const { handleApiCall, isApiLoading } = useApiHook();
   const [allJobs, setAllJobs] = useState([]);
-  let url ="/jobs/all/admin";
-  
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [showLoader, setShowLoader] = useState(false);
+  let url = `/jobs/all/admin?page=${page}&pageSize=${pageSize}`;
+
   const loadJobs = async () => {
     const result = await handleApiCall({
       method: 'GET',
       url: url,
     });
-    
     setAllJobs(result?.data?.jobs);
+    await calculatePageCount(result?.data?.count);
   };
-  
+
+  const calculatePageCount = async (count) => {
+    setCount(count);
+    setPageCount(Math.ceil(count / pageSize));
+  };
+
+  const handlePageSizeChange = (newPage) => {
+    setPage(newPage);
+    setShowLoader(true);
+  };
+
+  const pageOptions = useMemo(() => {
+    const roundedTotal = Math.ceil(count / pageSize);
+
+    return Array.from({ length: roundedTotal }, (_, index) => (index + 1) * 10);
+  }, [count, pageSize]);
+
   useEffect(() => {
-    loadJobs()
+    loadJobs();
   }, []);
+
+  useEffect(() => {
+    loadJobs().then(() => setShowLoader(false));
+  }, [page, pageSize]);
 
   return (
     <div className='p-2.5 pt-4 md:pt-10 max-w-screen-3xl h-fu w-full m-auto flex flex-col min-w-80 z-10 text-white'>
@@ -43,11 +70,65 @@ export default function Dashboard() {
           <span>Filters</span>
         </button>
       </div>
-
+      <div className='grid grid-cols-3 gap-x-4 items-center px-5 mx-5 mb-2'>
+        <div>
+          <span className='text-base leading-5'>
+            Showing {page} - {pageCount} of {count}
+          </span>
+        </div>
+        <div className='flex justify-center'>
+          {showLoader && (
+            <RotatingLines
+              height='28'
+              width='28'
+              color='blue'
+              strokeWidth='5'
+              animationDuration='0.75'
+              ariaLabel='rotating-lines-loading'
+            />
+          )}
+        </div>
+        <div className='flex justify-end'>
+          {page > 1 && (
+            <button
+              className='text-sm px-3 lightGrayBg leading-8 rounded-xl flexCenter hover:bg-white hover:text-black'
+              onClick={() => handlePageSizeChange(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+          )}
+          {page < pageCount && (
+            <button
+              className='text-sm px-3 lightGrayBg leading-8 rounded-xl flexCenter ml-2 hover:bg-white hover:text-black'
+              onClick={() => handlePageSizeChange(page + 1)}
+            >
+              Next
+            </button>
+          )}
+        </div>
+      </div>
       <div className='grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  px-3 md:px-10 py-3 gap-4 md:gap-6'>
-        {[...allJobs]?.reverse()?.map((job) => (
-          <SingleJob key={job._id} jobKeys={job}/>
+        {allJobs?.map((job) => (
+          <SingleJob key={job._id} jobKeys={job} />
         ))}
+      </div>
+      <div className='flex justify-end items-center px-5 mx-5'>
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPage(1);
+            setPageSize(Number(e.target.value));
+          }}
+          className='text-sm p-2 lightGrayBg leading-10 rounded-2xl flexCenter mr-2 justify-center'
+        >
+          {pageOptions.map((size, index) => (
+            <option key={index} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
+        per page
       </div>
     </div>
   );
