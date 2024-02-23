@@ -1,14 +1,25 @@
 "use client";
 import { selectAuth, toggleLogin, useDispatch, useSelector } from "@/lib";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SideBar from "./SideBar";
 import ConnectWalletButton from "../ConnectWalletButton";
-
+import NotificationsPopup from './NotificationsPopup';
+import { addNotification, clearNotifications } from '@/lib/slices/notification/notificationSlice';
+import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 export default function Navbar() {
   const auth = useSelector(selectAuth);
   const dispatch = useDispatch();
   const [showSidebar, setShowSidebar] = useState(false);
+  const [notificationsData, setNotificationsData] = useState([]);
+  const notifications = useSelector(state => state.notification.notifications);
+  const [showNotification, setShowNotification] = useState(false);
+  const [showNotificationDot, setShowNotificationDot] = useState(false);
+  const notificationRef = useRef(null);
+  const pathname = usePathname();
+  const router = useRouter();
+
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
     document.body.style.overflowY = showSidebar ? "visible" : "hidden";
@@ -18,6 +29,50 @@ export default function Navbar() {
     localStorage.removeItem("accessToken");
     dispatch(toggleLogin({ isLogin: false, userInfo: null }));
   };
+
+  const handleNotifications = () => {
+    setShowNotification(!showNotification);
+    setShowNotificationDot(false);
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if ( notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setShowNotification(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [notificationRef]);
+
+  useEffect(() => {
+    console.log(notifications);
+   if( auth?.isLogin && notifications.length > 0 ){
+    setNotificationsData(notifications),
+    setShowNotificationDot(true)  
+   }
+  }, [notifications]);
+
+  useEffect(() => {
+      dispatch(clearNotifications())  
+
+    // const notification = [
+    //   {
+    //     messageId: '123',
+    //     sender : 'wasif',
+    //     title : '3d modal',
+    //     message : 'Model has been updated',
+    //     isRead : false,
+    //     createdAt: Date.now()
+    //   }
+    // ];
+    // dispatch(addNotification(notification));
+    
+  },[])
+
+
   return (
     <>
       <section className="pt-3 pb-2 md:p-2.5 flex justify-between max-w-screen-3xl m-auto min-w-80 z-10">
@@ -50,21 +105,29 @@ export default function Navbar() {
                   />
                 </svg>
               </Link>
-              <span className="cursor-pointer w-8 md:w-10 inline-block flexCenter rounded-xl py-1 pl-2 md:pl-3 text-white">
+              <span ref={notificationRef} className='cursor-pointer relative w-8 md:w-10 inline-block flexCenter rounded-xl py-1 pl-2 md:pl-3 text-white notifications'>
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
+                  onClick={handleNotifications}
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
                   strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
+                  stroke='currentColor'
+                  className='w-6 h-6'
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0'
                   />
                 </svg>
+                {showNotificationDot && (
+                  <span className='inline-block bg-red-700 top-2 right-1 w-3 h-3 rounded-full absolute'></span>  
+                )}
+                
+                {showNotification && (
+                  <NotificationsPopup notificationData={notifications}/>
+                )}
               </span>
               <button className="text-white ml-3 mr-2" onClick={handleLogout}>
                 <svg

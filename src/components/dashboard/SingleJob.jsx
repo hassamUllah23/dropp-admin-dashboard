@@ -88,6 +88,7 @@ export default function SingleJob({ jobKeys }) {
     setShowJobStatus(!showJobStatus);
   };
   const handleStatusClick = async (status) => {
+    setShowJobStatus(false);
     const result = await handleApiCall({
       method: 'PUT',
       url: `/jobs/${jobId}/update-status/`,
@@ -296,6 +297,7 @@ export default function SingleJob({ jobKeys }) {
               />
             ) : (
               <span
+              key={index}
                 className={`flexCenter w-11 h-11 rounded-lg ${
                   jobKeys.platform == 'aramco'
                     ? ' bgLightGray clrDarkGray'

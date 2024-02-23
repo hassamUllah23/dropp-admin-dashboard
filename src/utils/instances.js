@@ -5,7 +5,8 @@ export const instance = axios.create({
   baseURL: NEXT_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
-  },
+    'ngrok-skip-browser-warning': 'skip-browser-warning',
+  },  
 });
 
 export const chatInstance = axios.create({

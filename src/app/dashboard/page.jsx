@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useCallback} from 'react';
 import SingleJob from '@/components/dashboard/SingleJob';
 import useApiHook from '@/hooks/useApiHook';
-
 export default function Dashboard() {
   const { handleApiCall, isApiLoading } = useApiHook();
   const [allJobs, setAllJobs] = useState([]);
@@ -46,7 +45,7 @@ export default function Dashboard() {
       </div>
 
       <div className='grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  px-3 md:px-10 py-3 gap-4 md:gap-6'>
-        {allJobs?.map((job) => (
+        {[...allJobs]?.reverse()?.map((job) => (
           <SingleJob key={job._id} jobKeys={job}/>
         ))}
       </div>
