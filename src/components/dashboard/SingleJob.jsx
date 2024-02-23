@@ -28,51 +28,6 @@ export default function SingleJob({ jobKeys }) {
     setShowAssignTaskPopup(!showAssignTaskPopup);
   };
 
-  const employees = [
-    {
-      id: 1,
-      name: 'Angel Cruz',
-      assigned: true,
-      image: '/assets/images/dashboard/profile1.jpg',
-    },
-    {
-      id: 2,
-      name: 'Angel Cruz',
-      assigned: true,
-      image: '/assets/images/dashboard/profile2.jpg',
-    },
-    {
-      id: 3,
-      name: 'Angel Cruz',
-      assigned: true,
-      image: '/assets/images/chat/UserImg.png',
-    },
-    {
-      id: 4,
-      name: 'Angel Cruz',
-      assigned: false,
-      image: '/assets/images/chat/UserImg.png',
-    },
-    {
-      id: 5,
-      name: 'Angel Cruz',
-      assigned: false,
-      image: '/assets/images/chat/UserImg.png',
-    },
-    {
-      id: 6,
-      name: 'Angel Cruz',
-      assigned: false,
-      image: '/assets/images/chat/UserImg.png',
-    },
-    {
-      id: 7,
-      name: 'Angel Cruz',
-      assigned: false,
-      image: '/assets/images/chat/UserImg.png',
-    },
-  ];
-
   let jobId = jobKeys.id;
   const createdAt = new Date(jobKeys.createdAt);
   const formattedDate = new Intl.DateTimeFormat('en-US', {
@@ -143,7 +98,6 @@ export default function SingleJob({ jobKeys }) {
 
   return (
     <div
-      key={jobKeys.id}
       className={` w-full rounded-2xl p-5 relative font-bold ${
         jobKeys.platform == 'aramco'
           ? '  bg-[#E6E6E6] text-black'
@@ -297,7 +251,7 @@ export default function SingleJob({ jobKeys }) {
               />
             ) : (
               <span
-              key={index}
+                key={index}
                 className={`flexCenter w-11 h-11 rounded-lg ${
                   jobKeys.platform == 'aramco'
                     ? ' bgLightGray clrDarkGray'
