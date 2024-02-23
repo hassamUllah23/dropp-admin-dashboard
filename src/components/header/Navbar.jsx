@@ -11,8 +11,10 @@ import {
 } from '@/lib/slices/notification/notificationSlice';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import useApiHook from '@/hooks/useApiHook';
 export default function Navbar() {
   const auth = useSelector(selectAuth);
+  const { handleApiCall } = useApiHook();
   const dispatch = useDispatch();
   const [showSidebar, setShowSidebar] = useState(false);
   const [notificationsData, setNotificationsData] = useState([]);
@@ -22,8 +24,6 @@ export default function Navbar() {
   const [showNotification, setShowNotification] = useState(false);
   const [showNotificationDot, setShowNotificationDot] = useState(false);
   const notificationRef = useRef(null);
-  const pathname = usePathname();
-  const router = useRouter();
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -55,15 +55,27 @@ export default function Navbar() {
     };
   }, [notificationRef]);
 
-  useEffect(() => {
-    console.log(notifications);
-    if (auth?.isLogin && notifications.length > 0) {
-      setNotificationsData(notifications), setShowNotificationDot(true);
+  const getNotification = async () => {
+    const result = await handleApiCall({
+      method: 'GET',
+      url: '/employee/notification/all',
+    });
+    if (result?.status === 200) {
+      setNotificationsData(result?.data?.notifications);
     }
+  };
+
+  useEffect(() => {
+    if (auth?.isLogin && notifications.length > 0) {
+      setNotificationsData(notifications);
+      setShowNotificationDot(true);
+    }
+    getNotification();
   }, [notifications]);
 
   useEffect(() => {
     dispatch(clearNotifications());
+    if (auth?.isLogin) getNotification();
 
     // const notification = [
     //   {
@@ -134,7 +146,7 @@ export default function Navbar() {
                 )}
 
                 {showNotification && (
-                  <NotificationsPopup notificationData={notifications} />
+                  <NotificationsPopup notificationData={notificationsData} />
                 )}
               </span>
               <button className='text-white ml-3 mr-2' onClick={handleLogout}>
