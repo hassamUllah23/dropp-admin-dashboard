@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import SingleJob from '@/components/dashboard/SingleJob';
 import useApiHook from '@/hooks/useApiHook';
 import { RotatingLines } from 'react-loader-spinner';
+import { useSelector } from '@/lib';
 
 export default function Dashboard() {
   const { handleApiCall, isApiLoading } = useApiHook();
@@ -12,6 +13,9 @@ export default function Dashboard() {
   const [pageCount, setPageCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [showLoader, setShowLoader] = useState(false);
+  const notifications = useSelector(
+    (state) => state.notification.notifications
+  );
   let url = `/jobs/all/admin?page=${page}&pageSize=${pageSize}`;
 
   const loadJobs = async () => {
@@ -46,6 +50,10 @@ export default function Dashboard() {
   useEffect(() => {
     loadJobs().then(() => setShowLoader(false));
   }, [page, pageSize]);
+
+  useEffect(() => {
+    loadJobs()
+  }, [notifications]);
 
   return (
     <div className='p-2.5 pt-4 md:pt-10 max-w-screen-3xl h-fu w-full m-auto flex flex-col min-w-80 z-10 text-white'>

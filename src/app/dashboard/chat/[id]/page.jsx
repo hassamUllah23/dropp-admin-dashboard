@@ -101,6 +101,7 @@ export default function Chat() {
                 }
                 user={job?.user}
                 artifacts={job?.artifacts}
+                description={job?.description}
               />
               {job?.outputs?.length > 0 && job.status !== JOB_COMPLETED && (
                 <UpdateJobAsset
@@ -115,6 +116,7 @@ export default function Chat() {
                   }
                   message={'Upload final output here'}
                   user={job?.user}
+                  description={job?.description}
                 />
               )}
             </>

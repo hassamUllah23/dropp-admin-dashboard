@@ -92,7 +92,7 @@ export default function Navbar() {
 
   return (
     <>
-      <section className='pt-3 pb-2 md:p-2.5 flex justify-between max-w-screen-3xl m-auto min-w-80 z-10'>
+      <section className='pt-4 pb-2 md:px-2.5 flex justify-between max-w-screen-3xl m-auto min-w-80 z-10'>
         <Link href='/dashboard' className='pl-4 md:pl-10'>
           <img
             src='/assets/images/navbar/logo.png'
