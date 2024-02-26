@@ -101,7 +101,7 @@ export default function Chat() {
                 artifacts={job?.artifacts}
                 description={job?.description}
               />
-              {job.status !== JOB_COMPLETED && (
+              {job?.status !== JOB_COMPLETED && (
                 <UpdateJobAsset
                   onUploadAdminAsset={handleUploadAdminAsset}
                   type={
