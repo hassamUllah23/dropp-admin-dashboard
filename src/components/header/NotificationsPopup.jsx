@@ -2,7 +2,8 @@ import { useRouter } from 'next/navigation';
 
 export default function NotificationsPopup({ notificationData }) {
   const router = useRouter();
-  const getTimeLabel = (timestamp) => {
+  const getTimeLabel = (isoTimestamp) => {
+    const timestamp = new Date(isoTimestamp).getTime();
     const currentTime = Date.now();
     const differenceInSeconds = Math.floor((currentTime - timestamp) / 1000);
 
@@ -35,15 +36,6 @@ export default function NotificationsPopup({ notificationData }) {
       return `${differenceInYears} year${differenceInYears > 1 ? 's' : ''} ago`;
     }
   };
-
-  const handleNotification = () => {
-    const jobId = notificationData[0].jobId;
-    router.push(`/dashboard/chat/${jobId}`);
-  };
-
-  const sortedNotifications = [...notificationData].sort(
-    (a, b) => b.createdAt - a.createdAt
-  );
 
   // Check if notificationData is not empty
   if (!notificationData || notificationData.length === 0) {
@@ -85,28 +77,31 @@ export default function NotificationsPopup({ notificationData }) {
           <span className='text-xs'>Mark all as read</span>
         </div>
         <div className='flex flex-col notificationScroll screenHeightForNotifications h-auto overflow-y-auto'>
-          {sortedNotifications.map((notification, index) => (
-            <div
-              className='flex flex-col'
-              key={index}
-              id={notification?.messageId}
-              onClick={handleNotification}
-            >
-              <div className='w-full flex justify-between relative items-center py-4 border-b border-gray-300 notificationItem'>
-                <div className='flex flex-col pl-3'>
-                  <span className='text-base font-semibold pb-1'>
-                    {notification?.title}
-                  </span>
-                  <span className='text-sm text-gray-800'>
-                    {notification?.message}
+          {notificationData?.length > 0 &&
+            notificationData?.map((notification, index) => (
+              <div
+                className='flex flex-col'
+                key={index}
+                id={notification?._id}
+                onClick={() =>
+                  router.push(`/dashboard/chat/${notification?.job}`)
+                }
+              >
+                <div className='w-full flex justify-between relative items-center py-4 border-b border-gray-300 notificationItem'>
+                  <div className='flex flex-col pl-3'>
+                    <span className='text-base font-semibold pb-1 capitalize'>
+                      {notification?.title}
+                    </span>
+                    <span className='text-sm text-gray-800'>
+                      {notification?.message}
+                    </span>
+                  </div>
+                  <span className='text-xs text-gray-700'>
+                    {getTimeLabel(notification?.createdAt)}
                   </span>
                 </div>
-                <span className='text-xs text-gray-700'>
-                  {getTimeLabel(notification?.createdAt)}
-                </span>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>

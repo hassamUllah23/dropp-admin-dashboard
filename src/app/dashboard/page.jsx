@@ -113,7 +113,7 @@ export default function Dashboard() {
           <SingleJob key={job._id} jobKeys={job} />
         ))}
       </div>
-      <div className='flex justify-end items-center px-5 mx-5'>
+      {/* <div className='flex justify-end items-center px-5 mx-5'>
         <select
           value={pageSize}
           onChange={(e) => {
@@ -129,7 +129,7 @@ export default function Dashboard() {
           ))}
         </select>
         per page
-      </div>
+      </div> */}
     </div>
   );
 }
