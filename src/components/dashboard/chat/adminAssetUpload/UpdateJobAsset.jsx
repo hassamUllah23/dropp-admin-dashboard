@@ -25,6 +25,7 @@ export default function UpdateJobAsset({
   const { output } = useSelector((state) => state.job);
   const dispatch = useDispatch();
   const [generationImage, setGenerationImage] = useState(artifacts);
+
   const handleFiles = (file) => {
     setShowLoading(true);
     const reader = new FileReader();
