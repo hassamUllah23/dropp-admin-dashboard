@@ -39,7 +39,7 @@ const SignUp = () => {
           userInfo: result?.data,
         })
       );
-      router.push('/dashboard/chat');
+      router.push('/dashboard/c');
     }
   };
 

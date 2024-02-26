@@ -104,7 +104,7 @@ export default function Navbar() {
             <div className='flex pr-1'>
               <ConnectWalletButton />
               <Link
-                href='/dashboard/chat'
+                href='/dashboard/c'
                 className='cursor-pointer btn-Gradient w-10 md:w-14 flexCenter rounded-xl py-1 text-black'
               >
                 <svg
