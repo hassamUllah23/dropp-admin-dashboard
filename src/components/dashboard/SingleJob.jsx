@@ -4,7 +4,6 @@ import JobOptions from './JobOptions';
 import AssignTask from './AssignTask';
 import Link from 'next/link';
 import { useDispatch, selectAuth, useSelector } from '@/lib';
-import { RotatingLines } from 'react-loader-spinner';
 import { useRouter } from 'next/navigation';
 import { setJob } from '@/lib/slices/job/jobActions';
 import LoadingSvg from '../common/LoadingSvg';
@@ -42,7 +41,9 @@ export default function SingleJob({ jobKeys }) {
   const showStatuses = () => {
     setShowJobStatus(!showJobStatus);
   };
+
   const handleStatusClick = async (status) => {
+    setShowLoading(true);
     setShowJobStatus(false);
     const result = await handleApiCall({
       method: 'PUT',
@@ -53,7 +54,6 @@ export default function SingleJob({ jobKeys }) {
     if (result?.status === 200) {
     }
 
-    setShowLoading(true);
     setJobStatus(status);
     setShowJobStatus(false);
     setTimeout(() => {

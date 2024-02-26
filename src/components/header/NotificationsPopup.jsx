@@ -1,6 +1,11 @@
 import { useRouter } from 'next/navigation';
+import LoadingSvg from '../common/LoadingSvg';
 
-export default function NotificationsPopup({ notificationData }) {
+export default function NotificationsPopup({
+  notificationData,
+  isApiLoading,
+  markAllNotificationAsRead,
+}) {
   const router = useRouter();
   const getTimeLabel = (isoTimestamp) => {
     const timestamp = new Date(isoTimestamp).getTime();
@@ -11,15 +16,15 @@ export default function NotificationsPopup({ notificationData }) {
       return 'just now';
     } else if (differenceInSeconds < 3600) {
       const differenceInMinutes = Math.floor(differenceInSeconds / 60);
-      return `${differenceInMinutes} minute${
+      return `${differenceInMinutes} min${
         differenceInMinutes > 1 ? 's' : ''
       } ago`;
     } else if (differenceInSeconds < 86400) {
       const differenceInHours = Math.floor(differenceInSeconds / 3600);
       const remainingMinutes = Math.floor((differenceInSeconds % 3600) / 60);
-      return `${differenceInHours} hour${
+      return `${differenceInHours} hr${
         differenceInHours > 1 ? 's' : ''
-      } ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''} ago`;
+      } ${remainingMinutes} min${remainingMinutes > 1 ? 's' : ''} ago`;
     } else if (differenceInSeconds < 604800) {
       const differenceInDays = Math.floor(differenceInSeconds / 86400);
       return `${differenceInDays} day${differenceInDays > 1 ? 's' : ''} ago`;
@@ -72,37 +77,57 @@ export default function NotificationsPopup({ notificationData }) {
       </span>
 
       <div className='w-full'>
-        <div className='w-full flex justify-between relative items-center py-4'>
+        <div className='w-full flex justify-between relative items-center py-4 px-2'>
           <span className='text-base font-semibold'>Notification Panel</span>
-          <span className='text-xs'>Mark all as read</span>
+          <span
+            className='text-xs hover:text-slate-300'
+            onClick={() => markAllNotificationAsRead()}
+          >
+            Mark all as read
+          </span>
         </div>
-        <div className='flex flex-col notificationScroll screenHeightForNotifications h-auto overflow-y-auto'>
-          {notificationData?.length > 0 &&
-            notificationData?.map((notification, index) => (
-              <div
-                className='flex flex-col'
-                key={index}
-                id={notification?._id}
-                onClick={() =>
-                  router.push(`/dashboard/chat/${notification?.job}`)
-                }
-              >
-                <div className='w-full flex justify-between relative items-center py-4 border-b border-gray-300 notificationItem'>
-                  <div className='flex flex-col pl-3'>
-                    <span className='text-base font-semibold pb-1 capitalize'>
-                      {notification?.title}
-                    </span>
-                    <span className='text-sm text-gray-800'>
-                      {notification?.message}
+        {isApiLoading ? (
+          <div className='flex justify-center items-center h-[20rem]'>
+            <LoadingSvg color={'#ffffff'} />
+          </div>
+        ) : (
+          <div className='flex flex-col notificationScroll screenHeightForNotifications h-auto overflow-y-auto'>
+            {notificationData?.length > 0 &&
+              notificationData?.map((notification, index) => (
+                <div
+                  className='flex flex-col'
+                  key={index}
+                  id={notification?._id}
+                  onClick={() =>
+                    router.push(`/dashboard/chat/${notification?.job}`)
+                  }
+                >
+                  <div className='w-full flex justify-between relative items-center py-3 border-b border-gray-300 notificationItem'>
+                    {!notification?.read && (
+                      <span className='bg-blue-500 w-2 h-2 rounded-full' />
+                    )}
+                    <div className='flex flex-col mr-2 px-3'>
+                      <span className='text-sm font-semibold pb-1 capitalize'>
+                        {notification?.title}
+                      </span>
+                      <span className='text-xs text-gray-800'>
+                        {notification?.message}
+                      </span>
+                    </div>
+                    <span
+                      className={`text-xs w-1/6 pr-1 ${
+                        notification?.read ? 'text-gray-800' : 'text-gray-700'
+                      }`}
+                    >
+                      <small className='flex flex-row flex-wrap justify-center w-full text-center'>
+                        {getTimeLabel(notification?.createdAt)}
+                      </small>
                     </span>
                   </div>
-                  <span className='text-xs text-gray-700'>
-                    {getTimeLabel(notification?.createdAt)}
-                  </span>
                 </div>
-              </div>
-            ))}
-        </div>
+              ))}
+          </div>
+        )}
       </div>
     </div>
   );

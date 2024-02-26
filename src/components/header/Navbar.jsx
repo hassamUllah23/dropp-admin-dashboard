@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import useApiHook from '@/hooks/useApiHook';
 export default function Navbar() {
   const auth = useSelector(selectAuth);
-  const { handleApiCall } = useApiHook();
+  const { handleApiCall, isApiLoading } = useApiHook();
   const dispatch = useDispatch();
   const [showSidebar, setShowSidebar] = useState(false);
   const [notificationsData, setNotificationsData] = useState([]);
@@ -37,6 +37,7 @@ export default function Navbar() {
 
   const handleNotifications = () => {
     setShowNotification(!showNotification);
+    getNotification();
     setShowNotificationDot(false);
   };
 
@@ -65,6 +66,16 @@ export default function Navbar() {
     }
   };
 
+  const markAllNotificationAsRead = async () => {
+    const result = await handleApiCall({
+      method: 'PUT',
+      url: '/employee/notification/read-all',
+    });
+    if (result?.status === 204) {
+      getNotification();
+    }
+  };
+
   useEffect(() => {
     if (auth?.isLogin && notifications.length > 0) {
       setNotificationsData(notifications);
@@ -76,18 +87,6 @@ export default function Navbar() {
   useEffect(() => {
     dispatch(clearNotifications());
     if (auth?.isLogin) getNotification();
-
-    // const notification = [
-    //   {
-    //     messageId: '123',
-    //     sender : 'wasif',
-    //     title : '3d modal',
-    //     message : 'Model has been updated',
-    //     isRead : false,
-    //     createdAt: Date.now()
-    //   }
-    // ];
-    // dispatch(addNotification(notification));
   }, []);
 
   return (
@@ -146,7 +145,11 @@ export default function Navbar() {
                 )}
 
                 {showNotification && (
-                  <NotificationsPopup notificationData={notificationsData} />
+                  <NotificationsPopup
+                    isApiLoading={isApiLoading}
+                    notificationData={notificationsData}
+                    markAllNotificationAsRead={markAllNotificationAsRead}
+                  />
                 )}
               </span>
               <button className='text-white ml-3 mr-2' onClick={handleLogout}>

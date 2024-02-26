@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className='relative '>
         <StoreProvider>
-          {pathname === '/' || pathname === '/join-waitlist' ? (
+          {pathname === '/' || pathname === '/sign-in' ? (
             <>
               <div className='staticBG h-screen' />
               <Navbar />
