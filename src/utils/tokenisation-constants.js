@@ -928,5 +928,4 @@ export const RelayerPrivateKey =
   "f72c2fa41bfc4fb12086f1c3f35c2a81d0b8655f5861a7195f2c8bb94817cda1";
 
 /******** Function Params for SafeMint Function ********/
-export const baseUrl =
-  "https://controlnetassets.s3.amazonaws.com/digital-human/outputs/";
+export const baseUrl = "https://gateway.pinata.cloud/ipfs/";

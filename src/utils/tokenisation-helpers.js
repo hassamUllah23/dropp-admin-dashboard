@@ -1,4 +1,4 @@
-import { ethers, AbiCoder, sig } from 'ethers';
+import { ethers, AbiCoder, sig } from "ethers";
 
 import {
   ControlNetFactoryABI,
@@ -6,7 +6,7 @@ import {
   ControlNetFactoryAddress,
   RelayerPrivateKey,
   baseUrl,
-} from './tokenisation-constants';
+} from "./tokenisation-constants";
 
 export const createNewNFTcontractForUser = async () => {
   try {
@@ -23,38 +23,38 @@ export const createNewNFTcontractForUser = async () => {
       await userFactoryContract.getUserContractAddress(userAddress);
     if (
       existingContractAddress &&
-      existingContractAddress !== '0x0000000000000000000000000000000000000000'
+      existingContractAddress !== "0x0000000000000000000000000000000000000000"
     ) {
       contractAddress = existingContractAddress;
     } else {
       const transaction = await userFactoryContract.deployAramcoNFTS();
       const transactionReceipt = await transaction.wait();
       if (!transactionReceipt.status) {
-        throw 'Transaction Failed';
+        throw "Transaction Failed";
       }
       const deployedContractAddress = transactionReceipt.events.find(
-        (event) => event.event === 'ContractDeployed'
+        (event) => event.event === "ContractDeployed"
       ).args.contractAddress;
       contractAddress = deployedContractAddress;
     }
 
     return contractAddress;
   } catch (error) {
-    window.alert('Transaction Failed');
+    window.alert("Transaction Failed");
   }
 };
 
 export const createSignatureAndDataForMinting = async () => {
   try {
-    const message = 'secret message';
+    const message = "secret message";
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
-    const functionSignature = ethers.id('safeMint(string)').substring(0, 10);
+    const functionSignature = ethers.id("safeMint(string)").substring(0, 10);
     const userAddress = await signer.getAddress();
     const abiCoder = AbiCoder.defaultAbiCoder();
-    const encodedFunctionCall = abiCoder.encode(['string'], [message]);
+    const encodedFunctionCall = abiCoder.encode(["string"], [message]);
     const messageHash = ethers.solidityPackedKeccak256(
-      ['bytes'],
+      ["bytes"],
       [ethers.concat([functionSignature, encodedFunctionCall])]
     );
     const signature = await signer.signMessage(ethers.toBeArray(messageHash));
@@ -79,11 +79,11 @@ export const verifySignature = async () => {
     await createSignatureAndDataForMinting();
   try {
     const encodedFunctionCall = AbiCoder.defaultAbiCoder().encode(
-      ['string'],
+      ["string"],
       [message]
     );
     const messageHash = ethers.solidityPackedKeccak256(
-      ['bytes'],
+      ["bytes"],
       [ethers.concat([functionSignature, encodedFunctionCall])]
     );
     const ethSignedMessageHash = ethers.hashMessage(
@@ -110,16 +110,17 @@ export const getUserContractAddress = async () => {
     const contract = new ethers.Contract(
       ControlNetFactoryAddress,
       [
-        'function getUserContractAddress(address) public view returns (address)',
+        "function getUserContractAddress(address) public view returns (address)",
       ],
       provider
     );
+    console.log("code =>", contract.getDeployedCode());
     const contractAddress = await contract.getUserContractAddress(
       userPublicAddress
     );
     return contractAddress;
   } catch (error) {
-    console.error('Error in getUserContractAddress:', error);
+    console.error("Error in getUserContractAddress:", error);
     throw error;
   }
 };
@@ -151,12 +152,16 @@ export const submitMetaTransaction = async (cid, contractAddress) => {
       messageHash,
       signature
     );
+
     window.alert(
       `Transaction submitted! Hash: ${tx.hash}, Contract Address: ${contractAddress}`
     );
     tx.wait();
+    return {
+      url: `https://testnets.opensea.io/assets/mumbai/${contractAddress}`,
+    };
   } catch (error) {
-    console.error('Error submitting meta transaction:', error);
+    console.error("Error submitting meta transaction:", error);
     throw error;
   }
 };
