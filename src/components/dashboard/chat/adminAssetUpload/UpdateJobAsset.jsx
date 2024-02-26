@@ -164,15 +164,6 @@ export default function UpdateJobAsset({
                         Your browser does not support the video tag.
                       </video>
                     </div>
-                    {/* <button
-                      onClick={() => handleRemoveMedia()}
-                      className="absolute top-2 right-2 cursor-pointer bg-transparent"
-                    >
-                      <img
-                        src="/assets/images/chat/remove.png"
-                        className=" w-3"
-                      />
-                    </button> */}
                   </div>
                 )}
                 {savedVideos == null && (
@@ -183,44 +174,18 @@ export default function UpdateJobAsset({
                       </div>
                     ) : (
                       <div className='w-full'>
-                        {uploadedVideoCount === 0 && (
-                          <div
-                            className='flex justify-center items-center cursor-pointer'
-                            onDrop={handleDrop}
-                            onDragOver={handleDragOver}
-                            onClick={openFileDialog}
-                          >
-                            <div className='flex flex-col items-center'>
-                              <input
-                                type='file'
-                                accept='video/*,.glb'
-                                ref={fileInputRef}
-                                onChange={handleFileChange}
-                                className='hidden'
-                              />
-                              <img
-                                src='/assets/images/auth/upload.png'
-                                alt='upload'
-                                className=' w-28 h-28  mx-auto'
-                              />
-                              <p className='pt-5'>
-                                {message || 'Upload assets here...'}
-                              </p>
-                            </div>
-                          </div>
-                        )}
                         {artifacts?.length > 0 && (
                           <div className='mb-5'>
                             {type === 'video' && (
                               <>
                                 <h1 className='text-md md:text-xl mb-3 font-bold'>
-                                  User's Input:
+                                  User's Script:
                                 </h1>
                                 <p className='pb-6'>{description}</p>
                               </>
                             )}
                             <h1 className='text-md md:text-xl mb-5 font-bold'>
-                              User's Script:
+                              User's Input:
                             </h1>
 
                             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
