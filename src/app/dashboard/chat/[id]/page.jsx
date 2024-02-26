@@ -97,16 +97,18 @@ export default function Chat() {
                 type={
                   !!job && !!job.outputs.length ? job.outputs[0].type : null
                 }
+                isUpload={false}
                 user={job?.user}
                 artifacts={job?.artifacts}
                 description={job?.description}
               />
-              {job?.status !== JOB_COMPLETED && (
+              {job?.outputs?.length > 0 && job.status !== JOB_COMPLETED && (
                 <UpdateJobAsset
                   onUploadAdminAsset={handleUploadAdminAsset}
                   type={
                     !!job && !!job.outputs.length ? job.outputs[0].type : null
                   }
+                  isUpload={true}
                   url={
                     !!job && !!job.outputs.length > 0
                       ? job.outputs[1]?.url
