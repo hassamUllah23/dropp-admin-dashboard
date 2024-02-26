@@ -10,7 +10,7 @@ export default function Dashboard() {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(12);
   const [showLoader, setShowLoader] = useState(true);
   let url = `/jobs/all/admin?page=${page}&pageSize=${pageSize}`;
 

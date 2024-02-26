@@ -21,10 +21,7 @@ export default function NotificationsPopup({
       } ago`;
     } else if (differenceInSeconds < 86400) {
       const differenceInHours = Math.floor(differenceInSeconds / 3600);
-      const remainingMinutes = Math.floor((differenceInSeconds % 3600) / 60);
-      return `${differenceInHours} hr${
-        differenceInHours > 1 ? 's' : ''
-      } ${remainingMinutes} min${remainingMinutes > 1 ? 's' : ''} ago`;
+      return `${differenceInHours} hr${differenceInHours > 1 ? 's' : ''} ago`;
     } else if (differenceInSeconds < 604800) {
       const differenceInDays = Math.floor(differenceInSeconds / 86400);
       return `${differenceInDays} day${differenceInDays > 1 ? 's' : ''} ago`;
@@ -106,7 +103,7 @@ export default function NotificationsPopup({
                     {!notification?.read && (
                       <span className='bg-blue-500 w-2 h-2 rounded-full' />
                     )}
-                    <div className='flex flex-col mr-2 px-3'>
+                    <div className='flex flex-col mr-1 px-3'>
                       <span className='text-sm font-semibold pb-1 capitalize'>
                         {notification?.title}
                       </span>
@@ -114,11 +111,7 @@ export default function NotificationsPopup({
                         {notification?.message}
                       </span>
                     </div>
-                    <span
-                      className={`text-xs w-1/6 pr-1 ${
-                        notification?.read ? 'text-gray-800' : 'text-gray-700'
-                      }`}
-                    >
+                    <span className='text-xs w-1/6 pr-2 text-gray-700'>
                       <small className='flex flex-row flex-wrap justify-center w-full text-center'>
                         {getTimeLabel(notification?.createdAt)}
                       </small>

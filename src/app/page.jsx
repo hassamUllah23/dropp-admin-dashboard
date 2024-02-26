@@ -7,10 +7,10 @@ export default function Waitlist() {
         We are having a phased roll-out. So…
       </p>
       <Link
-        href='/join-waitlist'
+        href='/sign-in'
         className='max-w-[400px] w-full btn-Gradient text-base text-black spacing text-center rounded-2xl cursor-pointer font-semibold'
       >
-        Join The Waitlist
+        Sign In
       </Link>
     </div>
   );

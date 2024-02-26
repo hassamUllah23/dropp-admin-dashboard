@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import useApiHook from '@/hooks/useApiHook';
 export default function Navbar() {
   const auth = useSelector(selectAuth);
+  const router = useRouter();
   const { handleApiCall, isApiLoading } = useApiHook();
   const dispatch = useDispatch();
   const [showSidebar, setShowSidebar] = useState(false);
@@ -33,6 +34,7 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     dispatch(toggleLogin({ isLogin: false, userInfo: null }));
+    router.push('/sign-in');
   };
 
   const handleNotifications = () => {
@@ -80,8 +82,8 @@ export default function Navbar() {
     if (auth?.isLogin && notifications.length > 0) {
       setNotificationsData(notifications);
       setShowNotificationDot(true);
+      getNotification();
     }
-    getNotification();
   }, [notifications]);
 
   useEffect(() => {

@@ -19,10 +19,10 @@ const SignIn = () => {
     const result = await handleApiCall({
       method: 'post',
       url: '/auth/employee/sign-in',
-      data: {userName: values.email, password: values.password},
+      data: { userName: values.email, password: values.password },
       headers: { Authorization: 'none' },
     });
-    
+
     if (result.status === 200) {
       dispatch(
         toggleLogin({
@@ -31,7 +31,7 @@ const SignIn = () => {
         })
       );
       localStorage.setItem('accessToken', result?.data?.accessToken);
-      router.push('/dashboard/chat');
+      router.push('/dashboard');
     }
   };
 
