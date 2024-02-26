@@ -31,7 +31,7 @@ const SignIn = () => {
         })
       );
       localStorage.setItem('accessToken', result?.data?.accessToken);
-      router.push('/dashboard/c');
+      router.push('/dashboard');
     }
   };
 

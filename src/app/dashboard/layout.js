@@ -61,8 +61,14 @@ export default function Layout({ children }) {
         vapidKey:
           'BFjCyzqcytxVs-yc8fg2iP19jGMcE6U5RvKL3Wv3m9el3w4-oy9CshaNmJYZtxz4IfGD3WfMqqlMVgHkScOFsVQ',
       }).then((currentToken) => {
-        if (currentToken) return updateToken(currentToken);
-        console.error('No device token available.');
+        console.log(auth?.userInfo?.profile?.firebaseTokens);
+        if (
+          currentToken &&
+          !auth?.userInfo?.profile?.firebaseTokens?.some(
+            (tokenObj) => tokenObj.token === currentToken
+          )
+        )
+          return updateToken(currentToken);
       });
     });
   }, []);

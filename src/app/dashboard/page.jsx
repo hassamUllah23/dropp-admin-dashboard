@@ -10,8 +10,8 @@ export default function Dashboard() {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
-  const [showLoader, setShowLoader] = useState(false);
+  const [pageSize, setPageSize] = useState(12);
+  const [showLoader, setShowLoader] = useState(true);
   let url = `/jobs/all/admin?page=${page}&pageSize=${pageSize}`;
 
   const loadJobs = async () => {
@@ -33,14 +33,14 @@ export default function Dashboard() {
     setShowLoader(true);
   };
 
-  const pageOptions = useMemo(() => {
-    const roundedTotal = Math.ceil(count / pageSize);
+  // const pageOptions = useMemo(() => {
+  //   const roundedTotal = Math.ceil(count / pageSize);
 
-    return Array.from({ length: roundedTotal }, (_, index) => (index + 1) * 10);
-  }, [count, pageSize]);
+  //   return Array.from({ length: roundedTotal }, (_, index) => (index + 1) * 10);
+  // }, [count, pageSize]);
 
   useEffect(() => {
-    loadJobs();
+    loadJobs().then(() => setShowLoader(false));
   }, []);
 
   useEffect(() => {
