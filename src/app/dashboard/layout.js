@@ -1,49 +1,40 @@
-"use client";
-import { firebaseMessaging } from "@/config/firebase/firebaseClient";
-import { useDispatch } from "react-redux";
-import { selectAuth, useSelector } from "@/lib";
-import { getToken, onMessage } from "@firebase/messaging";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import useApiHook from "@/hooks/useApiHook";
-import { addNotification } from "@/lib/slices/notification/notificationSlice";
-import { isMobile, isBrowser, isAndroid, isIOS } from "react-device-detect";
-
+'use client';
+import { firebaseMessaging } from '@/config/firebase/firebaseClient';
+import { useDispatch } from 'react-redux';
+import { selectAuth, useSelector } from '@/lib';
+import { getToken, onMessage } from '@firebase/messaging';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import useApiHook from '@/hooks/useApiHook';
+import { addNotification } from '@/lib/slices/notification/notificationSlice';
+import { toast } from 'react-toastify';
 
 export default function Layout({ children }) {
   const auth = useSelector(selectAuth);
   const router = useRouter();
   const dispatch = useDispatch();
   const { handleApiCall, isApiLoading } = useApiHook();
-  let type = isMobile
-    ? isAndroid ? 'android' : isIOS ? 'ios' : 'mobile' : 'web';
 
-  const sendToken = async (token) => {
-    console.log("firebase token " + token);
-    const values = {
-      type: type,
-      token: token,
-    };
-    const result = await handleApiCall({
-      method: "PUT",
-      url: "/employee/update-firebase-token",
-      data: values,
+  const updateToken = async (token) => {
+    await handleApiCall({
+      method: 'PUT',
+      url: '/employee/update-firebase-token',
+      data: {
+        type: 'web',
+        token: token,
+      },
       token: auth.token,
     });
-    console.log("token saved");
-    console.log(result);
   };
 
   useEffect(() => {
-    if (!auth?.isLogin) router.push("/");
+    if (!auth?.isLogin) router.push('/');
   }, [auth, router]);
 
   useEffect(() => {
     onMessage(firebaseMessaging, (payload) => {
       try {
-        console.log("CompleteObject:", payload);
-        console.log("Received message Title:", payload?.notification?.title);
-        console.log("Received message:", payload?.notification?.body);
+        console.log('CompleteObject:', payload);
         const notification = [
           {
             messageId: payload?.messageId,
@@ -57,31 +48,22 @@ export default function Layout({ children }) {
         ];
         dispatch(addNotification(notification));
       } catch (error) {
-        console.error("Error handling message:", error);
+        console.error('Error handling message:', error);
       }
     });
   }, [firebaseMessaging]);
 
   useEffect(() => {
     Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
-        getToken(firebaseMessaging, {
-          vapidKey:
-            "BFjCyzqcytxVs-yc8fg2iP19jGMcE6U5RvKL3Wv3m9el3w4-oy9CshaNmJYZtxz4IfGD3WfMqqlMVgHkScOFsVQ",
-        })
-          .then((currentToken) => {
-            if (currentToken) {
-              sendToken(currentToken);
-            } else {
-              console.error("No device token available.");
-            }
-          })
-          .catch((error) => {
-            console.error("Error getting device token:", error);
-          });
-      } else {
-        console.error("Permission to receive notifications denied.");
-      }
+      if (permission !== 'granted')
+        return toast.error('You have denied the notifications permission.');
+      getToken(firebaseMessaging, {
+        vapidKey:
+          'BFjCyzqcytxVs-yc8fg2iP19jGMcE6U5RvKL3Wv3m9el3w4-oy9CshaNmJYZtxz4IfGD3WfMqqlMVgHkScOFsVQ',
+      }).then((currentToken) => {
+        if (currentToken) return updateToken(currentToken);
+        console.error('No device token available.');
+      });
     });
   }, []);
 
