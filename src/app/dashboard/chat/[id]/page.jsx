@@ -1,15 +1,15 @@
-"use client";
-import UpdateJobAsset from "@/components/dashboard/chat/adminAssetUpload/UpdateJobAsset";
-import useApiHook from "@/hooks/useApiHook";
+'use client';
+import UpdateJobAsset from '@/components/dashboard/chat/adminAssetUpload/UpdateJobAsset';
+import useApiHook from '@/hooks/useApiHook';
 import {
   createNewNFTcontractForUser,
   submitMetaTransaction,
-} from "@/utils/tokenisation-helpers";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import "./styles.scss";
-import { JOB_COMPLETED } from "@/utils/constants";
+} from '@/utils/tokenisation-helpers';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import './styles.scss';
+import { JOB_COMPLETED } from '@/utils/constants';
 
 export default function Chat() {
   const scrollToBox = useRef(null);
@@ -26,14 +26,14 @@ export default function Chat() {
       const formDataFiles = new FormData();
       formDataFiles.append(`${type}`, file);
       const result = await handleApiCall({
-        method: "PUT",
+        method: 'PUT',
         url: `/jobs/avatar/${id}`,
         data: formDataFiles,
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       if (result?.status === 200) {
-        toast.success("The output has been attached with this job.");
+        toast.success('The output has been attached with this job.');
 
         await getJob();
         await handleTokenisation();
@@ -49,7 +49,7 @@ export default function Chat() {
 
   const getJob = async () => {
     const result = await handleApiCall({
-      method: "GET",
+      method: 'GET',
       url: `/jobs/all/admin`,
     });
     if (!!result.data?.jobs) {
@@ -66,29 +66,29 @@ export default function Chat() {
   const handleTokenisation = async () => {
     try {
       if (job?.outputs?.length === 0) {
-        window.alert("Upload a job output first.");
+        window.alert('Upload a job output first.');
         return;
       }
       const contractAddress = await createNewNFTcontractForUser();
       await submitMetaTransaction(
-        job.outputs[0].metadataUrl?.split("ipfs/")[1],
+        job.outputs[0].metadataUrl?.split('ipfs/')[1],
         contractAddress
       );
-      toast.success("This asset has been tokenized!");
+      toast.success('This asset has been tokenized!');
     } catch (err) {
       toast.error(err.message?.slice(0, 40));
     }
   };
 
   return (
-    <div className="w-full m-auto flex flex-col h-full  px-3 md:px-0">
+    <div className='w-full m-auto flex flex-col h-full  px-3 md:px-0'>
       <div
-        className="scrollable-div flex-grow overflow-y-auto"
+        className='scrollable-div flex-grow overflow-y-auto'
         ref={scrollToBox}
       >
-        <div className="m-auto chat-area h-auto max-w-[55.5rem]">
+        <div className='m-auto chat-area h-auto max-w-[55.5rem]'>
           {isApiLoading ? (
-            <p style={{ color: "white", textAlign: "center" }}>Loading...</p>
+            <p style={{ color: 'white', textAlign: 'center' }}>Loading...</p>
           ) : (
             <>
               <UpdateJobAsset
@@ -101,7 +101,7 @@ export default function Chat() {
                 artifacts={job?.artifacts}
                 description={job?.description}
               />
-              {job?.outputs?.length > 0 && job.status !== JOB_COMPLETED && (
+              {job.status !== JOB_COMPLETED && (
                 <UpdateJobAsset
                   onUploadAdminAsset={handleUploadAdminAsset}
                   type={
@@ -112,7 +112,7 @@ export default function Chat() {
                       ? job.outputs[1]?.url
                       : null
                   }
-                  message={"Upload final output here"}
+                  message={'Upload final output here'}
                   user={job?.user}
                   description={job?.description}
                 />
