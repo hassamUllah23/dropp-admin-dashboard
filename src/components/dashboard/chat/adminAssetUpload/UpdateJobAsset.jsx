@@ -15,6 +15,7 @@ export default function UpdateJobAsset({
   type,
   user,
   artifacts,
+  description,
 }) {
   const [videoUrl, setVideoUrl] = useState(url || '');
   const [uploadedVideoCount, setUploadedVideoCount] = useState(!!url ? 1 : 0);
@@ -209,9 +210,18 @@ export default function UpdateJobAsset({
                         )}
                         {artifacts?.length > 0 && (
                           <div className='mb-5'>
+                            {type === 'video' && (
+                              <>
+                                <h1 className='text-md md:text-xl mb-3 font-bold'>
+                                  User's Input:
+                                </h1>
+                                <p className='pb-6'>{description}</p>
+                              </>
+                            )}
                             <h1 className='text-md md:text-xl mb-5 font-bold'>
-                              User's Input:
+                              User's Script:
                             </h1>
+
                             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
                               {artifacts.map((item) => {
                                 return (
