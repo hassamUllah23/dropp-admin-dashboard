@@ -48,13 +48,10 @@ export default function SingleJob({ jobKeys }) {
     });
 
     if (result?.status === 200) {
-    }
-
-    setJobStatus(status);
-    setShowJobStatus(false);
-    setTimeout(() => {
+      setJobStatus(status);
+      setShowJobStatus(false);
       setShowLoading(false);
-    }, 2000);
+    }
   };
 
   const routeToChat = () => {

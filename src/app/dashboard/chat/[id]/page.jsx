@@ -35,12 +35,11 @@ export default function Chat() {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setLoading(false);
+
         if (result?.status === 200) {
           toast.success('The output has been attached with this job.');
-
           await getJob();
           await handleTokenisation();
-
           router.push(`/dashboard`);
         }
       }
@@ -57,10 +56,10 @@ export default function Chat() {
   const getJob = async () => {
     const result = await handleApiCall({
       method: 'GET',
-      url: `/jobs/all/admin/`,
+      url: `/jobs/${id}`,
     });
-    if (!!result.data?.jobs) {
-      setJob(result.data.jobs.find((j) => j.id === id));
+    if (!!result.data?.job) {
+      setJob(result?.data.job);
     }
   };
 
@@ -123,10 +122,12 @@ export default function Chat() {
               <ViewJobAsset
                 user={job?.user}
                 artifacts={job?.artifacts}
-                url={!!job && !!job.outputs.length ? job.outputs[0].url : null}
+                url={
+                  !!job && !!job?.outputs.length ? job?.outputs[0]?.url : null
+                }
                 loading={loading}
                 type={
-                  !!job && !!job.outputs.length ? job.outputs[0].type : null
+                  !!job && !!job?.outputs.length ? job?.outputs[0]?.type : null
                 }
                 description={job?.description}
               />
