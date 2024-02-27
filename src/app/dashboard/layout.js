@@ -34,7 +34,6 @@ export default function Layout({ children }) {
   useEffect(() => {
     onMessage(firebaseMessaging, (payload) => {
       try {
-        console.log('CompleteObject:', payload);
         const notification = [
           {
             messageId: payload?.messageId,
@@ -61,7 +60,6 @@ export default function Layout({ children }) {
         vapidKey:
           'BFjCyzqcytxVs-yc8fg2iP19jGMcE6U5RvKL3Wv3m9el3w4-oy9CshaNmJYZtxz4IfGD3WfMqqlMVgHkScOFsVQ',
       }).then((currentToken) => {
-        console.log(auth?.userInfo?.profile?.firebaseTokens);
         if (
           currentToken &&
           !auth?.userInfo?.profile?.firebaseTokens?.some(
