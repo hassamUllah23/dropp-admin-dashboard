@@ -24,7 +24,7 @@ export default function Chat() {
   const handleUploadAdminAsset = async (file) => {
     try {
       setLoading(true);
-      const type = !!job && !!job.outputs.length ? job.outputs[0].type : null;
+      const type = job.type === 'digital' ? 'video' : 'glb';
       if (file && type) {
         const formDataFiles = new FormData();
         formDataFiles.append(`${type}`, file);
