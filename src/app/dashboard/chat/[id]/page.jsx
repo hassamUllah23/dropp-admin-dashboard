@@ -57,10 +57,10 @@ export default function Chat() {
   const getJob = async () => {
     const result = await handleApiCall({
       method: "GET",
-      url: `/jobs/all/admin/`,
+      url: `/jobs/${id}`,
     });
-    if (!!result.data?.jobs) {
-      setJob(result.data.jobs.find((j) => j.id === id));
+    if (!!result.data?.job) {
+      setJob(result?.data.job);
     }
   };
 
@@ -86,7 +86,6 @@ export default function Chat() {
       toast.error(err.message?.slice(0, 40));
     }
   };
-  console.log(job)
   return (
     <div className="w-full m-auto flex flex-col h-full  px-3 md:px-0">
       <div
@@ -123,10 +122,10 @@ export default function Chat() {
               <ViewJobAsset
                 user={job?.user}
                 artifacts={job?.artifacts}
-                url={!!job && !!job.outputs.length ? job.outputs[0].url : null}
+                url={!!job && !!job?.outputs.length ? job?.outputs[0]?.url : null}
                 loading={loading}
                 type={
-                  !!job && !!job.outputs.length ? job.outputs[0].type : null
+                  !!job && !!job?.outputs.length ? job?.outputs[0]?.type : null
                 }
                 description={job?.description}
               />
