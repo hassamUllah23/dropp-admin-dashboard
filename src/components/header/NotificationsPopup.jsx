@@ -96,7 +96,7 @@ export default function NotificationsPopup({
                   key={index}
                   id={notification?._id}
                   onClick={() =>
-                    router.push(`/dashboard/chat/${notification?.job}`)
+                    router.push(`/dashboard/job/${notification?.job}`)
                   }
                 >
                   <div className='w-full flex justify-between relative items-center py-3 border-b border-gray-300 notificationItem'>

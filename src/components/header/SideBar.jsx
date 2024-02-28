@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { selectAuth, useSelector } from '@/lib';
 import GetInitials from '../common/GetInitials';
 import Avatar from 'react-avatar';
+import ConnectWalletButton from '../ConnectWalletButton';
 export default function SideBar({ onClose }) {
   const [showIntegration, setShowIntegration] = useState(true);
   const [showIntegrationPopup, setShowIntegrationPopup] = useState(false);
@@ -74,6 +75,9 @@ export default function SideBar({ onClose }) {
               <p className='text-[1.5rem] text-white pt-1 pb-1 font-bold'>
                 300.56
               </p>
+              {/* <div className='text-black'>
+              <ConnectWalletButton />
+              </div> */}
             </div>
           </div>
 
