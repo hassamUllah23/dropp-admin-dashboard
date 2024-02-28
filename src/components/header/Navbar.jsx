@@ -104,7 +104,7 @@ export default function Navbar() {
           {auth?.isLogin ? (
             <div className='flex pr-1'>
               <ConnectWalletButton />
-              <Link
+              {/* <Link
                 href='/dashboard/c'
                 className='cursor-pointer btn-Gradient w-10 md:w-14 flexCenter rounded-xl py-1 text-black'
               >
@@ -122,7 +122,7 @@ export default function Navbar() {
                     d='M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
                   />
                 </svg>
-              </Link>
+              </Link> */}
               <span
                 ref={notificationRef}
                 className='cursor-pointer relative w-8 md:w-10 inline-block flexCenter rounded-xl py-1 pl-2 md:pl-3 text-white notifications'

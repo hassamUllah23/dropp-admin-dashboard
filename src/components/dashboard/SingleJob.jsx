@@ -54,7 +54,7 @@ export default function SingleJob({ jobKeys }) {
     }
   };
 
-  const routeToChat = () => {
+  const routeToJob = () => {
     if (isAdmin === "admin") {
       if (jobKeys.status == "completed") {
         dispatch(setJob(true, jobId, jobKeys?.outputs[0]?.url));
@@ -62,7 +62,7 @@ export default function SingleJob({ jobKeys }) {
         dispatch(setJob(true, jobId, null));
       }
     }
-    router.push(`/dashboard/chat/${jobKeys.id}`);
+    router.push(`/dashboard/job/${jobKeys.id}`);
   };
 
   const showArtifacts = () => {};
@@ -143,7 +143,7 @@ export default function SingleJob({ jobKeys }) {
             )}
 
             <p
-              onClick={routeToChat}
+              onClick={routeToJob}
               className={`pl-1 cursor-pointer ml-3 ${
                 jobKeys.platform == "aramco"
                   ? "text-black font-semibold"

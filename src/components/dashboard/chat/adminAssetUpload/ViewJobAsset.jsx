@@ -11,6 +11,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
   const [uploadedVideoCount] = useState(!!url ? 1 : 0);
   const [savedVideos, setSavedVideos] = useState(null);
   const { output } = useSelector((state) => state.job);
+  const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
   const handleVideoDownload = () => {
     const anchor = document.createElement('a');
@@ -63,6 +64,18 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
       })
       .catch((error) => console.error(error));
   };
+
+  useEffect(() => {
+    const modelViewer = document.getElementById(`model-viewer`);
+    const progressHandler = (event) => {
+      const { totalProgress } = event.detail;
+      setProgress(totalProgress * 100);
+    };
+    modelViewer?.addEventListener('progress', progressHandler);
+    return () => {
+      modelViewer?.removeEventListener('progress', progressHandler);
+    };
+  }, []);
 
   useEffect(() => {
     setSavedVideos(output);
@@ -207,28 +220,48 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                       </video>
                     </div>
                   ) : (
-                    <div className='w-full glbModal'>
-                      {url && (
-                        <model-viewer
-                          alt='3d modal'
-                          src={url}
-                          ar
-                          shadow-intensity='0.5'
-                          style={{ width: '100%', height: '385px' }}
-                          camera-controls
-                          auto-rotate-delay='2000'
-                          interaction-prompt='when-focused'
-                          interaction-policy='allow-when-focused'
-                          loading='eager'
-                          default-progress-bar
-                          touch-action='pan-y'
-                          autoplay
-                          animation-name='Running'
-                          ar-modes='webxr scene-viewer'
-                          camera-orbit='0deg 180deg 5m'
-                        ></model-viewer>
-                      )}
-                    </div>
+                    <>
+                      <div className='w-full glbModal'>
+                        {url && (
+                          <model-viewer
+                            id={`model-viewer`}
+                            alt='3d modal'
+                            src={url}
+                            ar
+                            shadow-intensity='1'
+                            style={{ width: '100%', height: '385px' }}
+                            camera-controls
+                            auto-rotate-delay='2000'
+                            interaction-prompt='when-focused'
+                            interaction-policy='allow-when-focused'
+                            touch-action='pan-y'
+                            autoplay
+                            animation-name='Running'
+                            ar-modes='webxr scene-viewer'
+                            camera-orbit='0deg 180deg 5m'
+                          >
+                            {progress < 100 && (
+                              <div className='bg-transparent left-2 right-2 bottom-0 absolute'>
+                                <div className='border border-gray-500 bg-transparent p-1 rounded-xl'>
+                                  <div className='dark:bg-transparent rounded-xl overflow-hidden'>
+                                    <div
+                                      id={`progress-bar-div`}
+                                      slot='progress-bar'
+                                      className='bg-gray-500 text-xs font-semibold text-white text-center p-0.5 leading-none rounded-full'
+                                      style={{ width: `${progress}%` }}
+                                    >
+                                      <p className='text-[.6rem]'>
+                                        {`${Math.round(progress)}%`}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </model-viewer>
+                        )}
+                      </div>
+                    </>
                   )}
                 </div>
               </div>
