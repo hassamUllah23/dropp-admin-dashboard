@@ -158,7 +158,7 @@ export const submitMetaTransaction = async (cid, contractAddress) => {
     );
     tx.wait();
     return {
-      url: `https://testnets.opensea.io/assets/mumbai/${contractAddress}`,
+      url: `https://mumbai.polygonscan.com/tx/${tx.hash}`,
     };
   } catch (error) {
     console.error('Error submitting meta transaction:', error);
