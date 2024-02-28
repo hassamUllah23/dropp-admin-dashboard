@@ -104,7 +104,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                 )}
                 {artifacts?.length > 0 && (
                   <div className='mb-5'>
-                    {type === 'video' && (
+                    {description && description !== '' && (
                       <>
                         <h1 className='text-md md:text-xl mb-3 font-bold'>
                           User's Script:
