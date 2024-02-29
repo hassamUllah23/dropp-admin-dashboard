@@ -80,7 +80,7 @@ export default function SingleJob({ jobKeys }) {
         !assignTaskPopupRef.current.contains(event.target)
       ) {
         setShowAssignTaskPopup(false);
-        setShowJobStatus;
+        setShowJobStatus(false);
       }
     };
     document.addEventListener("click", handleClickOutside);
