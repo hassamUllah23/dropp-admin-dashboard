@@ -9,41 +9,54 @@ import { toggleLogin, useDispatch } from '@/lib';
 import { useRouter } from 'next/navigation';
 import { signupSchema } from '@/schema/auth/authSchema';
 import jwt from 'jsonwebtoken';
+import { toast } from 'react-toastify';
 
 const SignUp = () => {
   const router = useRouter();
   const params = useParams();
-  const { handleApiCall, isApiLoading } = useApiHook();
   const dispatch = useDispatch();
-  const [showPassword, setShowPassword] = useState(false);
+  const { handleApiCall, isApiLoading } = useApiHook();
+  const [passwordEntered, setPasswordEntered] = useState(false);
   const [showConPassword, setShowConPassword] = useState(false);
-  const [minLength, setMinLength] = useState(false);
   const [upperLowerCase, setUpperLowerCase] = useState(false);
-  const [hasNumber, setHasNumber] = useState(false);
   const [hasSpecialChar, setHasSpecialChar] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [minLength, setMinLength] = useState(false);
+  const [hasNumber, setHasNumber] = useState(false);
   const [userEmail, setUserEmail] = useState('');
-  const [error] = useState('');
   const [token] = useState(params?.token);
+  const [error] = useState('');
 
   const handleSignUp = async (values) => {
+    if (!hasNumber || !hasSpecialChar || !minLength || !upperLowerCase) {
+      toast.error('Password requirements not met');
+      return;
+    }
+
+    const name = `${values.firstName} ${values.lastName}`;
+
     const result = await handleApiCall({
       method: 'post',
-      url: '/auth/sign-up',
-      data: { ...values, email: userEmail },
+      url: '/auth/employee/sign-up',
+      data: { ...values, name, email: userEmail, platform: 'website' },
       headers: { Authorization: 'none' },
     });
-    if (result.status === 200) {
+    if (result.status === 201) {
       dispatch(
         toggleLogin({
           isLogin: true,
           userInfo: result?.data,
         })
       );
-      router.push('/dashboard/c');
+      return router.push('/dashboard');
     }
+
+    toast.error('There was an error signing up. Please try again');
   };
 
   const validatepassword = (password) => {
+    setPasswordEntered(true);
+
     const minLength = 8;
     const hasUppercase = /[A-Z]/.test(password);
     const hasLowercase = /[a-z]/.test(password);
@@ -167,6 +180,7 @@ const SignUp = () => {
                     onKeyUp={(e) => validatepassword(e.target.value)}
                     placeholder='Enter strong password'
                     className='password block text-gray-700 text-base w-full leading-3 md:leading-5 py-3 md:py-4 px-3 rounded-2xl border border-solid bg-black border-lightGray-200 bg-black-200 flex-grow'
+                    autoComplete='new-password'
                   />
                   <button
                     type='button'
@@ -213,6 +227,7 @@ const SignUp = () => {
                     name='confirmpassword'
                     placeholder='Enter confirm password'
                     className='cpassword block text-gray-700 text-base w-full leading-3 md:leading-5 py-3 md:py-4 px-3 rounded-2xl border border-solid bg-black border-lightGray-200 bg-black-200 flex-grow'
+                    autoComplete='new-password'
                   />
                   <button
                     type='button'
@@ -259,7 +274,11 @@ const SignUp = () => {
               <p className='py-1 grid grid-cols-1 md:grid-cols-2'>
                 <span
                   className={`w-full flex mb-2 md:mb-0 characters ${
-                    minLength ? 'text-green-600' : 'text-white'
+                    passwordEntered
+                      ? minLength
+                        ? 'text-green-600'
+                        : ' text-red-600'
+                      : 'text-white'
                   }`}
                 >
                   <svg
@@ -271,8 +290,18 @@ const SignUp = () => {
                     xmlns='http://www.w3.org/2000/svg'
                   >
                     <path
-                      d='M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
-                      stroke={minLength ? '#16A34A' : 'white'}
+                      d={
+                        minLength && passwordEntered
+                          ? 'M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
+                          : 'M5.16669 5.16669L10.8334 10.8334M5.16669 10.8334L10.8334 5.16669'
+                      }
+                      stroke={
+                        passwordEntered
+                          ? minLength
+                            ? '#16A34A'
+                            : 'red'
+                          : 'white'
+                      }
                       strokeLinecap='round'
                       strokeLinejoin='round'
                     />
@@ -281,7 +310,11 @@ const SignUp = () => {
                 </span>
                 <span
                   className={`w-full flex isUpperLowerCase ${
-                    upperLowerCase ? 'text-green-600' : 'text-white'
+                    passwordEntered
+                      ? upperLowerCase
+                        ? 'text-green-600'
+                        : ' text-red-600'
+                      : 'text-white'
                   }`}
                 >
                   <svg
@@ -293,8 +326,18 @@ const SignUp = () => {
                     xmlns='http://www.w3.org/2000/svg'
                   >
                     <path
-                      d='M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
-                      stroke={minLength ? '#16A34A' : 'white'}
+                      d={
+                        upperLowerCase && passwordEntered
+                          ? 'M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
+                          : 'M5.16669 5.16669L10.8334 10.8334M5.16669 10.8334L10.8334 5.16669'
+                      }
+                      stroke={
+                        passwordEntered
+                          ? upperLowerCase
+                            ? '#16A34A'
+                            : 'red'
+                          : 'white'
+                      }
                       strokeLinecap='round'
                       strokeLinejoin='round'
                     />
@@ -305,7 +348,11 @@ const SignUp = () => {
               <p className='py-1 grid grid-cols-1 md:grid-cols-2'>
                 <span
                   className={`w-full flex mb-2 md:mb-0 isNumber ${
-                    hasNumber ? 'text-green-600' : 'text-white'
+                    passwordEntered
+                      ? hasNumber
+                        ? 'text-green-600'
+                        : ' text-red-600'
+                      : 'text-white'
                   }`}
                 >
                   <svg
@@ -317,8 +364,18 @@ const SignUp = () => {
                     xmlns='http://www.w3.org/2000/svg'
                   >
                     <path
-                      d='M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
-                      stroke={minLength ? '#16A34A' : 'white'}
+                      d={
+                        hasNumber && passwordEntered
+                          ? 'M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
+                          : 'M5.16669 5.16669L10.8334 10.8334M5.16669 10.8334L10.8334 5.16669'
+                      }
+                      stroke={
+                        passwordEntered
+                          ? hasNumber
+                            ? '#16A34A'
+                            : 'red'
+                          : 'white'
+                      }
                       strokeLinecap='round'
                       strokeLinejoin='round'
                     />
@@ -327,7 +384,11 @@ const SignUp = () => {
                 </span>
                 <span
                   className={`w-full flex hasSpecialChar ${
-                    hasSpecialChar ? 'text-green-600' : 'text-white'
+                    passwordEntered
+                      ? hasSpecialChar
+                        ? 'text-green-600'
+                        : ' text-red-600'
+                      : 'text-white'
                   }`}
                 >
                   <svg
@@ -339,8 +400,18 @@ const SignUp = () => {
                     xmlns='http://www.w3.org/2000/svg'
                   >
                     <path
-                      d='M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
-                      stroke={minLength ? '#16A34A' : 'white'}
+                      d={
+                        hasSpecialChar && passwordEntered
+                          ? 'M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
+                          : 'M5.16669 5.16669L10.8334 10.8334M5.16669 10.8334L10.8334 5.16669'
+                      }
+                      stroke={
+                        passwordEntered
+                          ? hasSpecialChar
+                            ? '#16A34A'
+                            : 'red'
+                          : 'white'
+                      }
                       strokeLinecap='round'
                       strokeLinejoin='round'
                     />

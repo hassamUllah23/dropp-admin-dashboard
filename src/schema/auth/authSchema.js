@@ -19,14 +19,7 @@ export const signupSchema = Yup.object().shape({
     .matches(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers')
     .required('Username is required')
     .trim(),
-  password: Yup.string()
-    .min(8, 'Minimum 8 characters are required.')
-    .max(16, 'Maximum 16 character are required.')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{8,16}$/,
-      'Password must contain at least one number, one uppercase letter, one lowercase letter and one special character!'
-    )
-    .required('Password is required'),
+  password: Yup.string().required('Password is required'),
   confirmpassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
     .required('Confirm Password is required'),
@@ -34,8 +27,7 @@ export const signupSchema = Yup.object().shape({
 });
 
 export const signInSchema = Yup.object().shape({
-  email: Yup.string()
-    .required('Email is required'),
+  email: Yup.string().required('Email is required'),
   password: Yup.string().required('Password is required'),
 });
 
