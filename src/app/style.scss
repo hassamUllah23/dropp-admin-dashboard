@@ -23,6 +23,9 @@ body {
 .screenHeightForSidebar {
   height: calc(100vh - 120px);
 }
+.screenHeightForEmail {
+  height: calc(100vh - 198px);
+}
 
 @media (prefers-color-scheme: dark) {
   :root {
