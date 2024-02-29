@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import "./styles.scss";
 import { JOB_COMPLETED } from "@/utils/constants";
 import ViewJobAsset from "@/components/dashboard/chat/adminAssetUpload/ViewJobAsset";
-
+import Link from "next/link";
 export default function Chat() {
   const scrollToBox = useRef(null);
   const { handleApiCall, isApiLoading } = useApiHook();
@@ -125,6 +125,7 @@ export default function Chat() {
                 </svg>
               </div>
             )}
+            
             {job && (
               <ViewJobAsset
                 user={job?.user}
@@ -144,6 +145,7 @@ export default function Chat() {
               <UpdateJobAsset
                 onUploadAdminAsset={handleUploadAdminAsset}
                 loading={loading}
+                type={job?.type}
               />
             )}
           </>
