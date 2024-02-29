@@ -470,7 +470,7 @@ const SignUp = () => {
                     wrapperClass=''
                   />
                 ) : (
-                  <p>Sign Me up</p>
+                  <p>Sign up</p>
                 )}
               </button>
             </div>
