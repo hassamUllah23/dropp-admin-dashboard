@@ -1,60 +1,22 @@
-import { ethers, AbiCoder, sig } from 'ethers';
+import { ethers, AbiCoder, sig } from "ethers";
 
 import {
-  ControlNetFactoryABI,
-  ControlNetModelsABI,
-  ControlNetFactoryAddress,
+  ControlNetABI,
+  ControlNetAddress,
   RelayerPrivateKey,
-  baseUrl,
-} from './tokenisation-constants';
-
-export const createNewNFTcontractForUser = async () => {
-  try {
-    let contractAddress;
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
-    const userAddress = await signer.getAddress();
-    const userFactoryContract = new ethers.Contract(
-      ControlNetFactoryAddress,
-      ControlNetFactoryABI,
-      signer
-    );
-    const existingContractAddress =
-      await userFactoryContract.getUserContractAddress(userAddress);
-    if (
-      existingContractAddress &&
-      existingContractAddress !== '0x0000000000000000000000000000000000000000'
-    ) {
-      contractAddress = existingContractAddress;
-    } else {
-      const transaction = await userFactoryContract.deployAramcoNFTS();
-      const transactionReceipt = await transaction.wait();
-      if (!transactionReceipt.status) {
-        throw 'Transaction Failed';
-      }
-      const deployedContractAddress = transactionReceipt.events.find(
-        (event) => event.event === 'ContractDeployed'
-      ).args.contractAddress;
-      contractAddress = deployedContractAddress;
-    }
-
-    return contractAddress;
-  } catch (error) {
-    window.alert('Transaction Failed');
-  }
-};
+} from "./tokenisation-constants";
 
 export const createSignatureAndDataForMinting = async () => {
   try {
-    const message = 'secret message';
+    const message = "secret message";
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
-    const functionSignature = ethers.id('safeMint(string)').substring(0, 10);
+    const functionSignature = ethers.id("safeMint(string)").substring(0, 10);
     const userAddress = await signer.getAddress();
     const abiCoder = AbiCoder.defaultAbiCoder();
-    const encodedFunctionCall = abiCoder.encode(['string'], [message]);
+    const encodedFunctionCall = abiCoder.encode(["string"], [message]);
     const messageHash = ethers.solidityPackedKeccak256(
-      ['bytes'],
+      ["bytes"],
       [ethers.concat([functionSignature, encodedFunctionCall])]
     );
     const signature = await signer.signMessage(ethers.toBeArray(messageHash));
@@ -79,11 +41,11 @@ export const verifySignature = async () => {
     await createSignatureAndDataForMinting();
   try {
     const encodedFunctionCall = AbiCoder.defaultAbiCoder().encode(
-      ['string'],
+      ["string"],
       [message]
     );
     const messageHash = ethers.solidityPackedKeccak256(
-      ['bytes'],
+      ["bytes"],
       [ethers.concat([functionSignature, encodedFunctionCall])]
     );
     const ethSignedMessageHash = ethers.hashMessage(
@@ -104,64 +66,68 @@ export const verifySignature = async () => {
   }
 };
 
-export const getUserContractAddress = async () => {
-  try {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const contract = new ethers.Contract(
-      ControlNetFactoryAddress,
-      [
-        'function getUserContractAddress(address) public view returns (address)',
-      ],
-      provider
-    );
+// export const submitMetaTransaction = async (baseUrl) => {
+//   const provider = new ethers.BrowserProvider(window.ethereum);
+//   const relayerWallet = new ethers.Wallet(RelayerPrivateKey, provider);
+//   let nonce = await provider.getTransactionCount(relayerWallet.address, 'latest');
+//   const {
+//     signature,
+//     messageHash,
+//     functionSignature,
+//     s,
+//     r,
+//     v,
+//     userAddress,
+//     message,
+//   } = await createSignatureAndDataForMinting();
+//   await verifySignature(functionSignature, s, r, v, userAddress, message);
+//   const contract = new ethers.Contract(
+//     ControlNetAddress,
+//     ControlNetABI,
+//     relayerWallet
+//   );
+//   try {
+//     const txOptions = { nonce: nonce};
+//     const tx = await contract.batchMint(
+//       userAddress,
+//       [baseUrl],
+//       messageHash,
+//       signature,
+//       txOptions
+//     );
 
-    const contractAddress = await contract.getUserContractAddress(
-      userPublicAddress
-    );
-    return contractAddress;
-  } catch (error) {
-    console.error('Error in getUserContractAddress:', error);
-    throw error;
-  }
-};
+//     window.alert(
+//       `Transaction submitted! Hash: ${tx.hash}`
+//     );
+//     tx.wait();
+//     return {
+//       url: `https://mumbai.polygonscan.com/tx/${tx.hash}`,
+//     };
+//   } catch (error) {
+//     console.error("Error submitting meta transaction:", error);
+//     throw error;
+//   }
+// };
 
-export const submitMetaTransaction = async (cid, contractAddress) => {
+export const tokenization = async (urls) => {
   const provider = new ethers.BrowserProvider(window.ethereum);
-  const relayerWallet = new ethers.Wallet(RelayerPrivateKey, provider);
-  const {
-    signature,
-    messageHash,
-    functionSignature,
-    s,
-    r,
-    v,
-    userAddress,
-    message,
-  } = await createSignatureAndDataForMinting();
-  await verifySignature(functionSignature, s, r, v, userAddress, message);
+  const signer = await provider.getSigner();
+  const userAddress = await signer.getAddress();
+  // const adminAddress = "0xEFad1D8aDD7B3DBA1F31fb1b95d7789062719193";
+  let nonce = await provider.getTransactionCount(userAddress, "latest");
   const contract = new ethers.Contract(
-    contractAddress,
-    ControlNetModelsABI,
-    relayerWallet
+    ControlNetAddress,
+    ControlNetABI,
+    signer
   );
   try {
-    const tx = await contract.safeMint(
-      userAddress,
-      baseUrl,
-      cid,
-      messageHash,
-      signature
-    );
-
-    window.alert(
-      `Transaction submitted! Hash: ${tx.hash}, Contract Address: ${contractAddress}`
-    );
-    tx.wait();
-    return {
-      url: `https://mumbai.polygonscan.com/tx/${tx.hash}`,
-    };
+    const txOptions = { nonce: nonce };
+    const tx = await contract.batchMint(userAddress, urls, txOptions);
+    console.log(tx);
+    window.alert(`Transaction submitted! Hash: ${tx.hash}`);
+    await tx.wait();
+    return { url: `https://mumbai.polygonscan.com/tx/${tx.hash}` };
   } catch (error) {
-    console.error('Error submitting meta transaction:', error);
-    throw error;
+    console.error("Error submitting meta transaction:", error);
   }
 };
