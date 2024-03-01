@@ -1,41 +1,72 @@
 "use client";
 import React, { useState, useRef } from "react";
-import CustomRadio from "@/components/CustomRadioButton";
 import Papa from "papaparse";
 import useApiHook from "@/hooks/useApiHook";
 import { sendEmailSchema } from "@/schema/auth/authSchema";
 import { RotatingLines } from "react-loader-spinner";
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const { handleApiCall, isApiLoading } = useApiHook();
   const [emails, setEmails] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("individual");
+  const [emailStatuses, setEmailStatuses] = useState({});
   const [individual, setInvidual] = useState(true);
   const [bulk, setBulk] = useState(false);
-  const [fileData, setFileData] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleSendEmail = () => {
     setInvidual(!individual);
     setBulk(!bulk);
   };
-  const handleSubmit = () => {};
-  const handleChange = (e) => {
-    setSelectedOption(e.target.value);
-  };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const csvData = event.target.result;
-        // Assuming CSV contains emails in the first column
-        const parsedData = csvData.split("\n").map((row) => row.split(",")[0]);
-        setFileData(parsedData);
-      };
-      reader.readAsText(file);
+  const handleSubmit = async (values) => {
+    try {
+      let emails;
+      if (values.email) {
+        emails = [values.email];
+      } else {
+        emails = values.map((item) => item.email);
+      }
+      const result = await handleApiCall({
+        method: "post",
+        url: "/auth/admin/sign-up-email",
+        data: { emails },
+      });
+      // Update email status after sending email
+      if (result.status === 200) {
+        console.log(result);
+        const newArr = [];
+        const newArr2 = [];
+        const newArr3 =[]
+        result?.data?.sendEmails?.map((email) => {
+          const findEmail = emails.find((item) => item.email === email);
+          newArr.push({
+            email: findEmail.email,
+            status: "Sent",
+          });
+        });
+        result?.data?.alreadyExists?.map((email) => {
+          const findEmail = emails.find((item) => item.email === email);
+          newArr.push({
+            email: findEmail.email,
+            status: "Already Exists",
+          });
+        });
+        result?.data?.emailsNotExist?.map((email) => {
+          const findEmail = emails.find((item) => item.email === email);
+          newArr.push({
+            email: findEmail.email,
+            status: "Already Not Exists",
+          });
+        });
+        const finalArr = [...newArr, ...newArr2, ...newArr3];
+        setEmails(finalArr);
+        toast.success(result?.data?.message);
+      }
+    } catch (err) {
+      console.log("error", err);
+      toast.error(err?.message);
     }
   };
 
@@ -52,12 +83,14 @@ const Page = () => {
     }
     return -1;
   };
+
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     const chunkSize = 1024 * 1024;
 
     let offset = 0;
     let parsedEmails = [];
+    let count = 0; // Counter for number of records processed
 
     const processChunk = async () => {
       const chunk = file.slice(offset, offset + chunkSize);
@@ -75,71 +108,37 @@ const Page = () => {
       }
 
       offset += chunkSize;
+      count += parsedEmails.length;
+
+      // Stop processing if more than 100 records have been fetched
+      if (count >= 100) {
+        parsedEmails = parsedEmails.slice(0, 100);
+        const emailData = parsedEmails.map((email) => ({
+          email,
+          status: "unsent",
+        }));
+        setEmails(emailData);
+        return;
+      }
 
       if (offset < file.size) {
         await processChunk();
       } else {
-        console.log(parsedEmails);
         setEmails(parsedEmails);
+        // Initialize email statuses
+        const statusObj = {};
+        parsedEmails.forEach((email) => {
+          statusObj[email] = "pending";
+        });
+        setEmailStatuses(statusObj);
       }
     };
 
     await processChunk();
   };
+  console.log(emails)
   return (
     <>
-      {/* <div className="p-2.5 pt-4 md:pt-10 max-w-screen-3xl h-full w-full m-auto flex flex-col min-w-80 z-10 text-white">
-        <div className="flex justify-center items-center gap-2">
-          <CustomRadio
-            id="individual"
-            name="type"
-            value="individual"
-            label="Individual"
-            checked={selectedOption === "individual"}
-            onChange={handleChange}
-          />
-          <CustomRadio
-            id="bulk"
-            name="type"
-            value="bulk"
-            label="Bulk"
-            checked={selectedOption === "bulk"}
-            onChange={handleChange}
-          />
-        </div>
-        {selectedOption === "individual" ? (
-          <div className="mt-10 flex justify-center items-center">
-            <div className="flex w-full max-w-[400px]">
-              <input
-                type="text"
-                className="p-3 text-black rounded-l-xl w-full bg-white placeholder-[#4c4c4c]"
-                placeholder="Enter email"
-              />
-              <button className="lightGrayBg rounded-r-xl p-3">Send</button>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-10 flex justify-center items-center">
-            <div className="flex flex-col items-center">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".csv"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              <button onClick={openFileDialog}>
-                <img
-                  src="/assets/images/auth/upload.png"
-                  alt="upload"
-                  className="w-28 h-28 mx-auto cursor-pointer"
-                />
-                <p className="pt-5">Upload invites here...</p>
-              </button>
-            </div>
-          </div>
-        )}
-      </div> */}
       <div className="p-2.5 pt-4 md:pt-10 max-w-screen-3xl h-fu w-full m-auto flex flex-col min-w-80 z-10 text-white">
         <div className="flex justify-between mb-2 md:mb-5 px-3 md:px-10">
           <div className="flex text-sm p-1.5 lightGrayBg leading-8 rounded-md">
@@ -165,7 +164,7 @@ const Page = () => {
       <div className="relative z-10 flex items-center justify-center max-w-[37rem] screenHeightForEmail m-auto px-5 md:px-0">
         <div className="relative overflow-hidden m-auto flex flex-col justify-center items-start w-full text-white px-3 py-5 md:p-8 charcoalBg rounded-2xl border border-gray-100">
           <p className="md:text-6xl text-base font-bold pt-0 md:pt-5 text-center max-w-[20.5rem] m-auto leading-6 md:leading-8">
-            Invite users
+            {individual ? "Invite individual user" : "Invite bulk users"}
           </p>
           {individual ? (
             <Formik
@@ -219,7 +218,7 @@ const Page = () => {
               </Form>
             </Formik>
           ) : (
-            <div className="w-full mt-10 flex justify-center items-center">
+            <div className="w-full mt-10">
               <div className="flex flex-col items-center">
                 <input
                   ref={fileInputRef}
@@ -228,7 +227,7 @@ const Page = () => {
                   onChange={handleFileUpload}
                   className="hidden"
                 />
-                <button onClick={openFileDialog}>
+                <button onClick={openFileDialog} className="m-auto w-full">
                   <img
                     src="/assets/images/auth/upload.png"
                     alt="upload"
@@ -236,10 +235,51 @@ const Page = () => {
                   />
                   <p className="pt-5">Upload invites here...</p>
                 </button>
+                {bulk && emails.length > 0 && (
+                  <div className="rounded-2xl my-4 max-w-[37rem] max-h-[15rem] mx-auto overflow-x-auto ">
+                    <table className="text-white table-fixed w-full border border-gray-100" >
+                      <thead>
+                        <tr className="">
+                          <th className=" px-4 py-2">
+                            Email
+                          </th>
+                          <th className="border-l border-gray-100 px-4 py-2">
+                            Status
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {emails.map((item, index) => (
+                          <tr key={index}  className="border border-gray-100">
+                            <td className="text-center px-4 py-2" style={{ height: "3.5rem" }}>
+                              {item?.email}
+                            </td>
+                            <td className="flex justify-center items-center border-l border-gray-100 px-4 py-2" style={{ height: "3.5rem" }}>
+                              {isApiLoading ? (
+                                <RotatingLines
+                                  visible={true}
+                                  height="14"
+                                  width="14"
+                                  color="blue"
+                                  strokeWidth="5"
+                                  animationDuration="0.75"
+                                  ariaLabel="rotating-lines-loading"
+                                  wrapperStyle={{}}
+                                  wrapperClass=""
+                                />
+                              ) : (
+                                item?.status
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
                 <div className="w-full pt-4">
                   <button
-                    type="submit"
-                    onClick={()=> alert('je;;')}
+                    onClick={() => handleSubmit(emails)}
                     disabled={emails.length === 0 || isApiLoading}
                     className="btn-login btn-Gradient text-base text-black w-full leading-3 md:leading-5 py-3 md:py-4 text-center rounded-2xl cursor-pointer font-semibold flex items-center justify-center"
                   >
@@ -265,6 +305,8 @@ const Page = () => {
           )}
         </div>
       </div>
+
+      <div className="mt-10"></div>
     </>
   );
 };

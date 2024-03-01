@@ -58,5 +58,5 @@ export const resetPasswordSchema = Yup.object().shape({
 });
 
 export const sendEmailSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email address"),
+  email: Yup.string().required().email("Invalid email address"),
 });
