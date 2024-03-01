@@ -1,10 +1,7 @@
 "use client";
 import UpdateJobAsset from "@/components/dashboard/chat/adminAssetUpload/UpdateJobAsset";
 import useApiHook from "@/hooks/useApiHook";
-import {
-  createNewNFTcontractForUser,
-  submitMetaTransaction,
-} from "@/utils/tokenisation-helpers";
+import { tokenization } from "@/utils/tokenisation-helpers";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -40,7 +37,7 @@ export default function Chat() {
           toast.success("The output has been attached with this job.");
           await getJob();
           await handleTokenisation();
-          router.push(`/dashboard`);
+          // router.push(`/dashboard`);
         }
       }
     } catch (err) {
@@ -75,11 +72,7 @@ export default function Chat() {
         window.alert("Upload a job output first.");
         return;
       }
-      const contractAddress = await createNewNFTcontractForUser();
-      const resp = await submitMetaTransaction(
-        job.outputs[0].metadataUrl?.split("ipfs/")[1],
-        contractAddress
-      );
+      const resp = await tokenization([job.outputs[0].metadataUrl]);
       await handleApiCall({
         method: "PUT",
         url: `/jobs/update-tokenized-urls/${id}`,
@@ -89,7 +82,7 @@ export default function Chat() {
       });
       toast.success("This asset has been tokenized!");
     } catch (err) {
-      toast.error(err.message?.slice(0, 40));
+      toast.error(err.message);
     }
   };
 
