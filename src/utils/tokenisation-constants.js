@@ -783,12 +783,5 @@ export const ControlNetABI = [
   },
 ];
 export const ControlNetAddress = "0xA64491C1F6C5BD3D82517AED73B50350Fb62516D";
-
-export const RelayerPrivateKey =
-  //   "9a2cd0836de7726bb7eadadc6b38ccded5bf9457878bea69af7a68e4a8634360";
-  "9a2cd0836de7726bb7eadadc6b38ccded5bf9457878bea69af7a68e4a8634360";
-
-/******** Function Params for SafeBatchMinting Function ********/
-const Urls = [
-  "https://gateway.pinata.cloud/ipfs/QmcT8SDgxxqTxBtYVkNgQASPgeeL3uRQyAsNSbcPUUqE7p",
-];
+export const PrivateKey =
+  "66b1a920b456af36e716132f198474cb6112bc80d36636d7f22b23a7e20853e2";

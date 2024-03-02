@@ -13,6 +13,7 @@ export default function Chat() {
   const scrollToBox = useRef(null);
   const { handleApiCall, isApiLoading } = useApiHook();
   const [loading, setLoading] = useState(false);
+  const [tokenizationLoading, setTokenizationLoading] = useState(false);
   const [job, setJob] = useState(null);
 
   const { id } = useParams();
@@ -35,8 +36,9 @@ export default function Chat() {
 
         if (result?.status === 200) {
           toast.success("The output has been attached with this job.");
-          await getJob();
-          await handleTokenisation();
+          setTimeout(() => {
+            updateJobAndTokenize();
+          }, 500);
           // router.push(`/dashboard`);
         }
       }
@@ -57,7 +59,10 @@ export default function Chat() {
     });
     if (!!result.data?.job) {
       setJob(result?.data.job);
+      return result?.data.job;
     }
+
+    return {};
   };
 
   useEffect(() => {
@@ -66,13 +71,22 @@ export default function Chat() {
     }
   }, [id]);
 
-  const handleTokenisation = async () => {
+  const updateJobAndTokenize = async () => {
+    setTokenizationLoading(true);
+    const job = await getJob();
+    await handleTokenisation(job);
+    setTokenizationLoading(false);
+  };
+
+  console.log(job);
+
+  const handleTokenisation = async (newJob) => {
     try {
-      if (job?.outputs?.length === 0) {
-        window.alert("Upload a job output first.");
+      if (newJob?.outputs?.length === 0) {
+        window.alert("Upload a Job output first.");
         return;
       }
-      const resp = await tokenization([job.outputs[0].metadataUrl]);
+      const resp = await tokenization(newJob.outputs[0].metadataUrl);
       await handleApiCall({
         method: "PUT",
         url: `/jobs/update-tokenized-urls/${id}`,
@@ -94,7 +108,7 @@ export default function Chat() {
       >
         <div className="m-auto chat-area h-auto max-w-[55.5rem]">
           <>
-            {!loading && isApiLoading && (
+            {(!loading && isApiLoading) || tokenizationLoading ? (
               <div className="w-full flex items-center justify-center">
                 <svg
                   className="animate-spin -ml-1 mr-3 h-16 w-16 text-white"
@@ -116,7 +130,14 @@ export default function Chat() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
+                {tokenizationLoading && (
+                  <p style={{ textAlign: "center", color: "white" }}>
+                    Tokenizing...
+                  </p>
+                )}
               </div>
+            ) : (
+              <></>
             )}
             {job && (
               <ViewJobAsset
