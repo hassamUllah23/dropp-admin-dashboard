@@ -5,20 +5,17 @@ import {
   createNewNFTcontractForUser,
   submitMetaTransaction,
 } from "@/utils/tokenisation-helpers";
-import { useParams, useRouter } from "next/navigation";
+import {  useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import "./styles.scss";
 import { JOB_COMPLETED } from "@/utils/constants";
 import ViewJobAsset from "@/components/dashboard/chat/adminAssetUpload/ViewJobAsset";
-import Link from "next/link";
-export default function Chat() {
+
+export default function Chat({params: { id }}) {
   const scrollToBox = useRef(null);
   const { handleApiCall, isApiLoading } = useApiHook();
   const [loading, setLoading] = useState(false);
   const [job, setJob] = useState(null);
-
-  const { id } = useParams();
   const router = useRouter();
 
   const handleUploadAdminAsset = async (file) => {

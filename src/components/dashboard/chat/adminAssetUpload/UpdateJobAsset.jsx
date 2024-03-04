@@ -1,3 +1,4 @@
+
 import LoadingSvg from "@/components/common/LoadingSvg";
 import React, { useState, useRef } from "react";
 export default function UpdateJobAsset({ onUploadAdminAsset, loading, type }) {
