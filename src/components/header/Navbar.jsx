@@ -67,7 +67,7 @@ export default function Navbar() {
 
   const markAllNotificationAsRead = async () => {
     const result = await handleApiCall({
-      method: 'PUT',
+      method: 'GET',
       url: '/employee/notification/read-all',
     });
     if (result?.status === 204) {
