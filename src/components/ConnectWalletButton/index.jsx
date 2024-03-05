@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { Web3 } from "web3";
 import "./styles.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { setWallet } from "@/lib/slices/wallet/actions";
@@ -11,11 +11,11 @@ const ConnectWalletButton = () => {
 
   const initializeProvider = async () => {
     if (window.ethereum) {
+      const provider = new Web3(window.ethereum);
       await window.ethereum.request({ method: "eth_requestAccounts" });
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const network = await provider.getNetwork();
-      const address = await provider.getSigner();
-      dispatch(setWallet({ network, address: address.address }));
+      const address = await provider.eth.getAccounts();
+      const network = await provider.eth.net.getId();
+      dispatch(setWallet({ network, address: address[0] }));
 
       setProvider(provider);
       localStorage.setItem("walletConnected", true);

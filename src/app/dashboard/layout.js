@@ -28,7 +28,7 @@ export default function Layout({ children }) {
   };
 
   useEffect(() => {
-    if (!auth?.isLogin) router.push('/');
+    if (!auth?.isLogin) router.push('/sign-in');
   }, [auth, router]);
 
   useEffect(() => {
@@ -53,22 +53,24 @@ export default function Layout({ children }) {
   }, [firebaseMessaging]);
 
   useEffect(() => {
-    Notification.requestPermission().then((permission) => {
-      if (permission !== 'granted')
-        return toast.error('You have denied the notifications permission.');
-      getToken(firebaseMessaging, {
-        vapidKey:
-          'BFjCyzqcytxVs-yc8fg2iP19jGMcE6U5RvKL3Wv3m9el3w4-oy9CshaNmJYZtxz4IfGD3WfMqqlMVgHkScOFsVQ',
-      }).then((currentToken) => {
-        if (
-          currentToken &&
-          !auth?.userInfo?.profile?.firebaseTokens?.some(
-            (tokenObj) => tokenObj.token === currentToken
+    if (auth?.isLogin) {
+      Notification.requestPermission().then((permission) => {
+        if (permission !== 'granted')
+          return toast.error('You have denied the notifications permission.');
+        getToken(firebaseMessaging, {
+          vapidKey:
+            'BFjCyzqcytxVs-yc8fg2iP19jGMcE6U5RvKL3Wv3m9el3w4-oy9CshaNmJYZtxz4IfGD3WfMqqlMVgHkScOFsVQ',
+        }).then((currentToken) => {
+          if (
+            currentToken &&
+            !auth?.userInfo?.profile?.firebaseTokens?.some(
+              (tokenObj) => tokenObj.token === currentToken
+            )
           )
-        )
-          return updateToken(currentToken);
+            return updateToken(currentToken);
+        });
       });
-    });
+    }
   }, []);
 
   return auth?.isLogin ? children : null;

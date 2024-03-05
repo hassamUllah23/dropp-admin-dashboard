@@ -1,6 +1,10 @@
+'use client';
+import { selectAuth, useSelector } from '@/lib';
 import Link from 'next/link';
 
 export default function Waitlist() {
+  const auth = useSelector(selectAuth);
+
   return (
     <div className='flex flex-col justify-center h-full items-center text-white min-w-80 p-5'>
       <p className='text-3xl 2xl:text-8xl mb-8 text-center px-4'>
@@ -10,7 +14,7 @@ export default function Waitlist() {
         href='/sign-in'
         className='max-w-[400px] w-full btn-Gradient text-base text-black spacing text-center rounded-2xl cursor-pointer font-semibold'
       >
-        Sign In
+        {auth?.userInfo?.isLogin ? 'Sign In' : 'Dasboard'}
       </Link>
     </div>
   );

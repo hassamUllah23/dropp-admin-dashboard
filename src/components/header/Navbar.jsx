@@ -5,13 +5,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import SideBar from './SideBar';
 import ConnectWalletButton from '../ConnectWalletButton';
 import NotificationsPopup from './NotificationsPopup';
-import {
-  addNotification,
-  clearNotifications,
-} from '@/lib/slices/notification/notificationSlice';
-import { usePathname } from 'next/navigation';
+import { clearNotifications } from '@/lib/slices/notification/notificationSlice';
 import { useRouter } from 'next/navigation';
 import useApiHook from '@/hooks/useApiHook';
+
 export default function Navbar() {
   const auth = useSelector(selectAuth);
   const router = useRouter();

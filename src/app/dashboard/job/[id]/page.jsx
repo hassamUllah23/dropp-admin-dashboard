@@ -1,11 +1,8 @@
 "use client";
 import UpdateJobAsset from "@/components/dashboard/chat/adminAssetUpload/UpdateJobAsset";
 import useApiHook from "@/hooks/useApiHook";
-import {
-  createNewNFTcontractForUser,
-  submitMetaTransaction,
-} from "@/utils/tokenisation-helpers";
-import {  useRouter } from "next/navigation";
+import { tokenization } from "@/utils/tokenisation-helpers";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { JOB_COMPLETED } from "@/utils/constants";
@@ -15,8 +12,9 @@ export default function Chat({params: { id }}) {
   const scrollToBox = useRef(null);
   const { handleApiCall, isApiLoading } = useApiHook();
   const [loading, setLoading] = useState(false);
+  const [tokenizationLoading, setTokenizationLoading] = useState(false);
   const [job, setJob] = useState(null);
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleUploadAdminAsset = async (file) => {
     try {
@@ -35,9 +33,10 @@ export default function Chat({params: { id }}) {
 
         if (result?.status === 200) {
           toast.success("The output has been attached with this job.");
-          await getJob();
-          await handleTokenisation();
-          router.push(`/dashboard`);
+          setTimeout(() => {
+            updateJobAndTokenize();
+          }, 500);
+          // router.push(`/dashboard`);
         }
       }
     } catch (err) {
@@ -57,7 +56,10 @@ export default function Chat({params: { id }}) {
     });
     if (!!result.data?.job) {
       setJob(result?.data.job);
+      return result?.data.job;
     }
+
+    return {};
   };
 
   useEffect(() => {
@@ -66,17 +68,22 @@ export default function Chat({params: { id }}) {
     }
   }, [id]);
 
-  const handleTokenisation = async () => {
+  const updateJobAndTokenize = async () => {
+    setTokenizationLoading(true);
+    const job = await getJob();
+    await handleTokenisation(job);
+    setTokenizationLoading(false);
+  };
+
+  console.log(job);
+
+  const handleTokenisation = async (newJob) => {
     try {
-      if (job?.outputs?.length === 0) {
-        window.alert("Upload a job output first.");
+      if (newJob?.outputs?.length === 0) {
+        window.alert("Upload a Job output first.");
         return;
       }
-      const contractAddress = await createNewNFTcontractForUser();
-      const resp = await submitMetaTransaction(
-        job.outputs[0].metadataUrl?.split("ipfs/")[1],
-        contractAddress
-      );
+      const resp = await tokenization(newJob.outputs[0].metadataUrl);
       await handleApiCall({
         method: "PUT",
         url: `/jobs/update-tokenized-urls/${id}`,
@@ -86,7 +93,7 @@ export default function Chat({params: { id }}) {
       });
       toast.success("This asset has been tokenized!");
     } catch (err) {
-      toast.error(err.message?.slice(0, 40));
+      toast.error(err.message);
     }
   };
 
@@ -98,7 +105,7 @@ export default function Chat({params: { id }}) {
       >
         <div className="m-auto chat-area h-auto max-w-[55.5rem]">
           <>
-            {!loading && isApiLoading && (
+            {(!loading && isApiLoading) || tokenizationLoading ? (
               <div className="w-full flex items-center justify-center">
                 <svg
                   className="animate-spin -ml-1 mr-3 h-16 w-16 text-white"
@@ -120,7 +127,14 @@ export default function Chat({params: { id }}) {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
+                {tokenizationLoading && (
+                  <p style={{ textAlign: "center", color: "white" }}>
+                    Tokenizing...
+                  </p>
+                )}
               </div>
+            ) : (
+              <></>
             )}
             
             {job && (
