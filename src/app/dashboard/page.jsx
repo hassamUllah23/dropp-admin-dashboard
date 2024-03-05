@@ -11,7 +11,7 @@ export default function Dashboard() {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(12);
   const [showLoader, setShowLoader] = useState(false);
   const notifications = useSelector(
     (state) => state.notification.notifications
