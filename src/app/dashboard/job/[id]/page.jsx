@@ -106,7 +106,7 @@ export default function Chat() {
       >
         <div className="m-auto chat-area h-auto max-w-[55.5rem]">
           <>
-            {(!loading && isApiLoading) || tokenizationLoading ? (
+            {(!loading && isApiLoading) ? (
               <div className="w-full flex items-center justify-center">
                 <svg
                   className="animate-spin -ml-1 mr-3 h-16 w-16 text-white"
@@ -156,6 +156,7 @@ export default function Chat() {
               <UpdateJobAsset
                 onUploadAdminAsset={handleUploadAdminAsset}
                 loading={loading}
+                tokenizationLoading={tokenizationLoading}
               />
             )}
           </>

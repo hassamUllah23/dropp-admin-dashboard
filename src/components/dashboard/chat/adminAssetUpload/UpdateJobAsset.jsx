@@ -1,6 +1,6 @@
 import LoadingSvg from "@/components/common/LoadingSvg";
 import React, { useState, useRef } from "react";
-export default function UpdateJobAsset({ onUploadAdminAsset, loading }) {
+export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizationLoading }) {
   const [showLoading, setShowLoading] = useState(false);
   const fileInputRef = useRef();
 
@@ -60,7 +60,7 @@ export default function UpdateJobAsset({ onUploadAdminAsset, loading }) {
                     </div>
                   ) : (
                     <div className="w-full">
-                      {loading ? (
+                      {loading || tokenizationLoading ? (
                         <div className="w-full flex items-center justify-center">
                           <svg
                             className="animate-spin -ml-1 mr-3 h-16 w-16 text-white"
