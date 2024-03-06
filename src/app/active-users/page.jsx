@@ -8,7 +8,7 @@ const page = () => {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize] = useState(12);
   const [employees, setEmpoyees] = useState([]);
   let url = `/employee/all-users?page=${page}&pageSize=${pageSize}`;
 
@@ -60,29 +60,31 @@ const page = () => {
   }, [page, pageSize]);
 
   return (
-    <div className="px-3 md:px-14 py-3 max-w-screen-3xl h-full w-full m-auto flex flex-col min-w-80 z-10 text-white">
+    <div className="px-3 md:px-14 py-6 max-w-screen-3xl h-full w-full m-auto flex flex-col min-w-80 z-10 text-white">
       <div className="flex justify-between items-center">
         <h1 className="text-[20px] font-[700] leading-[23.48px]">
           Active users
         </h1>
-        <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg py-[17px] px-3">
-          <input
-            type="text"
-            id="search"
-            className="w-full bg-transparent"
-            placeholder="Search"
-            value={searchValue}
-            onChange={handleSearchInputChange}
-          />
-          <label htmlFor="search" className="cursor-pointer">
-            <img
-              src="/search-normal.svg"
-              alt="search icon"
-              width={24}
-              height={24}
+        {filteredEmployees.length > 0 && (
+          <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg p-3">
+            <input
+              type="text"
+              id="search"
+              className="w-full bg-transparent"
+              placeholder="Search"
+              value={searchValue}
+              onChange={handleSearchInputChange}
             />
-          </label>
-        </div>
+            <label htmlFor="search" className="cursor-pointer">
+              <img
+                src="/search-normal.svg"
+                alt="search icon"
+                width={24}
+                height={24}
+              />
+            </label>
+          </div>
+        )}
       </div>
       {isApiLoading ? (
         <div className="w-full flex items-center justify-center">
