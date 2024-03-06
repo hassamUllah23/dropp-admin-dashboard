@@ -229,31 +229,6 @@ export const ControlNetABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'to',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256[]',
-        name: 'tokenIds',
-        type: 'uint256[]',
-      },
-      {
-        indexed: false,
-        internalType: 'string[]',
-        name: 'uris',
-        type: 'string[]',
-      },
-    ],
-    name: 'BatchTokenMinted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
         indexed: false,
         internalType: 'uint256',
         name: '_tokenId',
@@ -261,50 +236,6 @@ export const ControlNetABI = [
       },
     ],
     name: 'MetadataUpdate',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'OwnershipTransferred',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'to',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'baseUrl',
-        type: 'string',
-      },
-    ],
-    name: 'TokenMinted',
     type: 'event',
   },
   {
@@ -329,7 +260,76 @@ export const ControlNetABI = [
         type: 'uint256',
       },
     ],
-    name: 'TokenSold',
+    name: 'ModelSold',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'to',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'baseUrl',
+        type: 'string',
+      },
+    ],
+    name: 'ModelTokenized',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'to',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256[]',
+        name: 'tokenIds',
+        type: 'uint256[]',
+      },
+      {
+        indexed: false,
+        internalType: 'string[]',
+        name: 'uris',
+        type: 'string[]',
+      },
+    ],
+    name: 'ModelsTokenized',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipTransferred',
     type: 'event',
   },
   {
@@ -397,30 +397,12 @@ export const ControlNetABI = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'to',
-        type: 'address',
-      },
-      {
-        internalType: 'string[]',
-        name: 'uris',
-        type: 'string[]',
-      },
-    ],
-    name: 'batchMint',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'uint256',
         name: 'tokenId',
         type: 'uint256',
       },
     ],
-    name: 'buyToken',
+    name: 'buyModel',
     outputs: [],
     stateMutability: 'payable',
     type: 'function',
@@ -452,7 +434,7 @@ export const ControlNetABI = [
         type: 'uint256',
       },
     ],
-    name: 'getTokenPrice',
+    name: 'getModelPrice',
     outputs: [
       {
         internalType: 'uint256',
@@ -471,7 +453,7 @@ export const ControlNetABI = [
         type: 'address',
       },
     ],
-    name: 'getUserTokenURIs',
+    name: 'getUserModelsURIs',
     outputs: [
       {
         internalType: 'string[]',
@@ -504,6 +486,42 @@ export const ControlNetABI = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'to',
+        type: 'address',
+      },
+      {
+        internalType: 'string',
+        name: 'uri',
+        type: 'string',
+      },
+    ],
+    name: 'modelTokenization',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'to',
+        type: 'address',
+      },
+      {
+        internalType: 'string[]',
+        name: 'uris',
+        type: 'string[]',
+      },
+    ],
+    name: 'modelsTokenization',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -554,24 +572,6 @@ export const ControlNetABI = [
   {
     inputs: [],
     name: 'renounceOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'to',
-        type: 'address',
-      },
-      {
-        internalType: 'string',
-        name: 'uri',
-        type: 'string',
-      },
-    ],
-    name: 'safeMint',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -658,7 +658,7 @@ export const ControlNetABI = [
         type: 'uint256',
       },
     ],
-    name: 'setTokenPrice',
+    name: 'setModelPrice',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -807,6 +807,5 @@ export const ControlNetABI = [
     type: 'function',
   },
 ];
-export const ControlNetAddress = '0xe756a173D4e58b884d4FbbDa5637E813fff8e6B2';
-export const PrivateKey =
-  '0x543914f27e17b7340dc1f7b76a2274106483c7991d32f394b6ba89a5cad7626b';
+
+export const ControlNetAddress = '0x223d5AFe4EbCc305cd1bAd13082Ea55299be24b9';

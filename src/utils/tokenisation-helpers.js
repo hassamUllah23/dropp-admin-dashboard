@@ -1,9 +1,6 @@
 import Web3 from 'web3';
-import {
-  ControlNetABI,
-  ControlNetAddress,
-  PrivateKey,
-} from './tokenisation-constants';
+import { ControlNetABI, ControlNetAddress } from './tokenisation-constants';
+import { toast } from 'react-toastify';
 
 export const tokenization = async (url) => {
   try {
@@ -22,55 +19,27 @@ export const tokenization = async (url) => {
     };
     const urls = [url];
     const tx = await contract.methods
-      .batchMint(userAddress, urls)
+      .modelsTokenization(userAddress, urls)
       .send(txOptions);
-    window.alert(`Transaction submitted! Hash: ${tx.transactionHash}`);
+
     const receipt = await provider.eth.getTransactionReceipt(
       tx.transactionHash
     );
 
-    return {
-      url: `https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`,
-    };
-  } catch (error) {
-    console.error('Error submitting Tokenization transaction:', error);
-    throw error;
-  }
-};
+    toast.success(`Transaction submitted! Hash: ${tx.transactionHash}`);
 
-export const tokenizationUserSide = async (urls) => {
-  try {
-    const provider = new Web3(window.ethereum);
-    const userAccount = provider.eth.accounts.privateKeyToAccount(PrivateKey);
-    const userAddress = userAccount.address;
-    const nonce = await provider.eth.getTransactionCount(userAddress, 'latest');
-    const contract = new provider.eth.Contract(
-      ControlNetABI,
-      ControlNetAddress
-    );
-    const txOptions = {
-      from: userAddress,
-      nonce: nonce,
-      // gas: 5000000,
-      // gasPrice: await provider.eth.getGasPrice(),
-    };
-
-    const signedTx = await userAccount.signTransaction({
-      to: ControlNetAddress,
-      data: contract.methods.batchMint(userAddress, urls).encodeABI(),
-      ...txOptions,
-    });
-
-    const txReceipt = await provider.eth.sendSignedTransaction(
-      signedTx.rawTransaction
-    );
-    window.alert(`Transaction submitted! Hash: ${txReceipt.transactionHash}`);
+    /******************* Event Listen ********************/
+    // events.forEach((event) => {
+    //   const tokenIds = event.returnValues.tokenIds;
+    //   console.log('********** Event *********:', tokenIds);
+    // });
 
     return {
-      url: `https://mumbai.polygonscan.com/tx/${txReceipt.transactionHash}`,
+      url: `https://polygonscan.com/tx/${receipt.transactionHash}`,
     };
   } catch (error) {
-    console.error('Error submitting Tokenization transaction:', error);
+    toast.error('Error submitting Tokenization transaction:', error);
+
     throw error;
   }
 };
