@@ -1,13 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken } from 'firebase/messaging';
+
 const firebaseConfig = {
-  apiKey: 'AIzaSyCghLsazo3XkbLw9_MD34HXEAe35C9rKwc',
-  authDomain: 'controllnet.firebaseapp.com',
-  projectId: 'controllnet',
-  storageBucket: 'controllnet.appspot.com',
-  messagingSenderId: '664029840039',
-  appId: '1:664029840039:web:aad5768717ac353f3a5182',
-  measurementId: 'G-0NPTEDRKXZ',
+  apiKey: 'AIzaSyBsU1i3q5M6hVEWP3Alff5yN5mdt2cbVh4',
+  authDomain: 'controlnet-notifications.firebaseapp.com',
+  projectId: 'controlnet-notifications',
+  storageBucket: 'controlnet-notifications.appspot.com',
+  messagingSenderId: '861163626998',
+  appId: '1:861163626998:web:d7d6f03e982f6022b467d7',
 };
 
 // Initialize Firebase
@@ -16,7 +16,8 @@ const messaging = getMessaging();
 export async function getFCMToken() {
   try {
     const token = await getToken(messaging, {
-      vapidKey: 'P4PP43WWy8tnqmseUMw96d96128jtu5U92ymPvcnwhM',
+      vapidKey:
+        'BFjCyzqcytxVs-yc8fg2iP19jGMcE6U5RvKL3Wv3m9el3w4-oy9CshaNmJYZtxz4IfGD3WfMqqlMVgHkScOFsVQ',
     });
     return token;
   } catch (e) {
