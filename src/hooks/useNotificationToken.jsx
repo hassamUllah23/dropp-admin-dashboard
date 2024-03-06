@@ -17,22 +17,22 @@ const useNotificationToken = () => {
   const updateToken = async (token) => {
     await handleApiCall({
       method: 'PUT',
-      url: '/employee/update-firebase-token',
+      url: '/user/update-firebase-token',
       data: {
         type: 'web',
         token: token,
       },
-      token: auth.token,
+      token: auth.userInfo?.accessToken,
     });
   };
 
   useEffect(() => {
+    const messaging = getMessaging(firebaseApp);
+    setMessaging(messaging);
+
     const retrieveToken = async () => {
       try {
         if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-          const messaging = getMessaging(firebaseApp);
-          setMessaging(messaging);
-
           // Retrieve the notification permission status
           const permission = await Notification.requestPermission();
           setNotificationPermissionStatus(permission);
@@ -51,10 +51,17 @@ const useNotificationToken = () => {
                 'No registration token available. Request permission to generate one.'
               );
             }
+          } else {
+            toast.error(
+              'Notification permission has been denied. If you want to receive notification you must need to enable that.'
+            );
           }
         }
       } catch (error) {
-        toast.error('An error occurred while retrieving token:', error);
+        toast.error(
+          'An error occurred while retrieving token. Please check the permissions and try again.'
+        );
+        if (notificationPermissionStatus === 'granted') retrieveToken();
       }
     };
 
