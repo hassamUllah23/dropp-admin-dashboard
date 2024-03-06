@@ -17,9 +17,9 @@ export const tokenization = async (url) => {
       from: userAddress,
       nonce: nonce,
     };
-    const urls = [url];
+
     const tx = await contract.methods
-      .modelsTokenization(userAddress, urls)
+      .modelTokenization(userAddress, url)
       .send(txOptions);
     const receipt = await provider.eth.getTransactionReceipt(
       tx.transactionHash
