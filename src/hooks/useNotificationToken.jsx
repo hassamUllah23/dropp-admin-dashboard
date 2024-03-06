@@ -17,7 +17,7 @@ const useNotificationToken = () => {
   const updateToken = async (token) => {
     await handleApiCall({
       method: 'PUT',
-      url: '/user/update-firebase-token',
+      url: '/employee/update-firebase-token',
       data: {
         type: 'web',
         token: token,
