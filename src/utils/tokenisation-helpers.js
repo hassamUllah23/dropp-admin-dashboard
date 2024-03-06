@@ -21,25 +21,16 @@ export const tokenization = async (url) => {
     const tx = await contract.methods
       .modelsTokenization(userAddress, urls)
       .send(txOptions);
-
     const receipt = await provider.eth.getTransactionReceipt(
       tx.transactionHash
     );
-
     toast.success(`Transaction submitted! Hash: ${tx.transactionHash}`);
-
-    /******************* Event Listen ********************/
-    // events.forEach((event) => {
-    //   const tokenIds = event.returnValues.tokenIds;
-    //   console.log('********** Event *********:', tokenIds);
-    // });
 
     return {
       url: `https://polygonscan.com/tx/${receipt.transactionHash}`,
     };
   } catch (error) {
     toast.error('Error submitting Tokenization transaction:', error);
-
     throw error;
   }
 };
