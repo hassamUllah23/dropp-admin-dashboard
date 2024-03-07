@@ -22,17 +22,17 @@ const useNotificationToken = () => {
         type: 'web',
         token: token,
       },
-      token: auth.token,
+      token: auth.userInfo?.accessToken,
     });
   };
 
   useEffect(() => {
+    const messaging = getMessaging(firebaseApp);
+    setMessaging(messaging);
+
     const retrieveToken = async () => {
       try {
         if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-          const messaging = getMessaging(firebaseApp);
-          setMessaging(messaging);
-
           // Retrieve the notification permission status
           const permission = await Notification.requestPermission();
           setNotificationPermissionStatus(permission);
@@ -41,7 +41,7 @@ const useNotificationToken = () => {
           if (permission === 'granted') {
             const currentToken = await getToken(messaging, {
               vapidKey:
-                'BKzDNqn_tgilFtqaQp-nZT14FkxJouzxmABLsuC-TUkVv2q-DdCJeJp8clEgUendPf70feGATfxmaOUMCERW884',
+              'BKzDNqn_tgilFtqaQp-nZT14FkxJouzxmABLsuC-TUkVv2q-DdCJeJp8clEgUendPf70feGATfxmaOUMCERW884',
             });
             if (currentToken) {
               setToken(currentToken);
@@ -51,10 +51,17 @@ const useNotificationToken = () => {
                 'No registration token available. Request permission to generate one.'
               );
             }
+          } else {
+            toast.error(
+              'Notification permission has been denied. If you want to receive notification you must need to enable that.'
+            );
           }
         }
       } catch (error) {
-        toast.error('An error occurred while retrieving token:', error);
+        toast.error(
+          'An error occurred while retrieving token. Please check the permissions and try again.'
+        );
+        if (notificationPermissionStatus === 'granted') retrieveToken();
       }
     };
 

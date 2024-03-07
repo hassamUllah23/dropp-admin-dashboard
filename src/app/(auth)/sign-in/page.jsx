@@ -21,18 +21,22 @@ const SignIn = () => {
       url: '/auth/employee/sign-in',
       data: { userName: values.email, password: values.password },
       headers: { Authorization: 'none' },
-    });
+    }).then((res) => {
+      if (res?.status === 200) {
+        dispatch(
+          toggleLogin({
+            isLogin: true,
+            userInfo: res?.data,
+          })
+        );
+        localStorage.setItem('accessToken', result?.data?.accessToken);
+        router.push('/dashboard');
+      }
+      return res;
+  }).catch((error) => {
+      toast.error(error?.response?.data?.errors);
+  });
 
-    if (result.status === 200) {
-      dispatch(
-        toggleLogin({
-          isLogin: true,
-          userInfo: result?.data,
-        })
-      );
-      localStorage.setItem('accessToken', result?.data?.accessToken);
-      router.push('/dashboard');
-    }
   };
 
   return (
@@ -57,7 +61,7 @@ const SignIn = () => {
                 </label>
                 <Field
                   name='email'
-                  placeholder='Enter email here'
+                  placeholder='Enter username here'
                   className='email mb-2 text-gray-700 text-base w-full leading-3 md:leading-5  py-3 md:py-4 px-3 rounded-2xl border border-solid bg-black border-lightGray-200 bg-black-200'
                 />
                 <ErrorMessage

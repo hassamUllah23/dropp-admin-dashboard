@@ -40,18 +40,21 @@ const SignUp = () => {
       url: '/auth/employee/sign-up',
       data: { ...values, name, email: userEmail, platform: 'website' },
       headers: { Authorization: 'none' },
-    });
-    if (result.status === 201) {
-      dispatch(
-        toggleLogin({
-          isLogin: true,
-          userInfo: result?.data,
-        })
-      );
-      return router.push('/dashboard');
-    }
+    }).then((res) => {  
+      if (res.status === 201) {
+        dispatch(
+          toggleLogin({
+            isLogin: true,
+            userInfo: res?.data,
+          })
+        );
+        return router.push('/dashboard');
+      }
+      return res;
+  }).catch((error) => {
+      toast.error(error?.response?.data?.errors);
+  });
 
-    toast.error('There was an error signing up. Please try again');
   };
 
   const validatepassword = (password) => {

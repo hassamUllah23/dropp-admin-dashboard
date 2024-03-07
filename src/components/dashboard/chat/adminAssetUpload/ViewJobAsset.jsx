@@ -6,8 +6,10 @@ import Script from 'next/script';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import Link from 'next/link';
+import GetInitials from '../common/GetInitials';
 
 const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
+  
   const [uploadedVideoCount] = useState(!!url ? 1 : 0);
   const [savedVideos, setSavedVideos] = useState(null);
   const { output } = useSelector((state) => state.job);
@@ -88,14 +90,14 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
         type='module'
         src='https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
       />
-      <div className='pl-0 pr-2 md:px-5 pb-1 mt-3 md:mt-10 text-white'>
+      <div className='pl-0 pr-2 md:px-5 pb-1 mt-3 md:mt-10 text-white' key={user?.id}>
         <div>
           <div className=' flex space-x-2'>
-            <div className='text-white flex justify-center items-start uppercase  w-8 md:w-12 mr-2'>
-              <Avatar name={user?.name} round='50px' size='60' />
+            <div className=' w-[1.85rem] h-[1.85rem] md:w-10 md:h-10 text-xs md:text-base rounded-full text-black flexCenter font-semibold bg-slate-200'>
+              <GetInitials fullName={user?.name} />
             </div>
             <div className='w-full'>
-              <div className=' p-3 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl'>
+              <div className=' p-8 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl'>
                 <div className=' absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer'>
                   <img
                     src='/assets/images/chat/info.svg'
@@ -129,7 +131,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                       User's Input:
                     </h1>
 
-                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
+                    <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
                       {artifacts.map((item) => {
                         return (
                           <>
@@ -138,7 +140,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                                 <img
                                   src={item?.url}
                                   alt='artifact'
-                                  className='w-full rounded-md object-cover h-36'
+                                  className='w-full rounded-md object-cover h-24 md:h-36'
                                 />
                               </div>
                             )}
@@ -146,7 +148,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                               <Link
                                 href={item.url}
                                 target='_blank'
-                                className='flexCenter border flex w-full h-full rounded-md lightGrayBg'
+                                className='flexCenter border flex w-full h-24 md:h-36 rounded-md lightGrayBg'
                               >
                                 <svg
                                   xmlns='http://www.w3.org/2000/svg'
@@ -175,7 +177,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                           viewBox='0 0 24 24'
                           fill='none'
                           onClick={() => handleUserInput()}
-                          className='cursor-pointer w-14 h-36'
+                          className='cursor-pointer w-14 h-24 md:h-36'
                         >
                           <path
                             d='M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15'
@@ -221,7 +223,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                     </div>
                   ) : (
                     <>
-                      <div className='w-full glbModal'>
+                      <div className='w-full glbModal h-[16rem] md:h-[24rem]'>
                         {url && (
                           <model-viewer
                             id={`model-viewer`}
@@ -229,7 +231,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                             src={url}
                             ar
                             shadow-intensity='1'
-                            style={{ width: '100%', height: '385px' }}
+                            style={{ width: '100%', height: '100%' }}
                             camera-controls
                             auto-rotate-delay='2000'
                             interaction-prompt='when-focused'

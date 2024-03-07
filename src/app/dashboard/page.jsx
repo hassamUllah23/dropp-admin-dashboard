@@ -78,7 +78,7 @@ export default function Dashboard() {
           <span>Filters</span>
         </button>
       </div>
-      <div className='grid grid-cols-3 gap-x-4 items-center px-5 mx-5 mb-2'>
+      <div className='grid grid-cols-3 gap-x-4 items-center md:px-5 mx-3 md:mx-5 mb-2'>
         <div>
           <span className='text-base leading-5'>
             Showing {page} - {pageCount} of {count}
