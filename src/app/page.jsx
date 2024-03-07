@@ -14,7 +14,7 @@ export default function Waitlist() {
         href='/sign-in'
         className='max-w-[400px] w-full btn-Gradient text-base text-black spacing text-center rounded-2xl cursor-pointer font-semibold'
       >
-        {auth?.userInfo?.isLogin ? 'Sign In' : 'Dasboard'}
+        {auth?.isLogin ? 'Dasboard' : 'Sign In'}
       </Link>
     </div>
   );
