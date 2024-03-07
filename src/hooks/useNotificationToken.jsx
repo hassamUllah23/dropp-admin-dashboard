@@ -41,7 +41,7 @@ const useNotificationToken = () => {
           if (permission === 'granted') {
             const currentToken = await getToken(messaging, {
               vapidKey:
-                'BFjCyzqcytxVs-yc8fg2iP19jGMcE6U5RvKL3Wv3m9el3w4-oy9CshaNmJYZtxz4IfGD3WfMqqlMVgHkScOFsVQ',
+              'BKzDNqn_tgilFtqaQp-nZT14FkxJouzxmABLsuC-TUkVv2q-DdCJeJp8clEgUendPf70feGATfxmaOUMCERW884',
             });
             if (currentToken) {
               setToken(currentToken);
