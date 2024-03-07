@@ -1,6 +1,6 @@
 import LoadingSvg from "@/components/common/LoadingSvg";
 import React, { useState, useRef } from "react";
-export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizationLoading }) {
+export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizationLoading, type }) {
   const [showLoading, setShowLoading] = useState(false);
   const fileInputRef = useRef();
 
@@ -93,7 +93,7 @@ export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizati
                           <div className="flex flex-col items-center">
                             <input
                               type="file"
-                              accept="video/*,.glb"
+                              accept={type === "digital" ? "video/*" : ".glb"}
                               ref={fileInputRef}
                               onChange={handleFileChange}
                               className="hidden"

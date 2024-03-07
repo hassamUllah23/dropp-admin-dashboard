@@ -158,6 +158,7 @@ export default function Chat() {
                 onUploadAdminAsset={handleUploadAdminAsset}
                 loading={loading}
                 tokenizationLoading={tokenizationLoading}
+                type={job?.type}
               />
             )}
           </>
