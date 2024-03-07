@@ -139,6 +139,7 @@ export default function Chat() {
             )}
             {job && (
               <ViewJobAsset
+                key={job?.id}
                 user={job?.user}
                 artifacts={job?.artifacts}
                 url={

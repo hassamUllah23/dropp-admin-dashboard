@@ -25,7 +25,6 @@ const ForgotPassword = () => {
       }
       return res;
   }).catch((error) => {
-    console.log(error)
       toast.error(error?.response?.data?.errors);
   });
   };

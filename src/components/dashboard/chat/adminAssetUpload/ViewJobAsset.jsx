@@ -9,7 +9,7 @@ import Link from 'next/link';
 import GetInitials from '../common/GetInitials';
 
 const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
-  console.log(user);
+  
   const [uploadedVideoCount] = useState(!!url ? 1 : 0);
   const [savedVideos, setSavedVideos] = useState(null);
   const { output } = useSelector((state) => state.job);
@@ -90,7 +90,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
         type='module'
         src='https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
       />
-      <div className='pl-0 pr-2 md:px-5 pb-1 mt-3 md:mt-10 text-white'>
+      <div className='pl-0 pr-2 md:px-5 pb-1 mt-3 md:mt-10 text-white' key={user?.id}>
         <div>
           <div className=' flex space-x-2'>
             <div className=' w-[1.85rem] h-[1.85rem] md:w-10 md:h-10 text-xs md:text-base rounded-full text-black flexCenter font-semibold bg-slate-200'>

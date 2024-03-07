@@ -36,7 +36,6 @@ export default function Navbar() {
 
   const handleNotifications = () => {
     setShowNotification(!showNotification);
-    getNotification();
     setShowNotificationDot(false);
   };
 
