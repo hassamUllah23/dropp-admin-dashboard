@@ -502,3 +502,12 @@ input:-webkit-autofill:active {
 .notificationItem:last-child {
   border: 0 none;
 }
+
+.tokenize {
+  background-color: white;
+  margin-right: 1rem;
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
