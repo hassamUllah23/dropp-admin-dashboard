@@ -38,9 +38,12 @@ const ConnectWalletButton = () => {
       </div>
     </toolbar>
   ) : (
-    <button className="connect-wallet" onClick={initializeProvider}>
+    <div>
+      {/* <button className="connect-wallet" onClick={initializeProvider}>
       Connect Wallet
-    </button>
+    </button> */}
+    </div>
+    
   );
 };
 
