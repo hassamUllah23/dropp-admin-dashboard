@@ -1,16 +1,15 @@
-import firebase, { initializeApp } from 'firebase/app';
-import 'firebase/messaging';
-import { getMessaging } from 'firebase/messaging';
+import { initializeApp } from 'firebase/app';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBsU1i3q5M6hVEWP3Alff5yN5mdt2cbVh4',
-  authDomain: 'controlnet-notifications.firebaseapp.com',
-  projectId: 'controlnet-notifications',
-  storageBucket: 'controlnet-notifications.appspot.com',
-  messagingSenderId: '861163626998',
-  appId: '1:861163626998:web:d7d6f03e982f6022b467d7',
+  apiKey: 'AIzaSyBwrpNc8rYwOVD21Q0WCdrp2ypK1XCN3Cw',
+  authDomain: 'controlnet-cfc19.firebaseapp.com',
+  projectId: 'controlnet-cfc19',
+  storageBucket: 'controlnet-cfc19.appspot.com',
+  messagingSenderId: '184563454323',
+  appId: '1:184563454323:web:69ee401599dae1f3c17506',
+  measurementId: 'G-Y5MGQ8S116',
 };
 
-const app = initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 
-export const firebaseMessaging = getMessaging(app);
+export default firebaseApp;

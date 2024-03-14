@@ -18,11 +18,15 @@ const ForgotPassword = () => {
       method: 'post',
       url: '/auth/forgot-password',
       data: values,
-    });
-    if (result.status === 200) {
-      toast.success('Reset password email sent successfully.');
-      router.push('/sign-in');
-    }
+    }).then((res) => {
+      if (res?.status === 200) {
+        toast.success('Reset password email sent successfully.');
+        router.push('/sign-in');
+      }
+      return res;
+  }).catch((error) => {
+      toast.error(error?.response?.data?.errors);
+  });
   };
 
   return (
@@ -48,7 +52,7 @@ const ForgotPassword = () => {
                   type='text'
                   name='email'
                   placeholder='Enter email here'
-                  className='email text-gray-700 text-base w-full leading-3 md:leading-5 py-3 md:py-4 px-3 rounded-2xl border border-solid bg-black border-lightGray-200 bg-black-200'
+                  className='email mb-3 text-gray-700 text-base w-full leading-3 md:leading-5 py-3 md:py-4 px-3 rounded-2xl border border-solid bg-black border-lightGray-200 bg-black-200'
                 />
                 <ErrorMessage
                   name='email'

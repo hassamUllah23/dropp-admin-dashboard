@@ -1,7 +1,8 @@
 
 import LoadingSvg from "@/components/common/LoadingSvg";
 import React, { useState, useRef } from "react";
-export default function UpdateJobAsset({ onUploadAdminAsset, loading, type }) {
+
+export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizationLoading, type }) {
   const [showLoading, setShowLoading] = useState(false);
   const fileInputRef = useRef();
 
@@ -37,16 +38,16 @@ export default function UpdateJobAsset({ onUploadAdminAsset, loading, type }) {
     <>
       <div className="pl-0 pr-2 md:px-5 pb-1 my-3 md:mt-10 text-white">
         <div>
-          <div className=" flex space-x-2">
-            <div className="text-white flex justify-center items-start uppercase  w-8 md:w-12 mr-2">
+          <div className="flex space-x-2 items-start">
+            <div className="text-white flex justify-center items-center uppercase rounded-[1.4rem] w-8 md:w-10 flex-30 md:flex-48">
               <img
                 src="/assets/images/chat/ai.png"
                 alt="AiImage"
-                className="w-8 md:w-12"
+                className="w-8 md:w-10"
               />
             </div>
-            <div className="w-full">
-              <div className=" p-3 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl">
+            <div className="w-full flex-1 relative">
+              <div className=" p-6 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl">
                 <div className=" absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer">
                   <img
                     src="/assets/images/chat/info.svg"
@@ -61,7 +62,7 @@ export default function UpdateJobAsset({ onUploadAdminAsset, loading, type }) {
                     </div>
                   ) : (
                     <div className="w-full">
-                      {loading ? (
+                      {loading || tokenizationLoading ? (
                         <div className="w-full flex items-center justify-center">
                           <svg
                             className="animate-spin -ml-1 mr-3 h-16 w-16 text-white"
@@ -102,7 +103,7 @@ export default function UpdateJobAsset({ onUploadAdminAsset, loading, type }) {
                             <img
                               src="/assets/images/auth/upload.png"
                               alt="upload"
-                              className=" w-28 h-28  mx-auto"
+                              className=" w-20 h-20 md:w-28 md:h-28  mx-auto"
                             />
                             <p className="pt-5">Upload assets here...</p>
                           </div>
