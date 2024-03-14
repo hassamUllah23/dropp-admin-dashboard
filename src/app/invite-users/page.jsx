@@ -75,7 +75,7 @@ const Page = () => {
         const finalArr = [...newArr, ...newArr2, ...newArr3];
         if (action == "bulk") {
           setEmails(finalArr);
-          toast.success(result?.data?.message);
+          toast.success(result?.data?.data?.message);
         } else {
           if (newArr.length === 1) {
             toast.success("Email sent successfully");
