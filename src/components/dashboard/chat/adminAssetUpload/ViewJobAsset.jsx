@@ -130,11 +130,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
           </div>
           <div className=" flex space-x-2">
             <div className="text-white flex justify-center items-start uppercase  w-8 md:w-12 mr-2 ml-2">
-              <Avatar
-                name={user?.name}
-                round="50px"
-                size={avatarSize}
-              />
+              <Avatar name={user?.name} round="50px" size={avatarSize} />
             </div>
             <div className="w-full">
               <div className=" p-3 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl">
