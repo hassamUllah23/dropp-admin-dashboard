@@ -22,7 +22,6 @@ const page = () => {
     const sortedEmployees = result.data?.users?.sort((a, b) =>
       a.firstName.localeCompare(b.firstName)
     );
-    console.log("result", result);
     setEmpoyees(sortedEmployees);
     await calculatePageCount(result?.data?.count);
   };
@@ -52,7 +51,6 @@ const page = () => {
     setPageCount(Math.ceil(count / pageSize));
   };
 
-  console.log(count, pageCount, page);
   useEffect(() => {
     setFilteredEmployees(employees);
   }, [employees]);

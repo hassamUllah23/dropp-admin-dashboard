@@ -75,7 +75,6 @@ export default function Chat({params: { id }}) {
     setTokenizationLoading(false);
   };
 
-  console.log(job);
 
   const handleTokenisation = async (newJob) => {
     try {

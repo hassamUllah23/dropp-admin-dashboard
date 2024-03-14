@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 const Page = () => {
   const { handleApiCall, isApiLoading } = useApiHook();
   const [emails, setEmails] = useState([]);
-  const [emailStatuses, setEmailStatuses] = useState({});
   const [individual, setInvidual] = useState(true);
   const [bulk, setBulk] = useState(false);
   const fileInputRef = useRef(null);
@@ -36,29 +35,29 @@ const Page = () => {
       });
       // Update email status after sending email
       if (result.status === 200) {
-        console.log(result);
         const newArr = [];
         const newArr2 = [];
         const newArr3 = [];
-        result?.data?.sendEmails?.map((email) => {
-          const findEmail = emails.find((item) => item.email === email);
+        result?.data?.data?.sendEmails?.map((email) => {
+          console.log(email)
+          const findEmail = emails.find((item) => item === email);
           newArr.push({
-            email: findEmail.email,
+            email: findEmail,
             status: "Sent",
           });
         });
-        result?.data?.alreadyExists?.map((email) => {
-          const findEmail = emails.find((item) => item.email === email);
-          newArr.push({
-            email: findEmail.email,
+        result?.data?.data?.alreadyExists?.map((email) => {
+          const findEmail = emails.find((item) => item === email);
+          newArr2.push({
+            email: findEmail,
             status: "Already Exists",
           });
         });
-        result?.data?.emailsNotExist?.map((email) => {
-          const findEmail = emails.find((item) => item.email === email);
-          newArr.push({
-            email: findEmail.email,
-            status: "Already Not Exists",
+        result?.data?.data?.emailsSendFail?.map((email) => {
+          const findEmail = emails.find((item) => item === email);
+          newArr3.push({
+            email: findEmail,
+            status: "Failed",
           });
         });
         const finalArr = [...newArr, ...newArr2, ...newArr3];
@@ -112,8 +111,8 @@ const Page = () => {
       count += parsedEmails.length;
 
       // Stop processing if more than 100 records have been fetched
-      if (count >= 100) {
-        parsedEmails = parsedEmails.slice(0, 100);
+      if (count >= 20) {
+        parsedEmails = parsedEmails.slice(0, 20);
         const emailData = parsedEmails.map((email) => ({
           email,
           status: "unsent",
@@ -131,7 +130,6 @@ const Page = () => {
         parsedEmails.forEach((email) => {
           statusObj[email] = "pending";
         });
-        setEmailStatuses(statusObj);
       }
     };
 
