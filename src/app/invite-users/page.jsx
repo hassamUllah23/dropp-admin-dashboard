@@ -15,7 +15,6 @@ const Page = () => {
   const fileInputRef = useRef(null);
   const [action, setAction] = useState(null);
   const [itemIndex, setItemIndex] = useState(null);
-  console.log(emails);
   const handleSendEmail = () => {
     setInvidual(!individual);
     setBulk(!bulk);
@@ -32,7 +31,6 @@ const Page = () => {
   };
 
   const handleSubmit = async (values, action) => {
-    console.log(action);
     try {
       let emails;
       if (values.email) {
@@ -50,9 +48,8 @@ const Page = () => {
         const newArr = [];
         const newArr2 = [];
         const newArr3 = [];
-        result?.data?.data?.sendEmails?.map((email) => {
-          console.log(email);
-          const findEmail = emails.find((item) => item === email);
+        result?.data?.data?.sendEmails?.map((obj) => {
+          const findEmail = emails.find((item) => item === obj.email);
           newArr.push({
             email: findEmail,
             status: "Sent",
@@ -142,10 +139,9 @@ const Page = () => {
         setEmails(emailData);
         setAction(null);
         setItemIndex(null);
-        event.target.value = '';
+        event.target.value = "";
         return;
       }
-      console.log(offset, file.size);
       if (offset < file.size) {
         await processChunk();
       } else {
