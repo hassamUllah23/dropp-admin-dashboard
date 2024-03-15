@@ -22,11 +22,11 @@ const ConnectWalletButton = () => {
     }
   };
 
-  useEffect(() => {
-    if (!!localStorage.getItem("walletConnected")) {
-      initializeProvider();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!!localStorage.getItem("walletConnected")) {
+  //     initializeProvider();
+  //   }
+  // }, []);
 
   return !!provider ? (
     <toolbar>
