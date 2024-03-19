@@ -216,7 +216,7 @@ const Page = () => {
           </div>
         </div>
       </div>
-      <div className="relative z-10 flex items-center justify-center max-w-[50rem] screenHeightForEmail m-auto px-5 md:px-0">
+      <div className="relative z-0 flex items-center justify-center max-w-[50rem] screenHeightForEmail m-auto px-10 md:px-4">
         <div className="relative overflow-hidden m-auto flex flex-col justify-center items-start w-full text-white px-3 py-5 md:p-8 charcoalBg rounded-2xl border border-gray-100">
           <div className="w-full flex items-center justify-between">
             <p className="md:text-6xl text-base font-bold max-w-[20.5rem]">
