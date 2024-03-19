@@ -43,7 +43,7 @@ const ResetNewPassowrd = () => {
         <Formik
           initialValues={{
             password: '',
-            confirmpassword: '',
+            confirmPassword: '',
           }}
           validationSchema={resetPasswordSchema}
           onSubmit={handleSetPassword}
@@ -102,7 +102,7 @@ const ResetNewPassowrd = () => {
                 <div className='w-full relative mb-2'>
                   <Field
                     type={showConPassword ? 'text' : 'password'}
-                    name='confirmpassword'
+                    name='confirmPassword'
                     placeholder='Enter confirm password'
                     className='cpassword text-gray-700 text-base w-full leading-3 md:leading-5 py-3 md:py-4 px-3 rounded-2xl border border-solid bg-black border-lightGray-200 bg-black-200'
                     required
@@ -138,7 +138,7 @@ const ResetNewPassowrd = () => {
                   </button>
                 </div>
                 <ErrorMessage
-                  name='confirmpassword'
+                  name='confirmPassword'
                   component='div'
                   className='text-red-600'
                 />
