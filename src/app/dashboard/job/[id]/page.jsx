@@ -1,20 +1,18 @@
 'use client';
 import UpdateJobAsset from '@/components/dashboard/chat/adminAssetUpload/UpdateJobAsset';
 import useApiHook from '@/hooks/useApiHook';
-import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { JOB_COMPLETED } from '@/utils/constants';
 import ViewJobAsset from '@/components/dashboard/chat/adminAssetUpload/ViewJobAsset';
 
-export default function Chat() {
+export default function Chat({params: { id }}) {
   const scrollToBox = useRef(null);
   const { handleApiCall, isApiLoading } = useApiHook();
   const [loading, setLoading] = useState(false);
   const [tokenizationLoading, setTokenizationLoading] = useState(false);
   const [job, setJob] = useState(null);
 
-  const { id } = useParams();
 
   const handleUploadAdminAsset = async (file) => {
     try {
@@ -38,7 +36,7 @@ export default function Chat() {
       }
     } catch (err) {
       setLoading(false);
-      toast.error(err.response.data.errors);
+      toast.error(err?.response?.data?.errors);
     }
   };
 
@@ -111,6 +109,7 @@ export default function Chat() {
             ) : (
               <></>
             )}
+            
             {job && (
               <ViewJobAsset
                 key={job?.id}

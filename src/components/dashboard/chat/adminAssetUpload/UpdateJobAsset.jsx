@@ -1,5 +1,7 @@
+
 import LoadingSvg from "@/components/common/LoadingSvg";
 import React, { useState, useRef } from "react";
+
 export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizationLoading, type }) {
   const [showLoading, setShowLoading] = useState(false);
   const fileInputRef = useRef();

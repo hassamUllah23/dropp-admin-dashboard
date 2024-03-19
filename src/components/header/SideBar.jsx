@@ -4,8 +4,6 @@ import IntegrationPopup from './IntegrationPopup';
 import { useRouter } from 'next/navigation';
 import { selectAuth, useSelector } from '@/lib';
 import GetInitials from '../common/GetInitials';
-import Avatar from 'react-avatar';
-import ConnectWalletButton from '../ConnectWalletButton';
 export default function SideBar({ onClose }) {
   const [showIntegration, setShowIntegration] = useState(true);
   const [showIntegrationPopup, setShowIntegrationPopup] = useState(false);
@@ -22,6 +20,11 @@ export default function SideBar({ onClose }) {
   const linkToDashboard = () => {
     onClose();
     router.push('/dashboard');
+  };
+
+  const linkToInviteUsers = () => {
+    onClose();
+    router.push('/invite-users');
   };
 
   let fullName = auth?.userInfo?.profile?.name;
@@ -75,9 +78,6 @@ export default function SideBar({ onClose }) {
               <p className='text-[1.5rem] text-white pt-1 pb-1 font-bold'>
                 300.56
               </p>
-              {/* <div className='text-black'>
-              <ConnectWalletButton />
-              </div> */}
             </div>
           </div>
 
@@ -95,24 +95,47 @@ export default function SideBar({ onClose }) {
                 <span className=' text-sm pl-2'> Dashboard</span>
               </p>
             </div>
-            <div className='flex items-middle py-2'>
-              <p className='flex items-middle text-white/80'>
-                <img
-                  src='/assets/images/sidebar/logo.png'
-                  className=' w-4 h-3 inline'
-                />{' '}
-                <span className=' text-sm pl-2'> About dropp</span>
+            <div className='w-full py-2'>
+              <p
+                className='flex items-middle text-white/80 cursor-pointer'
+                onClick={linkToInviteUsers}
+              >
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  strokeWidth={1.5}
+                  stroke='currentColor'
+                  className='w-4 h-4'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z'
+                  />
+                </svg>
+
+                <span className=' text-sm pl-2'> Invite users</span>
               </p>
             </div>
-            <div className='flex items-middle py-2'>
-              <p className='flex items-middle text-white/80'>
+            {/* <div className="flex items-middle py-2">
+              <p className="flex items-middle text-white/80">
                 <img
-                  src='/assets/images/sidebar/call.svg'
-                  className=' w-4 h-4 inline'
-                />{' '}
-                <span className=' text-sm pl-2'> Contact Us</span>
+                  src="/assets/images/sidebar/logo.png"
+                  className=" w-4 h-3 inline"
+                />{" "}
+                <span className=" text-sm pl-2"> About dropp</span>
               </p>
             </div>
+            <div className="flex items-middle py-2">
+              <p className="flex items-middle text-white/80">
+                <img
+                  src="/assets/images/sidebar/call.svg"
+                  className=" w-4 h-4 inline"
+                />{" "}
+                <span className=" text-sm pl-2"> Contact Us</span>
+              </p>
+            </div> */}
             <div className='flex items-middle py-2'>
               <p className='flex items-middle text-white/80'>
                 <svg
