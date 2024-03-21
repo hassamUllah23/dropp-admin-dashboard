@@ -186,7 +186,7 @@ export default function SideBar({ onClose }) {
             </div>
           </div>
           
-          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4 textModals'>
+          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4 textModals hidden'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Select Ai Models</p>
             <div className='flex items-middle relative z-40'>
               <ChatModel />
