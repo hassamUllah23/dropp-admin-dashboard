@@ -105,7 +105,17 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
         type="module"
         src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"
       />
+      <div className='text-white flex justify-start items-center pl-8  md:pl-16 pt-2'>
+      <Link href="/dashboard" className='flex items-center'>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#fff" class="w-6 h-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+        </svg>
+        <span className='inline-block pl-2'>Back to dashboard</span>
+      </Link>
+        
+      </div>
       <div className='pl-0 pr-2 md:px-5 pb-1 mt-3 md:mt-10 text-white' key={user?.id}>
+      
         <div>
           <div className=' flex space-x-2'>
             <div className=' w-[1.85rem] h-[1.85rem] md:w-10 md:h-10 text-xs md:text-base rounded-full text-black flexCenter font-semibold bg-slate-200'>
