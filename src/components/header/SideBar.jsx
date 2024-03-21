@@ -3,7 +3,13 @@ import React, { useState } from 'react';
 import IntegrationPopup from './IntegrationPopup';
 import { useRouter } from 'next/navigation';
 import GetInitials from '../common/GetInitials';
-import { handleChatModel, selectChat, useDispatch, useSelector, selectAuth } from '@/lib';
+import {
+  handleChatModel,
+  selectChat,
+  useDispatch,
+  useSelector,
+  selectAuth,
+} from '@/lib';
 import ChatModel from './ChatModels/ChatModel';
 import TextToImageModel from './ChatModels/TextToImageModel';
 import ThreeDModal from './ChatModels/ThreeDModal';
@@ -185,8 +191,8 @@ export default function SideBar({ onClose }) {
               </p>
             </div>
           </div>
-          
-          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4 textModals hidden'>
+
+          <div className=' w-full  pt-2 pb-3 md:pt-3 md:pb-4 textModals'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Select Ai Models</p>
             <div className='flex items-middle relative z-40'>
               <ChatModel />
@@ -200,10 +206,9 @@ export default function SideBar({ onClose }) {
             <div className='flex items-middle relative z-10'>
               <DigitalHuman />
             </div>
-
           </div>
 
-          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4'>
+          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4 hidden'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Integrations</p>
             <div className='flex items-middle py-1'>
               <p className='w-full text-white/80 flex justify-between'>
@@ -289,7 +294,7 @@ export default function SideBar({ onClose }) {
             )}
           </div>
 
-          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4'>
+          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4 hidden'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Knowledge hub</p>
             <div className='w-full py-2'>
               <p className='text-white/80 flex items-middle'>
