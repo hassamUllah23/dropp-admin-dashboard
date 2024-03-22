@@ -1,8 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import IntegrationPopup from './IntegrationPopup';
 import { useRouter } from 'next/navigation';
 import GetInitials from '../common/GetInitials';
+import useApiHook from '@/hooks/useApiHook';
 import {
   handleChatModel,
   selectChat,
@@ -14,9 +15,13 @@ import ChatModel from './ChatModels/ChatModel';
 import TextToImageModel from './ChatModels/TextToImageModel';
 import ThreeDModal from './ChatModels/ThreeDModal';
 import DigitalHuman from './ChatModels/DigitalHuman';
+import { RotatingLines } from 'react-loader-spinner';
 export default function SideBar({ onClose }) {
+  const { handleApiCall, isApiLoading } = useApiHook();
   const [showIntegration, setShowIntegration] = useState(true);
   const [showIntegrationPopup, setShowIntegrationPopup] = useState(false);
+  const [AiModals, setAiModals] = useState([]);
+  const [showSpinner, setShowSpinner] = useState(true);
   const router = useRouter();
   const auth = useSelector(selectAuth);
   const toggleIntegration = () => {
@@ -39,6 +44,18 @@ export default function SideBar({ onClose }) {
 
   let fullName = auth?.userInfo?.profile?.name;
 
+  const loadModels = async () => {
+    const result = await handleApiCall({
+      method: 'GET',
+      url: '/ai-models',
+    });
+    setShowSpinner(false);
+    setAiModals(result?.data);
+  }
+  useEffect(() => {
+    loadModels();
+  },[])
+  
   return (
     <div className='relative z-10'>
       <div className='fixed w-[22rem] flex flex-col min-h-screen blackBG p-4 pt-3 right-0 top-0 bottom-0 text-white text-base z-20'>
@@ -194,18 +211,35 @@ export default function SideBar({ onClose }) {
 
           <div className=' w-full  pt-2 pb-3 md:pt-3 md:pb-4 textModals'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Select Ai Models</p>
-            <div className='flex items-middle relative z-40'>
-              <ChatModel />
-            </div>
-            <div className='flex items-middle relative z-30'>
-              <TextToImageModel />
-            </div>
-            <div className='flex items-middle relative z-20'>
-              <ThreeDModal />
-            </div>
-            <div className='flex items-middle relative z-10'>
-              <DigitalHuman />
-            </div>
+                <div className='w-full relative'>
+                  <div className='flex items-middle relative z-40'>
+                    <ChatModel model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)} />
+                  </div>
+                  <div className='flex items-middle relative z-30'>
+                    <TextToImageModel model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)}  />
+                  </div>
+                  <div className='flex items-middle relative z-20'>
+                    <ThreeDModal model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)} />
+                  </div>
+                  <div className='flex items-middle relative z-10'>
+                    <DigitalHuman model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)} />
+                  </div>
+                  {showSpinner && (
+                    <div className='flexCenter absolute right-0 top-0 left-0 bottom-0 bg-black/80 z-50'>
+                      <RotatingLines
+                        visible={true}
+                        height='20'
+                        width='20'
+                        color='blue'
+                        strokeWidth='5'
+                        animationDuration='0.75'
+                        ariaLabel='rotating-lines-loading'
+                    />
+                    </div>
+                  )}
+
+                </div>
+              
           </div>
 
           <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4 hidden'>

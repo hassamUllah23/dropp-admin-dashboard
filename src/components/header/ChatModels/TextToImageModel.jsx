@@ -1,16 +1,36 @@
-import React, { useState } from 'react';
-import { selectChat, useDispatch, useSelector } from '@/lib';
+import React, { useEffect, useState } from 'react';
+import useApiHook from '@/hooks/useApiHook';
 
-const TextToImageModel = () => {
+const TextToImageModel = ({model, showLoading, resetData}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('Aws Bedrock');
+  const [selectedOption, setSelectedOption] = useState('');
+  const { handleApiCall } = useApiHook();
 
-  const handleOptionClick = (value, value2) => {
+  const handleOptionClick = async (value, value2) => {
     setSelectedOption(value2);
     setIsOpen(false);
-    console.log(value);
+    showLoading(true)
+    const values = {
+      aiModelId: model._id,
+      text: model.text,
+      image: value,
+      threeD: model.threeD,
+      digitalHuman: model.digitalHuman,
+      translation: model.translation,
+    };
+    const result = await handleApiCall({
+      method: 'PUT',
+      url: '/ai-models/update',
+      data: values,
+    });
+    if (result?.status === 200) {
+      showLoading(false);
+      resetData(result?.data);
+    }
   };
-
+  useEffect(() => {
+      setSelectedOption(model.image === 'aws_bedrock' ? 'Aws Bedrock' : 'Octoai');
+  }, [model]);
   return (
     <div className='w-full py-1 flex items-center justify-between flex-wrap relative'>
       <p className='pt-2 py-1 text-white/80 pb-3 text-sm'>Image Model</p>

@@ -1,15 +1,35 @@
-import React, { useState } from 'react';
-import { selectChat, useDispatch, useSelector } from '@/lib';
-
-const DigitalHuman = () => {
+import React, { useEffect, useState } from 'react';
+import useApiHook from '@/hooks/useApiHook';
+const DigitalHuman = ({model, showLoading, resetData}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Eleven labs');
-
-  const handleOptionClick = (value, value2) => {
+  const { handleApiCall } = useApiHook();
+  const handleOptionClick = async (value, value2) => {
     setSelectedOption(value2);
     setIsOpen(false);
-    console.log(value);
+    showLoading(true)
+    const values = {
+      aiModelId: model._id,
+      text: model.text,
+      image: model.image,
+      threeD:  model.threeD,
+      digitalHuman: value,
+      translation: model.translation,
+    };
+    const result = await handleApiCall({
+      method: 'PUT',
+      url: '/ai-models/update',
+      data: values,
+    });
+    if (result?.status === 200) {
+      showLoading(false);
+      resetData(result?.data);
+    }
   };
+
+  useEffect(() => {
+    setSelectedOption(model.digitalHuman === 'elevenlabs' ? 'Eleven labs' : 'Tts clone');
+  }, [model]);
 
   return (
     <div className='w-full py-1 flex items-center justify-between flex-wrap relative'>
