@@ -13,6 +13,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
   const [savedVideos, setSavedVideos] = useState(null);
   const { output } = useSelector((state) => state.job);
   const [progress, setProgress] = useState(0);
+  const [avatarSize, setAvatarSize] = useState(calculateAvatarSize());
   const dispatch = useDispatch();
 
   const calculateAvatarSize = () => {
@@ -25,7 +26,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
       return "60px";
     }
   };
-  const [avatarSize, setAvatarSize] = useState(calculateAvatarSize());
+  
   const handleVideoDownload = () => {
     const anchor = document.createElement("a");
     if (savedVideos !== null) {
