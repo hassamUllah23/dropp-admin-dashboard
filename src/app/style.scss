@@ -262,12 +262,18 @@ input:-webkit-autofill:active {
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: transparent;
   border-radius: 5px;
 }
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #858484;
+}
+
+.myscrollbar {
+  ::-webkit-scrollbar-thumb {
+    background: black !important;
+  }
 }
 .border-gradient {
   border: 1px solid;
@@ -383,7 +389,10 @@ input:-webkit-autofill:active {
 .completedClr {
   color: #26ab4b;
 }
-
+.textModals option{ padding: 5px 0;}
+.textModals select option:hover {
+  background-color: #f0f0f0;
+}
 .scrollable-div strong {
   display: inline-block;
   padding: 10px 0;
@@ -514,3 +523,4 @@ input:-webkit-autofill:active {
   margin-left: 50%;
   transform: translateX(-50%);
 }
+

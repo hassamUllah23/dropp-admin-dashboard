@@ -1,12 +1,27 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import IntegrationPopup from './IntegrationPopup';
 import { useRouter } from 'next/navigation';
-import { selectAuth, useSelector } from '@/lib';
 import GetInitials from '../common/GetInitials';
+import useApiHook from '@/hooks/useApiHook';
+import {
+  handleChatModel,
+  selectChat,
+  useDispatch,
+  useSelector,
+  selectAuth,
+} from '@/lib';
+import ChatModel from './ChatModels/ChatModel';
+import TextToImageModel from './ChatModels/TextToImageModel';
+import ThreeDModal from './ChatModels/ThreeDModal';
+import DigitalHuman from './ChatModels/DigitalHuman';
+import { RotatingLines } from 'react-loader-spinner';
 export default function SideBar({ onClose }) {
+  const { handleApiCall, isApiLoading } = useApiHook();
   const [showIntegration, setShowIntegration] = useState(true);
   const [showIntegrationPopup, setShowIntegrationPopup] = useState(false);
+  const [AiModals, setAiModals] = useState([]);
+  const [showSpinner, setShowSpinner] = useState(true);
   const router = useRouter();
   const auth = useSelector(selectAuth);
   const toggleIntegration = () => {
@@ -29,6 +44,18 @@ export default function SideBar({ onClose }) {
 
   let fullName = auth?.userInfo?.profile?.name;
 
+  const loadModels = async () => {
+    const result = await handleApiCall({
+      method: 'GET',
+      url: '/ai-models',
+    });
+    setShowSpinner(false);
+    setAiModals(result?.data);
+  }
+  useEffect(() => {
+    loadModels();
+  },[])
+  
   return (
     <div className='relative z-10'>
       <div className='fixed w-[22rem] flex flex-col min-h-screen blackBG p-4 pt-3 right-0 top-0 bottom-0 text-white text-base z-20'>
@@ -148,32 +175,32 @@ export default function SideBar({ onClose }) {
                   <path
                     d='M2.00684 7.48V10.4733C2.00684 13.4667 3.20684 14.6667 6.20017 14.6667H9.7935C12.7868 14.6667 13.9868 13.4667 13.9868 10.4733V7.48'
                     stroke='#E6E6E6'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   />
                   <path
                     d='M7.99999 8C9.21999 8 10.12 7.00667 9.99999 5.78667L9.55999 1.33334H6.44666L5.99999 5.78667C5.87999 7.00667 6.77999 8 7.99999 8Z'
                     stroke='#E6E6E6'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   />
                   <path
                     d='M12.2065 8C13.5532 8 14.5399 6.90667 14.4065 5.56667L14.2199 3.73334C13.9799 2 13.3132 1.33334 11.5665 1.33334H9.5332L9.99987 6.00667C10.1132 7.10667 11.1065 8 12.2065 8Z'
                     stroke='#E6E6E6'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   />
                   <path
                     d='M3.75992 8C4.85992 8 5.85325 7.10667 5.95992 6.00667L6.10659 4.53334L6.42659 1.33334H4.39326C2.64659 1.33334 1.97992 2 1.73992 3.73334L1.55992 5.56667C1.42659 6.90667 2.41326 8 3.75992 8Z'
                     stroke='#E6E6E6'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   />
                   <path
                     d='M8.00016 11.3333C6.88683 11.3333 6.3335 11.8867 6.3335 13V14.6667H9.66683V13C9.66683 11.8867 9.1135 11.3333 8.00016 11.3333Z'
                     stroke='#E6E6E6'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   />
                 </svg>
 
@@ -182,7 +209,40 @@ export default function SideBar({ onClose }) {
             </div>
           </div>
 
-          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4'>
+          <div className=' w-full  pt-2 pb-3 md:pt-3 md:pb-4 textModals'>
+            <p className=' pt-3  py-1 font-semibold pb-3'>Select Ai Models</p>
+                <div className='w-full relative'>
+                  <div className='flex items-middle relative z-40'>
+                    <ChatModel model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)} />
+                  </div>
+                  <div className='flex items-middle relative z-30'>
+                    <TextToImageModel model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)}  />
+                  </div>
+                  <div className='flex items-middle relative z-20'>
+                    <ThreeDModal model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)} />
+                  </div>
+                  <div className='flex items-middle relative z-10'>
+                    <DigitalHuman model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)} />
+                  </div>
+                  {showSpinner && (
+                    <div className='flexCenter absolute right-0 top-0 left-0 bottom-0 bg-black/80 z-50'>
+                      <RotatingLines
+                        visible={true}
+                        height='20'
+                        width='20'
+                        color='blue'
+                        strokeWidth='5'
+                        animationDuration='0.75'
+                        ariaLabel='rotating-lines-loading'
+                    />
+                    </div>
+                  )}
+
+                </div>
+              
+          </div>
+
+          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4 hidden'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Integrations</p>
             <div className='flex items-middle py-1'>
               <p className='w-full text-white/80 flex justify-between'>
@@ -268,7 +328,7 @@ export default function SideBar({ onClose }) {
             )}
           </div>
 
-          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4'>
+          <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4 hidden'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Knowledge hub</p>
             <div className='w-full py-2'>
               <p className='text-white/80 flex items-middle'>
