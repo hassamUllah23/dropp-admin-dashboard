@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import useApiHook from '@/hooks/useApiHook';
-const ThreeDModal = ({model, showLoading, resetData}) => {
+
+const ThreeDModal = ({ model, showLoading, resetData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Shap e');
   const { handleApiCall } = useApiHook();
   const handleOptionClick = async (value, value2) => {
     setSelectedOption(value2);
     setIsOpen(false);
-    showLoading(true)
+    showLoading(true);
     const values = {
       aiModelId: model._id,
       text: model.text,
       image: model.image,
-      threeD:  value,
+      threeD: value,
       digitalHuman: model.digitalHuman,
       translation: model.translation,
     };
@@ -27,7 +28,17 @@ const ThreeDModal = ({model, showLoading, resetData}) => {
     }
   };
   useEffect(() => {
-    setSelectedOption(model.threeD === 'shap_e' ? 'Shap e' : model.threeD === 'dreamgaussian' ? 'Dream Gaussian' : 'Open Lrm');
+    setSelectedOption(
+      model.threeD === 'shap_e'
+        ? 'Shap e'
+        : model.threeD === 'dreamgaussian'
+        ? 'Dream Gaussian'
+        : model.threeD === 'dust3r'
+        ? 'Dust3R'
+        : model.threeD === 'open_lrm_v2'
+        ? 'Open LRM V2'
+        : 'Open LRM'
+    );
   }, [model]);
   return (
     <div className='w-full py-1 flex items-center justify-between flex-wrap relative'>
@@ -70,10 +81,22 @@ const ThreeDModal = ({model, showLoading, resetData}) => {
               Dream Gaussian
             </li>
             <li
-              onClick={() => handleOptionClick('open_lrm', 'Open Lrm')}
+              onClick={() => handleOptionClick('open_lrm', 'Open LRM')}
               className='cursor-pointer px-3 py-1 hover:bg-gray-100'
             >
               Open Lrm
+            </li>
+            <li
+              onClick={() => handleOptionClick('open_lrm_v2', 'Open LRM V2')}
+              className='cursor-pointer px-3 py-1 hover:bg-gray-100'
+            >
+              Open LRM V2
+            </li>
+            <li
+              onClick={() => handleOptionClick('dust3r', 'Dust3R')}
+              className='cursor-pointer px-3 py-1 hover:bg-gray-100'
+            >
+              Dust3R
             </li>
           </ul>
         )}
