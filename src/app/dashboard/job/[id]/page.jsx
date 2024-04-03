@@ -123,6 +123,7 @@ export default function Chat({params: { id }}) {
                   !!job && !!job?.outputs.length ? job?.outputs[0]?.type : null
                 }
                 description={job?.description}
+                tokenizedNFTUrls = {job?.tokenizedNFTUrls || []}
               />
             )}
 
