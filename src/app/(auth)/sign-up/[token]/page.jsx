@@ -40,21 +40,22 @@ const SignUp = () => {
       url: '/auth/employee/sign-up',
       data: { ...values, name, email: userEmail, platform: 'website' },
       headers: { Authorization: 'none' },
-    }).then((res) => {  
-      if (res.status === 201) {
-        dispatch(
-          toggleLogin({
-            isLogin: true,
-            userInfo: res?.data,
-          })
-        );
-        return router.push('/dashboard');
-      }
-      return res;
-  }).catch((error) => {
-      toast.error(error?.response?.data?.errors);
-  });
-
+    })
+      .then((res) => {
+        if (res.status === 201) {
+          dispatch(
+            toggleLogin({
+              isLogin: true,
+              userInfo: res?.data,
+            })
+          );
+          return router.push('/dashboard');
+        }
+        return res;
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.errors);
+      });
   };
 
   const validatepassword = (password) => {
@@ -97,7 +98,7 @@ const SignUp = () => {
             lastName: '',
             userName: '',
             password: '',
-            confirmpassword: '',
+            confirmPassword: '',
             consentChecked: false,
             token: params?.token,
             status: 'active',
@@ -227,7 +228,7 @@ const SignUp = () => {
                 <div className='relative w-full mb-2'>
                   <Field
                     type={showConPassword ? 'text' : 'password'}
-                    name='confirmpassword'
+                    name='confirmPassword'
                     placeholder='Enter confirm password'
                     className='cpassword block text-gray-700 text-base w-full leading-3 md:leading-5 py-3 md:py-4 px-3 rounded-2xl border border-solid bg-black border-lightGray-200 bg-black-200 flex-grow'
                     autoComplete='new-password'
@@ -263,7 +264,7 @@ const SignUp = () => {
                   </button>
                 </div>
                 <ErrorMessage
-                  name='confirmpassword'
+                  name='confirmPassword'
                   component='div'
                   className='text-red-600'
                 />

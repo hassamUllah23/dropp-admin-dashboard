@@ -63,7 +63,7 @@ export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizati
                   ) : (
                     <div className="w-full">
                       {loading || tokenizationLoading ? (
-                        <div className="w-full flex items-center justify-center">
+                        <div className="w-full fixed left-0 top-0 right-0 bottom-0 flex items-center justify-center bg-black/60">
                           <svg
                             className="animate-spin -ml-1 mr-3 h-16 w-16 text-white"
                             xmlns="http://www.w3.org/2000/svg"

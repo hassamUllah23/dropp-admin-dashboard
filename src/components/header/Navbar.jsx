@@ -3,7 +3,6 @@ import { selectAuth, toggleLogin, useDispatch, useSelector } from '@/lib';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import SideBar from './SideBar';
-import ConnectWalletButton from '../ConnectWalletButton';
 import NotificationsPopup from './NotificationsPopup';
 import { clearNotifications } from '@/lib/slices/notification/notificationSlice';
 import { useRouter } from 'next/navigation';
@@ -99,26 +98,6 @@ export default function Navbar() {
         <div className=' flex justify-center items-center gap-2 pr-2 md:pr-10'>
           {auth?.isLogin ? (
             <div className='flex pr-1'>
-              <ConnectWalletButton />
-              {/* <Link
-                href='/dashboard/c'
-                className='cursor-pointer btn-Gradient w-10 md:w-14 flexCenter rounded-xl py-1 text-black'
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth={1.5}
-                  stroke='currentColor'
-                  className='w-6 h-6'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
-                  />
-                </svg>
-              </Link> */}
               <span
                 ref={notificationRef}
                 className='cursor-pointer relative w-8 md:w-10 inline-block flexCenter rounded-xl py-1 pl-2 md:pl-3 text-white notifications'

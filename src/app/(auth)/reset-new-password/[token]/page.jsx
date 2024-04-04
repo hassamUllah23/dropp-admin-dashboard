@@ -13,25 +13,62 @@ const ResetNewPassowrd = () => {
   const params = useParams();
   const [token] = useState(params?.token);
   const { handleApiCall, isApiLoading } = useApiHook();
+  const [passwordEntered, setPasswordEntered] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConPassword, setShowConPassword] = useState(false);
+  const [minLength, setMinLength] = useState(false);
+  const [upperLowerCase, setUpperLowerCase] = useState(false);
+  const [hasNumber, setHasNumber] = useState(false);
+  const [hasSpecialChar, setHasSpecialChar] = useState(false);
+  const [error] = useState('');
 
   const handleSetPassword = async (values) => {
     if (!token) return toast.error('Verification token is not valid');
-    const result = await handleApiCall({
+    if (!hasNumber || !hasSpecialChar || !minLength || !upperLowerCase) {
+      toast.error('Password requirements not met');
+      return;
+    }
+    await handleApiCall({
       method: 'post',
-      url: '/auth/reset-new-password',
+      url: '/auth/employee/reset-new-password',
       data: {
         password: values?.password,
         token: token,
       },
-    });
-    if (result?.status === 200) {
-      toast.success(result?.data?.message);
-      setTimeout(() => {
-        router.push('/sign-in');
-      }, 2000);
-    }
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success(res?.data?.message);
+          setTimeout(() => {
+            router.push('/sign-in');
+          }, 1500);
+        }
+        return res;
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.errors);
+      });
+    // if (result?.status === 200) {
+    //   toast.success(result?.data?.message);
+    //   setTimeout(() => {
+    //     router.push('/sign-in');
+    //   }, 2000);
+    // }
+  };
+
+  const validatepassword = (password) => {
+    setPasswordEntered(true);
+
+    const minLength = 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    setMinLength(password.length >= minLength);
+    setUpperLowerCase(hasUppercase && hasLowercase);
+    setHasNumber(hasNumber);
+    setHasSpecialChar(hasSpecialChar);
   };
 
   return (
@@ -43,7 +80,7 @@ const ResetNewPassowrd = () => {
         <Formik
           initialValues={{
             password: '',
-            confirmpassword: '',
+            confirmPassword: '',
           }}
           validationSchema={resetPasswordSchema}
           onSubmit={handleSetPassword}
@@ -59,6 +96,7 @@ const ResetNewPassowrd = () => {
                     type={showPassword ? 'text' : 'password'}
                     name='password'
                     placeholder='Enter strong password'
+                    onKeyUp={(e) => validatepassword(e.target.value)}
                     className='password text-gray-700 text-base w-full leading-3 md:leading-5 py-3 md:py-4 px-3 rounded-2xl border border-solid bg-black border-lightGray-200 bg-black-200'
                   />
                   <button
@@ -102,7 +140,7 @@ const ResetNewPassowrd = () => {
                 <div className='w-full relative mb-2'>
                   <Field
                     type={showConPassword ? 'text' : 'password'}
-                    name='confirmpassword'
+                    name='confirmPassword'
                     placeholder='Enter confirm password'
                     className='cpassword text-gray-700 text-base w-full leading-3 md:leading-5 py-3 md:py-4 px-3 rounded-2xl border border-solid bg-black border-lightGray-200 bg-black-200'
                     required
@@ -138,16 +176,170 @@ const ResetNewPassowrd = () => {
                   </button>
                 </div>
                 <ErrorMessage
-                  name='confirmpassword'
+                  name='confirmPassword'
                   component='div'
                   className='text-red-600'
                 />
               </div>
             </div>
+
+            <div className=' w-full font-medium px-2 pt-3 md:pt-5'>
+              {error && <p className='text-red-600 pb-4'>{error}</p>}
+              <p className='pb-2 py-3 flex w-full'>Your Password must be:</p>
+              <p className='grid grid-cols-1'>
+                <span
+                  className={`w-full flex mb-2 md:mb-0  py-1 characters ${
+                    passwordEntered
+                      ? minLength
+                        ? 'text-green-600'
+                        : ' text-red-600'
+                      : 'text-white'
+                  }`}
+                >
+                  <svg
+                    width='16'
+                    height='16'
+                    className='relative top-0.5 mr-2'
+                    viewBox='0 0 16 16'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d={
+                        minLength && passwordEntered
+                          ? 'M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
+                          : 'M5.16669 5.16669L10.8334 10.8334M5.16669 10.8334L10.8334 5.16669'
+                      }
+                      stroke={
+                        passwordEntered
+                          ? minLength
+                            ? '#16A34A'
+                            : 'red'
+                          : 'white'
+                      }
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                  </svg>
+                  8-12 Character long
+                </span>
+                <span
+                  className={`w-full flex py-1 isUpperLowerCase ${
+                    passwordEntered
+                      ? upperLowerCase
+                        ? 'text-green-600'
+                        : ' text-red-600'
+                      : 'text-white'
+                  }`}
+                >
+                  <svg
+                    width='16'
+                    height='16'
+                    className='relative top-0.5 mr-2'
+                    viewBox='0 0 16 16'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d={
+                        upperLowerCase && passwordEntered
+                          ? 'M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
+                          : 'M5.16669 5.16669L10.8334 10.8334M5.16669 10.8334L10.8334 5.16669'
+                      }
+                      stroke={
+                        passwordEntered
+                          ? upperLowerCase
+                            ? '#16A34A'
+                            : 'red'
+                          : 'white'
+                      }
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                  </svg>
+                  Include a mix of uppercase & lowercase
+                </span>
+              </p>
+              <p className='grid grid-cols-1'>
+                <span
+                  className={`w-full flex mb-2 md:mb-0 py-1 isNumber ${
+                    passwordEntered
+                      ? hasNumber
+                        ? 'text-green-600'
+                        : ' text-red-600'
+                      : 'text-white'
+                  }`}
+                >
+                  <svg
+                    width='16'
+                    height='16'
+                    className='relative top-0.5 mr-2'
+                    viewBox='0 0 16 16'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d={
+                        hasNumber && passwordEntered
+                          ? 'M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
+                          : 'M5.16669 5.16669L10.8334 10.8334M5.16669 10.8334L10.8334 5.16669'
+                      }
+                      stroke={
+                        passwordEntered
+                          ? hasNumber
+                            ? '#16A34A'
+                            : 'red'
+                          : 'white'
+                      }
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                  </svg>
+                  Include at least one numbers
+                </span>
+                <span
+                  className={`w-full flex py-1 hasSpecialChar ${
+                    passwordEntered
+                      ? hasSpecialChar
+                        ? 'text-green-600'
+                        : ' text-red-600'
+                      : 'text-white'
+                  }`}
+                >
+                  <svg
+                    width='16'
+                    height='16'
+                    className='relative top-0.5 mr-2'
+                    viewBox='0 0 16 16'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d={
+                        hasSpecialChar && passwordEntered
+                          ? 'M5.16669 8.00001L7.05335 9.88668L10.8334 6.11334'
+                          : 'M5.16669 5.16669L10.8334 10.8334M5.16669 10.8334L10.8334 5.16669'
+                      }
+                      stroke={
+                        passwordEntered
+                          ? hasSpecialChar
+                            ? '#16A34A'
+                            : 'red'
+                          : 'white'
+                      }
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                  </svg>
+                  Include at least one special character
+                </span>
+              </p>
+            </div>
+
             <div className='w-full float-left pt-6'>
               <button
                 type='submit'
-                className='btn-submit btn-Gradient text-base text-black w-full leading-3 md:leading-5 py-3 md:py-4 text-center rounded-2xl cursor-pointer font-semibold flex items-center justify-center'
+                className='btn-submit bg-Gradient text-base text-black w-full leading-3 md:leading-5 py-3 md:py-4 text-center rounded-2xl cursor-pointer font-semibold flex items-center justify-center'
               >
                 {isApiLoading ? (
                   <RotatingLines
