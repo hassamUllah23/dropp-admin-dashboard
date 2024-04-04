@@ -14,9 +14,15 @@ const ForgotPassword = () => {
   const { handleApiCall, isApiLoading } = useApiHook();
 
   const handleResetPassword = async (values) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!values.email || !emailRegex.test(values.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
     const result = await handleApiCall({
       method: 'post',
-      url: '/auth/forgot-password',
+      url: '/auth/employee/forgot-password',
       data: values,
     }).then((res) => {
       if (res?.status === 200) {

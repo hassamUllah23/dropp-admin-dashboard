@@ -6,14 +6,16 @@ import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import Link from 'next/link';
 import GetInitials from '../common/GetInitials';
+import VideoUrl from './VideoUrl';
 
-const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
+const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrls }) => {
   const [uploadedVideoCount] = useState(!!url ? 1 : 0);
   const [savedVideos, setSavedVideos] = useState(null);
   const { output } = useSelector((state) => state.job);
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
-
+  console.log('asset url');
+  console.log(url);
   const calculateAvatarSize = () => {
     const viewportWidth = window.innerWidth;
     if (viewportWidth < 1024) {
@@ -133,7 +135,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
             <div className=' w-[1.85rem] h-[1.85rem] md:w-10 md:h-10 text-xs md:text-base rounded-full text-black flexCenter font-semibold bg-slate-200'>
               <GetInitials fullName={user?.name} />
             </div>
-            <div className='w-full'>
+            <div className='w-full relative'>
               <div className=' p-8 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl'>
                 <div className=' absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer'>
                   <img
@@ -249,15 +251,8 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                 )}
                 <div className='media-container max-w-[32rem] m-auto text-center'>
                   {type === 'video' ? (
-                    <div className='media-item inline-block mx-2 my-1 md:mx-3 md:my-3 rounded-md relative'>
-                      <video
-                        controls
-                        className=' max-w-56 md:max-w-96 rounded-md object-cover '
-                      >
-                        <source src={url} type='video/mp4' />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
+                    <VideoUrl url={url} />
+                    
                   ) : (
                     <>
                       <div className='w-full glbModal h-[16rem] md:h-[24rem]'>
@@ -343,8 +338,36 @@ const ViewJobAsset = ({ user, artifacts, url, type, description }) => {
                       strokeLinejoin='round'
                     />
                   </svg>
-                </div>
+                </div>                
               )}
+
+              {tokenizedNFTUrls?.length > 0 && (
+                  <div className='bg-gray-100 absolute right-0 bottom-3 rounded-md px-2 py-1'>
+                    <a
+                      href={tokenizedNFTUrls}
+                      className=' text-gray-600 text-xs flexCenter cursor-pointer'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      <span>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          viewBox='0 0 16 16'
+                          fill='#fff'
+                          className='w-4 h-4'
+                        >
+                          <path d='M7.628 1.099a.75.75 0 0 1 .744 0l5.25 3a.75.75 0 0 1 0 1.302l-5.25 3a.75.75 0 0 1-.744 0l-5.25-3a.75.75 0 0 1 0-1.302l5.25-3Z' />
+                          <path d='m2.57 7.24-.192.11a.75.75 0 0 0 0 1.302l5.25 3a.75.75 0 0 0 .744 0l5.25-3a.75.75 0 0 0 0-1.303l-.192-.11-4.314 2.465a2.25 2.25 0 0 1-2.232 0L2.57 7.239Z' />
+                          <path d='m2.378 10.6.192-.11 4.314 2.464a2.25 2.25 0 0 0 2.232 0l4.314-2.465.192.11a.75.75 0 0 1 0 1.303l-5.25 3a.75.75 0 0 1-.744 0l-5.25-3a.75.75 0 0 1 0-1.303Z' />
+                        </svg>
+                      </span>
+                      <span className='inline-block pl-1 max-w-48'>
+                        Tokenized NFT Url
+                      </span>
+                    </a>
+                  </div>
+                )}
+
             </div>
           </div>
         </div>
