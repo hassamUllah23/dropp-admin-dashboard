@@ -137,18 +137,6 @@ const page = () => {
         <h1 className="flex items-center text-[20px] font-[700] leading-[23.48px]">
           Active users
         </h1>
-        {isApiLoading && (
-          <div className="flex justify-center items-center">
-            <RotatingLines
-              height="24"
-              width="24"
-              color="blue"
-              strokeWidth="5"
-              animationDuration="0.75"
-              ariaLabel="rotating-lines-loading"
-            />
-          </div>
-        )}
         {filteredEmployees.length > 0 && (
           <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg p-2">
             <input
@@ -329,7 +317,10 @@ const page = () => {
                     </td>
                     <td className="py-4 px-2 rounded-r-[4px]">
                       <div className="flex justify-end items-center">
-                        <button className="bg-[#850101] p-1 rounded-[4px] cursor-not-allowed" disabled={true}>
+                        <button
+                          className="bg-[#850101] p-1 rounded-[4px] cursor-not-allowed"
+                          disabled={true}
+                        >
                           <img
                             src="/trash.svg"
                             alt="delete_icon"
@@ -405,16 +396,30 @@ const page = () => {
               </p>
               <div className="flex justify-end gap-4  mt-5">
                 <button
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-center"
                   onClick={() => setShowConfirmationModal(false)}
                 >
                   Cancle
                 </button>
                 <button
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2 w-[5rem] text-center"
                   onClick={confirmAction}
                 >
-                  Confirm
+                    {isApiLoading ? (
+                    <div className="flex justify-center items-center">
+                      <RotatingLines
+                        height="20"
+                        width="20"
+                        color="gray"
+                        strokeColor="white"
+                        strokeWidth="5"
+                        animationDuration="0.75"
+                        ariaLabel="rotating-lines-loading"
+                      />
+                    </div>
+                  ) : (
+                    <span>Confirm</span>
+                  )}
                 </button>
               </div>
             </div>
