@@ -163,22 +163,22 @@ const page = () => {
         <table className="text-white w-full border border-transparent mb-6">
           <thead className="bg-[#262626] text-white rounded-[4px]">
             <tr className="">
-              <th className="py-4 px-2 text-[10px] text-[#FFFFFF] leading-[11.74px] text-left rounded-l-[4px]">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] text-left rounded-l-[4px]">
                 Employee Name
               </th>
-              <th className="py-4 px-2 text-[10px] text-[#FFFFFF] leading-[11.74px] text-left">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] text-left">
                 Employee Email
               </th>
-              <th className="py-4 px-2 text-[10px] text-[#FFFFFF] leading-[11.74px] text-left">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] text-left">
                 Last Activity
               </th>
               {/* <th className="py-4 px-2 text-[10px] text-[#FFFFFF] text-left leading-[11.74px]">
                 Coins
               </th> */}
-              <th className="py-4 px-2 text-[10px] text-[#FFFFFF] leading-[11.74px]">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px]">
                 Status
               </th>
-              <th className="py-4 px-2 text-[10px] text-[#FFFFFF] leading-[11.74px] rounded-r-[4px] text-right">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] rounded-r-[4px] text-right">
                 Actions
               </th>
             </tr>
@@ -188,13 +188,13 @@ const page = () => {
               filteredEmployees.map((item, index) => {
                 return (
                   <tr key={index} className="my-3 row w-full darkGrayBg">
-                    <td className="py-4 px-2 text-[10px] text-[#FFFFFF] leading-[11.74px] rounded-l-[4px]">
+                    <td className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] rounded-l-[4px] border-b-8  border-t-8 border-black">
                       {`${item.firstName} ${item.lastName}`}
                     </td>
-                    <td className="py-4 px-2 text-[10px] text-[#808080] leading-[11.74px]">
+                    <td className="py-4 px-2 text-sm text-[#808080] leading-[11.74px] border-b-8 border-t-8 border-black">
                       {item.email}
                     </td>
-                    <td className="py-4 px-2 text-[10px] text-[#808080] leading-[11.74px]">
+                    <td className="py-4 px-2 text-sm text-[#808080] leading-[11.74px] border-b-8 border-t-8 border-black">
                       22-03-2024
                     </td>
                     {/* <td className="py-4 px-2 text-[10px] text-[#808080] leading-[11.74px] relative group cursor-pointer">
@@ -253,12 +253,12 @@ const page = () => {
                         )}
                       </div>
                     </td> */}
-                    <td className="py-4 px-2 text-[10px] text-black leading-[11.74px] text-center">
+                    <td className="py-4 px-2 text-[10px] text-black leading-[11.74px] text-center border-b-8  border-t-8 border-black">
                       <div className="relative inline-block text-left">
                         <div>
                           <button
                             type="button"
-                            className={`inline-flex justify-center items-center w-full max-w-[100px] rounded-2xl px-2 py-1 text-sm font-medium ${
+                            className={`inline-flex justify-center items-center w-24 rounded-2xl px-2 py-1 text-sm font-medium ${
                               dropdownStates[index] === "active"
                                 ? "bg-[#67C24B]"
                                 : "bg-[#850101]"
@@ -315,7 +315,7 @@ const page = () => {
                         )}
                       </div>
                     </td>
-                    <td className="py-4 px-2 rounded-r-[4px]">
+                    <td className="py-4 px-2 border-b-8 border-t-8 border-black">
                       <div className="flex justify-end items-center">
                         <button
                           className="bg-[#850101] p-1 rounded-[4px] cursor-not-allowed"
