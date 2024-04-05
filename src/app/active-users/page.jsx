@@ -137,7 +137,7 @@ const page = () => {
         <h1 className="flex items-center text-[20px] font-[700] leading-[23.48px]">
           Active users
         </h1>
-        {filteredEmployees.length > 0 && (
+        
           <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg p-2">
             <input
               type="text"
@@ -156,7 +156,7 @@ const page = () => {
               />
             </label>
           </div>
-        )}
+        
       </div>
 
       <div className="overflow-x-auto ">
@@ -335,8 +335,8 @@ const page = () => {
               })
             ) : (
               <tr>
-                <td colSpan="5" className="pl-1">
-                  No data found
+                <td colSpan="5" className="pl-1 pt-4">
+                  No user found
                 </td>
               </tr>
             )}
