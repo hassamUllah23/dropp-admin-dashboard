@@ -31,7 +31,7 @@ const Page = () => {
     e.preventDefault();
   };
 
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values, action, formAction) => {
     try {
       let emails;
       if (values.email) {
@@ -56,6 +56,7 @@ const Page = () => {
             status: "Sent",
           });
         });
+        console.log(result)
         result?.data?.data?.alreadyExists?.map((email) => {
           const findEmail = emails.find((item) => item === email);
           newArr2.push({
@@ -71,11 +72,15 @@ const Page = () => {
           });
         });
         const finalArr = [...newArr, ...newArr2, ...newArr3];
+        console.log('finlaArr', finalArr, action)
         if (action == "bulk") {
           setEmails(finalArr);
           toast.success(result?.data?.data?.message);
         } else {
-          if (resetForm) resetForm();
+          if (formAction){
+            const { resetForm } = formAction
+            resetForm()
+          };
           if (newArr.length === 1) {
             toast.success("Email sent successfully");
           } else if (newArr2.length === 1) {
@@ -132,14 +137,13 @@ const Page = () => {
       count += parsedEmails.length;
 
       // Stop processing if more than 100 records have been fetched
-      if (count >= 20) {
-        parsedEmails = parsedEmails.slice(0, 20);
+      if (count >= 100) {
+        parsedEmails = parsedEmails.slice(0, 100);
         const emailData = parsedEmails.map((email) => ({
           email,
           status: "unsent",
         }));
         setEmails(emailData);
-        setAction(null);
         setItemIndex(null);
         event.target.value = "";
         return;
@@ -239,7 +243,7 @@ const Page = () => {
                 email: "",
               }}
               validationSchema={sendEmailSchema}
-              onSubmit={(values, actions) => handleSubmit(values, actions)}
+              onSubmit={(values, actions) => handleSubmit(values, 'individual', actions, )}
             >
               <Form className="w-full text-white text-sm md:text-base pt-2 md:pt-4 z-10 relative">
                 <div className="w-full block">
