@@ -130,8 +130,8 @@ const Page = () => {
       count += parsedEmails.length;
 
       // Stop processing if more than 100 records have been fetched
-      if (count >= 20) {
-        parsedEmails = parsedEmails.slice(0, 20);
+      if (count >= 100) {
+        parsedEmails = parsedEmails.slice(0, 100);
         const emailData = parsedEmails.map((email) => ({
           email,
           status: "unsent",
