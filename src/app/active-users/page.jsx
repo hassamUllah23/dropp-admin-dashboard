@@ -137,26 +137,24 @@ const page = () => {
         <h1 className="flex items-center text-[20px] font-[700] leading-[23.48px]">
           Active users
         </h1>
-        {filteredEmployees.length > 0 && (
-          <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg p-2">
-            <input
-              type="text"
-              id="search"
-              className="w-full bg-transparent"
-              placeholder="Search"
-              value={searchValue}
-              onChange={handleSearchInputChange}
+        <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg p-2">
+          <input
+            type="text"
+            id="search"
+            className="w-full bg-transparent"
+            placeholder="Search"
+            value={searchValue}
+            onChange={handleSearchInputChange}
+          />
+          <label htmlFor="search" className="cursor-pointer">
+            <img
+              src="/search-normal.svg"
+              alt="search icon"
+              width={24}
+              height={24}
             />
-            <label htmlFor="search" className="cursor-pointer">
-              <img
-                src="/search-normal.svg"
-                alt="search icon"
-                width={24}
-                height={24}
-              />
-            </label>
-          </div>
-        )}
+          </label>
+        </div>
       </div>
 
       <div className="overflow-x-auto ">
@@ -288,14 +286,14 @@ const page = () => {
 
                         {showDropDown[index] && (
                           <div
-                            className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg border border-white text-white bg-[#0C0C0C] z-50"
+                            className="origin-top-right absolute right-0 mt-2 w-20 rounded-md shadow-lg border border-white text-white bg-[#0C0C0C] z-[5]"
                             role="menu"
                             aria-orientation="vertical"
                             aria-labelledby="options-menu"
                           >
                             <div role="none">
                               <button
-                                className="block w-full px-4 py-2 text-sm hover:bg-[#67C24B] hover:text-white border-b border-white"
+                                className="text-left block w-full px-4 py-2 text-sm hover:bg-[#67C24B] hover:text-white border-b border-white"
                                 onClick={() =>
                                   handleOptionClick("active", index)
                                 }
@@ -303,7 +301,7 @@ const page = () => {
                                 Active
                               </button>
                               <button
-                                className="block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white"
+                                className="text-left block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white"
                                 onClick={() =>
                                   handleOptionClick("inactive", index)
                                 }
@@ -335,7 +333,7 @@ const page = () => {
               })
             ) : (
               <tr>
-                <td colSpan="5" className="pl-1">
+                <td colSpan="5" className="pl-1 pt-4">
                   No data found
                 </td>
               </tr>
@@ -405,7 +403,7 @@ const page = () => {
                   className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2 w-[5rem] text-center"
                   onClick={confirmAction}
                 >
-                    {isApiLoading ? (
+                  {isApiLoading ? (
                     <div className="flex justify-center items-center">
                       <RotatingLines
                         height="20"

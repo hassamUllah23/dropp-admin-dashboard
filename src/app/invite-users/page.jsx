@@ -30,7 +30,7 @@ const Page = () => {
     e.preventDefault();
   };
 
-  const handleSubmit = async (values, action) => {
+  const handleSubmit = async (values, { resetForm }) => {
     try {
       let emails;
       if (values.email) {
@@ -74,6 +74,7 @@ const Page = () => {
           setEmails(finalArr);
           toast.success(result?.data?.data?.message);
         } else {
+          resetForm()
           if (newArr.length === 1) {
             toast.success("Email sent successfully");
           } else if (newArr2.length === 1) {
@@ -236,7 +237,7 @@ const Page = () => {
                 email: "",
               }}
               validationSchema={sendEmailSchema}
-              onSubmit={handleSubmit}
+              onSubmit={(values, actions) => handleSubmit(values, actions)}
             >
               <Form className="w-full text-white text-sm md:text-base pt-2 md:pt-4 z-10 relative">
                 <div className="w-full block">
