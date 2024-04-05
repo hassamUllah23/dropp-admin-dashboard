@@ -288,14 +288,14 @@ const page = () => {
 
                         {showDropDown[index] && (
                           <div
-                            className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg border border-white text-white bg-[#0C0C0C] z-50"
+                            className="origin-top-right absolute right-0 mt-2 w-20 rounded-md shadow-lg border border-white text-white bg-[#0C0C0C] z-[5]"
                             role="menu"
                             aria-orientation="vertical"
                             aria-labelledby="options-menu"
                           >
                             <div role="none">
                               <button
-                                className="block w-full px-4 py-2 text-sm hover:bg-[#67C24B] hover:text-white border-b border-white"
+                                className="text-left block w-full px-4 py-2 text-sm hover:bg-[#67C24B] hover:text-white border-b border-white"
                                 onClick={() =>
                                   handleOptionClick("active", index)
                                 }
@@ -303,7 +303,7 @@ const page = () => {
                                 Active
                               </button>
                               <button
-                                className="block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white"
+                                className="text-left block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white"
                                 onClick={() =>
                                   handleOptionClick("inactive", index)
                                 }
@@ -405,7 +405,7 @@ const page = () => {
                   className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2 w-[5rem] text-center"
                   onClick={confirmAction}
                 >
-                    {isApiLoading ? (
+                  {isApiLoading ? (
                     <div className="flex justify-center items-center">
                       <RotatingLines
                         height="20"

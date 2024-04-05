@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Papa from "papaparse";
 import useApiHook from "@/hooks/useApiHook";
 import { sendEmailSchema } from "@/schema/auth/authSchema";
@@ -31,56 +31,63 @@ const Page = () => {
     e.preventDefault();
   };
 
-  const handleSubmit = async (values, action) => {
-    let emails;
-    if (values.email) {
-      emails = [values.email];
-    } else {
-      emails = values.map((item) => item.email);
-    }
-    const result = await handleApiCall({
-      method: "post",
-      url: "/auth/admin/sign-up-email",
-      data: { emails },
-    });
-    if (result.status === 200) {
-      const newArr = [];
-      const newArr2 = [];
-      const newArr3 = [];
-      result?.data?.data?.sendEmails?.map((obj) => {
-        const findEmail = emails.find((item) => item === obj.email);
-        newArr.push({
-          email: findEmail,
-          status: "Sent",
-        });
-      });
-      result?.data?.data?.alreadyExists?.map((email) => {
-        const findEmail = emails.find((item) => item === email);
-        newArr2.push({
-          email: findEmail,
-          status: "Already Exists",
-        });
-      });
-      result?.data?.data?.emailsSendFail?.map((email) => {
-        const findEmail = emails.find((item) => item === email);
-        newArr3.push({
-          email: findEmail,
-          status: "Failed",
-        });
-      });
-      const finalArr = [...newArr, ...newArr2, ...newArr3];
-      if (action == "bulk") {
-        setEmails(finalArr);
-        toast.success(result?.data?.message);
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      let emails;
+      if (values.email) {
+        emails = [values.email];
       } else {
-        if (newArr.length === 1) {
-          toast.success("Email sent successfully");
-        } else if (newArr2.length === 1) {
-          toast.error("Email already exists");
-        } else if (newArr3.length === 1) {
-          toast.error("Email failed to send");
+        emails = values.map((item) => item.email);
+      }
+      const result = await handleApiCall({
+        method: "post",
+        url: "/auth/admin/sign-up-email",
+        data: { emails },
+      });
+      // Update email status after sending email
+      if (result.status === 200) {
+        const newArr = [];
+        const newArr2 = [];
+        const newArr3 = [];
+        result?.data?.data?.sendEmails?.map((obj) => {
+          const findEmail = emails.find((item) => item === obj.email);
+          newArr.push({
+            email: findEmail,
+            status: "Sent",
+          });
+        });
+        result?.data?.data?.alreadyExists?.map((email) => {
+          const findEmail = emails.find((item) => item === email);
+          newArr2.push({
+            email: findEmail,
+            status: "Already Exists",
+          });
+        });
+        result?.data?.data?.emailsSendFail?.map((email) => {
+          const findEmail = emails.find((item) => item === email);
+          newArr3.push({
+            email: findEmail,
+            status: "Failed",
+          });
+        });
+        const finalArr = [...newArr, ...newArr2, ...newArr3];
+        if (action == "bulk") {
+          setEmails(finalArr);
+          toast.success(result?.data?.data?.message);
+        } else {
+          if (resetForm) resetForm();
+          if (newArr.length === 1) {
+            toast.success("Email sent successfully");
+          } else if (newArr2.length === 1) {
+            toast.error("Email already exists");
+          } else if (newArr3.length === 1) {
+            toast.error("Email failed to send");
+          }
         }
       }
+    } catch (err) {
+      console.log("error", err);
+      toast.error(err?.message);
     }
   };
 
@@ -232,7 +239,7 @@ const Page = () => {
                 email: "",
               }}
               validationSchema={sendEmailSchema}
-              onSubmit={handleSubmit}
+              onSubmit={(values, actions) => handleSubmit(values, actions)}
             >
               <Form className="w-full text-white text-sm md:text-base pt-2 md:pt-4 z-10 relative">
                 <div className="w-full block">
