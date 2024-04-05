@@ -32,63 +32,55 @@ const Page = () => {
   };
 
   const handleSubmit = async (values, action) => {
-    console.log(action);
-    try {
-      let emails;
-      if (values.email) {
-        emails = [values.email];
-      } else {
-        emails = values.map((item) => item.email);
-      }
-      const result = await handleApiCall({
-        method: "post",
-        url: "/auth/admin/sign-up-email",
-        data: { emails },
+    let emails;
+    if (values.email) {
+      emails = [values.email];
+    } else {
+      emails = values.map((item) => item.email);
+    }
+    const result = await handleApiCall({
+      method: "post",
+      url: "/auth/admin/sign-up-email",
+      data: { emails },
+    });
+    if (result.status === 200) {
+      const newArr = [];
+      const newArr2 = [];
+      const newArr3 = [];
+      result?.data?.data?.sendEmails?.map((obj) => {
+        const findEmail = emails.find((item) => item === obj.email);
+        newArr.push({
+          email: findEmail,
+          status: "Sent",
+        });
       });
-      // Update email status after sending email
-      if (result.status === 200) {
-        const newArr = [];
-        const newArr2 = [];
-        const newArr3 = [];
-        result?.data?.data?.sendEmails?.map((email) => {
-          console.log(email);
-          const findEmail = emails.find((item) => item === email);
-          newArr.push({
-            email: findEmail,
-            status: "Sent",
-          });
+      result?.data?.data?.alreadyExists?.map((email) => {
+        const findEmail = emails.find((item) => item === email);
+        newArr2.push({
+          email: findEmail,
+          status: "Already Exists",
         });
-        result?.data?.data?.alreadyExists?.map((email) => {
-          const findEmail = emails.find((item) => item === email);
-          newArr2.push({
-            email: findEmail,
-            status: "Already Exists",
-          });
+      });
+      result?.data?.data?.emailsSendFail?.map((email) => {
+        const findEmail = emails.find((item) => item === email);
+        newArr3.push({
+          email: findEmail,
+          status: "Failed",
         });
-        result?.data?.data?.emailsSendFail?.map((email) => {
-          const findEmail = emails.find((item) => item === email);
-          newArr3.push({
-            email: findEmail,
-            status: "Failed",
-          });
-        });
-        const finalArr = [...newArr, ...newArr2, ...newArr3];
-        if (action == "bulk") {
-          setEmails(finalArr);
-          toast.success(result?.data?.data?.message);
-        } else {
-          if (newArr.length === 1) {
-            toast.success("Email sent successfully");
-          } else if (newArr2.length === 1) {
-            toast.error("Email already exists");
-          } else if (newArr3.length === 1) {
-            toast.error("Email failed to send");
-          }
+      });
+      const finalArr = [...newArr, ...newArr2, ...newArr3];
+      if (action == "bulk") {
+        setEmails(finalArr);
+        toast.success(result?.data?.message);
+      } else {
+        if (newArr.length === 1) {
+          toast.success("Email sent successfully");
+        } else if (newArr2.length === 1) {
+          toast.error("Email already exists");
+        } else if (newArr3.length === 1) {
+          toast.error("Email failed to send");
         }
       }
-    } catch (err) {
-      console.log("error", err);
-      toast.error(err?.message);
     }
   };
 
@@ -142,7 +134,7 @@ const Page = () => {
         setEmails(emailData);
         setAction(null);
         setItemIndex(null);
-        event.target.value = '';
+        event.target.value = "";
         return;
       }
       console.log(offset, file.size);
