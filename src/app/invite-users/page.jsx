@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Papa from "papaparse";
 import useApiHook from "@/hooks/useApiHook";
 import { sendEmailSchema } from "@/schema/auth/authSchema";
@@ -31,8 +31,7 @@ const Page = () => {
     e.preventDefault();
   };
 
-  const handleSubmit = async (values, action) => {
-    console.log(action);
+  const handleSubmit = async (values, action, formAction) => {
     try {
       let emails;
       if (values.email) {
@@ -50,14 +49,14 @@ const Page = () => {
         const newArr = [];
         const newArr2 = [];
         const newArr3 = [];
-        result?.data?.data?.sendEmails?.map((email) => {
-          console.log(email);
-          const findEmail = emails.find((item) => item === email);
+        result?.data?.data?.sendEmails?.map((obj) => {
+          const findEmail = emails.find((item) => item === obj.email);
           newArr.push({
             email: findEmail,
             status: "Sent",
           });
         });
+        console.log(result)
         result?.data?.data?.alreadyExists?.map((email) => {
           const findEmail = emails.find((item) => item === email);
           newArr2.push({
@@ -73,10 +72,15 @@ const Page = () => {
           });
         });
         const finalArr = [...newArr, ...newArr2, ...newArr3];
+        console.log('finlaArr', finalArr, action)
         if (action == "bulk") {
           setEmails(finalArr);
           toast.success(result?.data?.data?.message);
         } else {
+          if (formAction){
+            const { resetForm } = formAction
+            resetForm()
+          };
           if (newArr.length === 1) {
             toast.success("Email sent successfully");
           } else if (newArr2.length === 1) {
@@ -133,16 +137,15 @@ const Page = () => {
       count += parsedEmails.length;
 
       // Stop processing if more than 100 records have been fetched
-      if (count >= 20) {
-        parsedEmails = parsedEmails.slice(0, 20);
+      if (count >= 100) {
+        parsedEmails = parsedEmails.slice(0, 100);
         const emailData = parsedEmails.map((email) => ({
           email,
           status: "unsent",
         }));
         setEmails(emailData);
-        setAction(null);
         setItemIndex(null);
-        event.target.value = '';
+        event.target.value = "";
         return;
       }
       console.log(offset, file.size);
@@ -240,7 +243,7 @@ const Page = () => {
                 email: "",
               }}
               validationSchema={sendEmailSchema}
-              onSubmit={handleSubmit}
+              onSubmit={(values, actions) => handleSubmit(values, 'individual', actions, )}
             >
               <Form className="w-full text-white text-sm md:text-base pt-2 md:pt-4 z-10 relative">
                 <div className="w-full block">
