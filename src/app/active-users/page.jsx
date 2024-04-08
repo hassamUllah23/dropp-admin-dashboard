@@ -20,14 +20,13 @@ const page = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [selectedEmployeeIndex, setSelectedEmployeeIndex] = useState(null);
   const [confirmationAction, setConfirmationAction] = useState("");
-
   let url = `/employee/all-users?page=${page}&pageSize=${pageSize}`;
 
   // // Function to handle input change
   const handleInputChange = (e, index) => {
     const { value } = e.target;
     const updatedEmployees = [...employees];
-    // updatedEmployees[index].coins = value;
+    updatedEmployees[index].balance = parseInt(value);
     setEmployees(updatedEmployees);
   };
 
@@ -119,6 +118,29 @@ const page = () => {
     }
   };
 
+  const handleBalanceSave = async (item, index) => {
+    const result = await handleApiCall({
+      method: "PUT",
+      url: `/balance/update`,
+      data: {
+        userId: item._id,
+        balance: employees[index].balance,
+      },
+    });
+    console.log(result);
+    if (result.status === 200) {
+      item.isEditing = false;
+      getAllEmployees();
+      toast.success(result.data.message);
+    } else {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const handleCancle = async (index) => {
+    getAllEmployees();
+    toggleEditing(index);
+  };
   useEffect(() => {
     setFilteredEmployees(employees);
   }, [employees]);
@@ -137,30 +159,29 @@ const page = () => {
         <h1 className="flex items-center text-[20px] font-[700] leading-[23.48px]">
           Active users
         </h1>
-        
-          <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg p-2">
-            <input
-              type="text"
-              id="search"
-              className="w-full bg-transparent"
-              placeholder="Search"
-              value={searchValue}
-              onChange={handleSearchInputChange}
+
+        <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg p-2">
+          <input
+            type="text"
+            id="search"
+            className="w-full bg-transparent"
+            placeholder="Search"
+            value={searchValue}
+            onChange={handleSearchInputChange}
+          />
+          <label htmlFor="search" className="cursor-pointer">
+            <img
+              src="/search-normal.svg"
+              alt="search icon"
+              width={24}
+              height={24}
             />
-            <label htmlFor="search" className="cursor-pointer">
-              <img
-                src="/search-normal.svg"
-                alt="search icon"
-                width={24}
-                height={24}
-              />
-            </label>
-          </div>
-        
+          </label>
+        </div>
       </div>
 
       <div className="overflow-x-auto ">
-        <table className="text-white w-full border border-transparent mb-6">
+        <table className="table-auto overflow-scroll text-white w-[1024px] lg:w-full border border-transparent mb-6">
           <thead className="bg-[#262626] text-white rounded-[4px]">
             <tr className="">
               <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] text-left rounded-l-[4px]">
@@ -172,9 +193,9 @@ const page = () => {
               <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] text-left">
                 Last Activity
               </th>
-              {/* <th className="py-4 px-2 text-[10px] text-[#FFFFFF] text-left leading-[11.74px]">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] text-left leading-[11.74px]">
                 Coins
-              </th> */}
+              </th>
               <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px]">
                 Status
               </th>
@@ -197,62 +218,83 @@ const page = () => {
                     <td className="py-4 px-2 text-sm text-[#808080] leading-[11.74px] border-b-8 border-t-8 border-black">
                       22-03-2024
                     </td>
-                    {/* <td className="py-4 px-2 text-[10px] text-[#808080] leading-[11.74px] relative group cursor-pointer">
-                      <div className="flex gap-2 items-center">
-                        {item.isEditing ? (
-                          <input
-                            type="number"
-                            value={item.coins}
-                            onChange={(e) => handleInputChange(e, index)}
-                            autoFocus
-                            className="bg-[#0C0C0C] rounded-[4px] p-4"
-                          />
-                        ) : (
-                          <div className="flex gap-[5px] items-center">
-                            <img
-                              src="/assets/images/sidebar/dropcoin.png"
-                              alt="dropcoin"
-                              width={21.93}
-                              height={26.01}
+                    <td className="w-[300px] py-4 px-2 text-sm text-[#808080] leading-[11.74px] border-b-8  border-t-8 border-black">
+                      <div className="relative group cursor-pointer">
+                        <div className="flex gap-2 items-center">
+                          {item.isEditing ? (
+                            <input
+                              type="number"
+                              value={employees[index].balance}
+                              onChange={(e) => handleInputChange(e, index)}
+                              autoFocus
+                              className="bg-[#0C0C0C] rounded-[4px] p-3"
                             />
-                            <span className="text-[14px] leading-[16.1px]">
-                              30
-                            </span>
-                          </div>
-                        )}
-                        {!item.isEditing ? (
-                          <div className="absolute right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center items-center">
-                            <button onClick={() => toggleEditing(index)}>
+                          ) : (
+                            <div className="flex gap-[5px] items-center">
                               <img
-                                src="/edit-2.svg"
-                                alt="arrow"
-                                width={21.33}
-                                height={21.33}
+                                src="/assets/images/sidebar/dropcoin.png"
+                                alt="dropcoin"
+                                width={21.93}
+                                height={26.01}
                               />
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex gap-2">
-                            <button onClick={() => toggleEditing(index)}>
-                              <img
-                                src="/close-square.svg"
-                                alt="close-button"
-                                width={32}
-                                height={32}
-                              />
-                            </button>
-                            <button>
-                              <img
-                                src="/tick-square.svg"
-                                alt="close-button"
-                                width={32}
-                                height={32}
-                              />
-                            </button>
-                          </div>
-                        )}
+                              <span className="text-[14px] leading-[16.1px]">
+                                {item?.balance}
+                              </span>
+                            </div>
+                          )}
+                          {item.isEditing ? (
+                            <div className="flex gap-2">
+                              <button onClick={() => handleCancle(index)}>
+                                <img
+                                  src="/close-square.svg"
+                                  alt="close-button"
+                                  width={32}
+                                  height={32}
+                                />
+                              </button>
+                              {isApiLoading ? (
+                                <div className="flex justify-center items-center">
+                                  <RotatingLines
+                                    height="20"
+                                    width="20"
+                                    color="gray"
+                                    strokeColor="white"
+                                    strokeWidth="5"
+                                    animationDuration="0.75"
+                                    ariaLabel="rotating-lines-loading"
+                                  />
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => handleBalanceSave(item, index)}
+                                >
+                                  <img
+                                    src="/tick-square.svg"
+                                    alt="close-button"
+                                    width={32}
+                                    height={32}
+                                  />
+                                </button>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="absolute right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center items-center">
+                              <button
+                                onClick={() => toggleEditing(index)}
+                                className=" w-[21.33px] h-[21.33px]"
+                              >
+                                <img
+                                  src="/edit-2.svg"
+                                  alt="arrow"
+                                  width={21.33}
+                                  height={21.33}
+                                />
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </td> */}
+                    </td>
                     <td className="py-4 px-2 text-[10px] text-black leading-[11.74px] text-center border-b-8  border-t-8 border-black">
                       <div className="relative inline-block text-left">
                         <div>
