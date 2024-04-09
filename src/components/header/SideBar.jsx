@@ -44,7 +44,7 @@ export default function SideBar({ onClose }) {
 
   const linkToUsersList = () => {
     onClose();
-    router.push('/active-users');
+    router.push('/users');
   };
 
   let fullName = auth?.userInfo?.profile?.name;

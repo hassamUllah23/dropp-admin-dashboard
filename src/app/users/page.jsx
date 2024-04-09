@@ -65,6 +65,7 @@ const page = () => {
       });
       setFilteredEmployees(filteredData);
     }
+    
   };
 
   const handleSearchInputChange = (e) => {
@@ -157,7 +158,7 @@ const page = () => {
     <div className="px-3 md:px-14 py-6 w-full m-auto flex flex-col text-white">
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between my-4">
         <h1 className="flex items-center text-[20px] font-[700] leading-[23.48px]">
-          Active users
+          Users
         </h1>
 
         <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg p-2">
@@ -184,22 +185,25 @@ const page = () => {
         <table className="table-auto overflow-scroll text-white w-[1024px] lg:w-full border border-transparent mb-6">
           <thead className="bg-[#262626] text-white rounded-[4px]">
             <tr className="">
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] text-left rounded-l-[4px]">
-                Employee Name
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left rounded-l-[4px]">
+                Name
               </th>
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] text-left">
-                Employee Email
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left">
+                Email
               </th>
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] text-left">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left">
                 Last Activity
               </th>
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] text-left leading-[11.74px]">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] text-left leading-[21.74px]">
                 Coins
               </th>
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px]">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] text-left leading-[21.74px]">
+                Current Balance
+              </th>
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px]">
                 Status
               </th>
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] rounded-r-[4px] text-right">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-r-[4px] text-right">
                 Actions
               </th>
             </tr>
@@ -209,16 +213,16 @@ const page = () => {
               filteredEmployees.map((item, index) => {
                 return (
                   <tr key={index} className="my-3 row w-full darkGrayBg">
-                    <td className="py-4 px-2 text-sm text-[#FFFFFF] leading-[11.74px] rounded-l-[4px] border-b-8  border-t-8 border-black">
+                    <td className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black">
                       {`${item.firstName} ${item.lastName}`}
                     </td>
-                    <td className="py-4 px-2 text-sm text-[#808080] leading-[11.74px] border-b-8 border-t-8 border-black">
+                    <td className="py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black">
                       {item.email}
                     </td>
-                    <td className="py-4 px-2 text-sm text-[#808080] leading-[11.74px] border-b-8 border-t-8 border-black">
-                      22-03-2024
+                    <td className="py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black">
+                      {item?.createdAt.split("T")[0]}
                     </td>
-                    <td className="w-[300px] py-4 px-2 text-sm text-[#808080] leading-[11.74px] border-b-8  border-t-8 border-black">
+                    <td className="w-[300px] py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8  border-t-8 border-black">
                       <div className="relative group cursor-pointer">
                         <div className="flex gap-2 items-center">
                           {item.isEditing ? (
@@ -231,12 +235,12 @@ const page = () => {
                             />
                           ) : (
                             <div className="flex gap-[5px] items-center">
-                              <img
+                              {/* <img
                                 src="/assets/images/sidebar/dropcoin.png"
                                 alt="dropcoin"
                                 width={21.93}
                                 height={26.01}
-                              />
+                              /> */}
                               <span className="text-[14px] leading-[16.1px]">
                                 {item?.balance}
                               </span>
@@ -295,7 +299,10 @@ const page = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="py-4 px-2 text-[10px] text-black leading-[11.74px] text-center border-b-8  border-t-8 border-black">
+                    <td className="py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black">
+                      0
+                    </td>
+                    <td className="py-4 px-2 text-[10px] text-black leading-[21.74px] text-center border-b-8  border-t-8 border-black">
                       <div className="relative inline-block text-left">
                         <div>
                           <button
