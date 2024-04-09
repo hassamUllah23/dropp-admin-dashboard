@@ -43,28 +43,28 @@ const Page = () => {
         method: "post",
         url: "/auth/admin/sign-up-email",
         data: { emails },
-      });
-      // Update email status after sending email
-      if (result.status === 200) {
-        const newArr = [];
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          const newArr = [];
         const newArr2 = [];
         const newArr3 = [];
-        result?.data?.data?.sendEmails?.map((obj) => {
+        res?.data?.data?.sendEmails?.map((obj) => {
           const findEmail = emails.find((item) => item === obj.email);
           newArr.push({
             email: findEmail,
             status: "Sent",
           });
         });
-        console.log(result)
-        result?.data?.data?.alreadyExists?.map((email) => {
+        console.log(res)
+        res?.data?.data?.alreadyExists?.map((email) => {
           const findEmail = emails.find((item) => item === email);
           newArr2.push({
             email: findEmail,
             status: "Already Exists",
           });
         });
-        result?.data?.data?.emailsSendFail?.map((email) => {
+        res?.data?.data?.emailsSendFail?.map((email) => {
           const findEmail = emails.find((item) => item === email);
           newArr3.push({
             email: findEmail,
@@ -75,7 +75,7 @@ const Page = () => {
         console.log('finlaArr', finalArr, action)
         if (action == "bulk") {
           setEmails(finalArr);
-          toast.success(result?.data?.data?.message);
+          toast.success(res?.data?.data?.message);
         } else {
           if (formAction){
             const { resetForm } = formAction
@@ -89,7 +89,12 @@ const Page = () => {
             toast.error("Email failed to send");
           }
         }
-      }
+        }
+        return res;
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.errors);
+      });
     } catch (err) {
       console.log("error", err);
       toast.error(err?.message);
