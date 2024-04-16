@@ -195,9 +195,6 @@ const page = () => {
                 Last Activity
               </th>
               <th className="py-4 px-2 text-sm text-[#FFFFFF] text-left leading-[21.74px]">
-                Coins
-              </th>
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] text-left leading-[21.74px]">
                 Current Balance
               </th>
               <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px]">
@@ -222,7 +219,7 @@ const page = () => {
                     <td className="py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black">
                       {item?.createdAt.split("T")[0]}
                     </td>
-                    <td className="w-[300px] py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8  border-t-8 border-black">
+                    <td className="coinsUpdate w-[300px] py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8  border-t-8 border-black">
                       <div className="relative group cursor-pointer">
                         <div className="flex gap-2 items-center">
                           {item.isEditing ? (
@@ -298,9 +295,6 @@ const page = () => {
                           )}
                         </div>
                       </div>
-                    </td>
-                    <td className="py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black">
-                      0
                     </td>
                     <td className="py-4 px-2 text-[10px] text-black leading-[21.74px] text-center border-b-8  border-t-8 border-black">
                       <div className="relative inline-block text-left">
