@@ -58,7 +58,7 @@ export default function Dashboard() {
   return (
     <div className='p-2.5 pt-4 md:pt-10 max-w-screen-3xl h-fu w-full m-auto flex flex-col min-w-80 z-10 text-white'>
       <div className='flex justify-end mb-2 md:mb-5 pr-3 md:pr-10'>
-        <button className=' text-sm px-5 lightGrayBg leading-10 rounded-2xl flexCenter'>
+        <button className=' text-sm px-5 lightGrayBg leading-10 rounded-2xl hidden'>
           <svg
             width='24'
             height='24'

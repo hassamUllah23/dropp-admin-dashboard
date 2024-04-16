@@ -100,6 +100,7 @@ export default function Navbar() {
             <div className='flex pr-1'>
               <span
                 ref={notificationRef}
+                title='Notifications'
                 className='cursor-pointer relative w-8 md:w-10 inline-block flexCenter rounded-xl py-1 pl-2 md:pl-3 text-white notifications'
               >
                 <svg
@@ -129,7 +130,7 @@ export default function Navbar() {
                   />
                 )}
               </span>
-              <button className='text-white ml-3 mr-2' onClick={handleLogout}>
+              <button className='text-white ml-3 mr-2' onClick={handleLogout} title='Logout'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
@@ -166,6 +167,7 @@ export default function Navbar() {
           ) : (
             <div className='flex'>
               <Link
+                title='Sign In'
                 href='/sign-in'
                 className='cursor-pointer w-10 md:w-14 flexCenter rounded-xl py-1 text-black'
               >

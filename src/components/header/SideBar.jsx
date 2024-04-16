@@ -97,7 +97,7 @@ export default function SideBar({ onClose }) {
         </div>
 
         <div className='flex flex-col screenHeightForSidebar overflow-y-auto'>
-          <div className=' flex space-x-2  items-center blackBorderBottom py-4 md:py-5'>
+          {/* <div className=' flex space-x-2  items-center blackBorderBottom py-4 md:py-5'>
             <div className='justify-center items-center w-7 h-8 md:w-12 md:h-14 mr-2'>
               <img
                 src='/assets/images/sidebar/dropcoin.png'
@@ -111,7 +111,7 @@ export default function SideBar({ onClose }) {
                 300.56
               </p>
             </div>
-          </div>
+          </div> */}
 
           <div className=' w-full blackBorderBottom pt-2 pb-3 md:pt-3 md:pb-4'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Pages</p>

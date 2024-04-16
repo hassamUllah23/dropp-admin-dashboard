@@ -1,6 +1,7 @@
 
 import LoadingSvg from "@/components/common/LoadingSvg";
 import React, { useState, useRef } from "react";
+import { toast } from "react-toastify";
 
 export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizationLoading, type }) {
   const [showLoading, setShowLoading] = useState(false);
@@ -28,7 +29,21 @@ export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizati
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    handleFiles(file);
+    if (type === "digital") {
+      // Only allow mp4 videos for 'digital' type
+      if (file.type.startsWith("video/mp4")) {
+        handleFiles(file);
+      } else {
+        toast.error("Please upload an MP4 video file.");
+      }
+    } else {
+      // Only allow .glb files for other types
+      if (file.name.endsWith(".glb")) {
+        handleFiles(file);
+      } else {
+        toast.error("Please upload a .glb file.");
+      }
+    }
   };
 
   const openFileDialog = () => {
@@ -51,7 +66,7 @@ export default function UpdateJobAsset({ onUploadAdminAsset, loading, tokenizati
                 <div className=" absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer">
                   <img
                     src="/assets/images/chat/info.svg"
-                    className=" w-4 h-4 md:w-7 md:h-7"
+                    className=" w-4 h-4 md:w-7 md:h-7 hidden"
                   />
                 </div>
 

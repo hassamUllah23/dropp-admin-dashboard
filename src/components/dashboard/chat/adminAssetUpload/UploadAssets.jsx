@@ -88,7 +88,7 @@ export default function UploadAssets({ onUploadCountChange, index }) {
                 <div className=' absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer'>
                   <img
                     src='/assets/images/chat/info.svg'
-                    className=' w-4 h-4 md:w-7 md:h-7'
+                    className=' w-4 h-4 md:w-7 md:h-7 hidden'
                   />
                 </div>
 
