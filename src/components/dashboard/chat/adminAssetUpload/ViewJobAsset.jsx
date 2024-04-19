@@ -20,6 +20,8 @@ const ViewJobAsset = ({
   jobKeys,
   setLoading,
 }) => {
+
+const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrls, status }) => {
   const [uploadedVideoCount] = useState(!!url ? 1 : 0);
   const [savedVideos, setSavedVideos] = useState(null);
   const { output } = useSelector((state) => state.job);
@@ -306,6 +308,13 @@ const ViewJobAsset = ({
                             animation-name="Running"
                             ar-modes="webxr scene-viewer"
                             camera-orbit="0deg 180deg 5m"
+                            animation-name='Running'
+                            ar-modes='webxr scene-viewer'
+                            camera-orbit={
+                              status != 'inqueue'
+                                ? '0deg 90deg 5m'
+                                : '180deg 90deg 5m'
+                            }
                           >
                             {progress < 100 && (
                               <div className="bg-transparent left-2 right-2 bottom-0 absolute">
