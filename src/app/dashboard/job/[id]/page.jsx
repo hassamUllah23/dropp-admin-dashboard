@@ -124,6 +124,7 @@ export default function Chat({params: { id }}) {
                 }
                 description={job?.description}
                 tokenizedNFTUrls = {job?.tokenizedNFTUrls || []}
+                status={job?.status}
               />
             )}
 
