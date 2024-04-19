@@ -35,6 +35,8 @@ const ThreeDModal = ({ model, showLoading, resetData }) => {
         ? 'Dream Gaussian'
         : model.threeD === 'dust3r'
         ? 'Dust3R'
+        : model.threeD === 'triposr'
+        ? 'TripoSR'
         : model.threeD === 'open_lrm_v2'
         ? 'Open LRM V2'
         : 'Open LRM'
@@ -91,6 +93,12 @@ const ThreeDModal = ({ model, showLoading, resetData }) => {
               className='cursor-pointer px-3 py-1 hover:bg-gray-100'
             >
               Open LRM V2
+            </li>
+            <li
+              onClick={() => handleOptionClick('triposr', 'tripoSR')}
+              className='cursor-pointer px-3 py-1 hover:bg-gray-100'
+            >
+              TripoSR
             </li>
             <li
               onClick={() => handleOptionClick('dust3r', 'Dust3R')}
