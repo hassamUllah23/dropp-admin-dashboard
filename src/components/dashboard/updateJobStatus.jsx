@@ -1,16 +1,18 @@
 import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector, selectAuth } from "@/lib";
-import useApiHook from "@/hooks/useApiHook";
 
-const UpdateJobStatus = ({ jobKeys, setLoading, isFromDashboard }) => {
-  const { handleApiCall } = useApiHook();
+const UpdateJobStatus = ({
+  jobKeys,
+  jobStatus,
+  showJobStatus,
+  handleStatusClick,
+  setShowJobStatus,
+  isFromDashboard,
+}) => {
   const assignTaskPopupRef = useRef(null);
   const [showAssignTaskPopup, setShowAssignTaskPopup] = useState(false);
-  const [showJobStatus, setShowJobStatus] = useState(false);
-  const [jobStatus, setJobStatus] = useState(jobKeys.status);
   const auth = useSelector(selectAuth);
-  let jobId = jobKeys.id;
   let isAdmin = auth?.userInfo?.user?.role;
 
   const assignTaskPopup = () => {
@@ -18,21 +20,6 @@ const UpdateJobStatus = ({ jobKeys, setLoading, isFromDashboard }) => {
   };
   const showStatuses = () => {
     setShowJobStatus(!showJobStatus);
-  };
-  const handleStatusClick = async (status) => {
-    setLoading(true);
-    setShowJobStatus(false);
-    const result = await handleApiCall({
-      method: "PUT",
-      url: `/jobs/${jobId}/update-status/`,
-      data: { status: status, jobId: jobId },
-    });
-
-    if (result?.status === 200) {
-      setJobStatus(result?.data?.status);
-      setShowJobStatus(false);
-    }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -95,7 +82,11 @@ const UpdateJobStatus = ({ jobKeys, setLoading, isFromDashboard }) => {
       </button>
 
       {showJobStatus && (
-        <div className={`flex flex-col absolute left-0 bgDarkGray py-2 px-4 leading-5 text-white text-xs font-light w-40 rounded-lg z-10 cursor-pointer ${isFromDashboard ? "top-14" : "top-7"}`}>
+        <div
+          className={`flex flex-col absolute left-0 bgDarkGray py-2 px-4 leading-5 text-white text-xs font-light w-40 rounded-lg z-10 cursor-pointer ${
+            isFromDashboard ? "top-14" : "top-7"
+          }`}
+        >
           <p
             className="blackBorderBottom py-2 hover:font-semibold"
             onClick={() => handleStatusClick("assigned")}

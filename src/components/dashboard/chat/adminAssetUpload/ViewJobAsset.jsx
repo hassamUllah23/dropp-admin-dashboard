@@ -8,6 +8,7 @@ import Link from "next/link";
 import GetInitials from "../common/GetInitials";
 import VideoUrl from "./VideoUrl";
 import UpdateJobStatus from "../../updateJobStatus";
+import useApiHook from "@/hooks/useApiHook";
 
 const ViewJobAsset = ({
   user,
@@ -23,7 +24,10 @@ const ViewJobAsset = ({
   const [savedVideos, setSavedVideos] = useState(null);
   const { output } = useSelector((state) => state.job);
   const [progress, setProgress] = useState(0);
+  const [showJobStatus, setShowJobStatus] = useState(false);
+  const [jobStatus, setJobStatus] = useState(jobKeys.status);
   const dispatch = useDispatch();
+  const { handleApiCall } = useApiHook();
   const calculateAvatarSize = () => {
     const viewportWidth = window.innerWidth;
     if (viewportWidth < 1024) {
@@ -87,6 +91,22 @@ const ViewJobAsset = ({
       .catch((error) => console.error(error));
   };
 
+  const handleStatusClick = async (status) => {
+    setLoading(true);
+    setShowJobStatus(false);
+    const result = await handleApiCall({
+      method: "PUT",
+      url: `/jobs/${jobKeys?.id}/update-status/`,
+      data: { status: status, jobId: jobKeys?.id },
+    });
+
+    if (result?.status === 200) {
+      setJobStatus(result?.data?.status);
+      setShowJobStatus(false);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     const modelViewer = document.getElementById(`model-viewer`);
     const progressHandler = (event) => {
@@ -144,7 +164,13 @@ const ViewJobAsset = ({
             </div>
             <div className="w-full relative">
               <div className=" p-8 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl">
-                <UpdateJobStatus jobKeys={jobKeys} setLoading={setLoading} />
+                <UpdateJobStatus
+                  jobKeys={jobKeys}
+                  showJobStatus={showJobStatus}
+                  jobStatus={jobStatus}
+                  handleStatusClick={handleStatusClick}
+                  setShowJobStatus={setShowJobStatus}
+                />
                 <div className=" absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer">
                   <img
                     src="/assets/images/chat/info.svg"

@@ -21,9 +21,6 @@ export default function SingleJob({ jobKeys }) {
   const router = useRouter();
   let isAdmin = auth?.userInfo?.user?.role;
   const dispatch = useDispatch();
-  const assignTaskPopup = () => {
-    setShowAssignTaskPopup(!showAssignTaskPopup);
-  };
 
   let jobId = jobKeys.id;
   const createdAt = new Date(jobKeys.createdAt);
@@ -284,7 +281,7 @@ export default function SingleJob({ jobKeys }) {
             </button>
           )}
         </div>
-        {showLoading && (
+        {showLoading ? (
           <div className="flexCenter pt-5 relative loadingArea">
             {jobKeys.platform == "aramco" ? (
               <LoadingSvg color={"#333333"} />
@@ -292,153 +289,157 @@ export default function SingleJob({ jobKeys }) {
               <LoadingSvg color={"#ffffff"} />
             )}
           </div>
-        )}
-        <div
-          className="flex items-center pt-4 justify-between relative"
-          ref={assignTaskPopupRef}
-        >
-          <UpdateJobStatus
-            jobKeys={jobKeys}
-            setLoading={setShowLoading}
-            isFromDashboard={true}
-          />
-          <div className="flex items-center">
-            <div className=" relative flex space-x-1 jobOptions">
-              <button
-                title="Sell"
-                className={` ${
-                  jobStatus != "completed" && jobKeys.platform == "aramco"
-                    ? "bgLightGray"
-                    : jobStatus == "completed"
-                    ? "lightGrayBg"
-                    : "bg-gray-100"
-                } w-7 h-7 md:w-6 md:h-6 rounded-full flexCenter`}
-              >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+        ) : (
+          <div
+            className="flex items-center pt-4 justify-between relative"
+            ref={assignTaskPopupRef}
+          >
+            <UpdateJobStatus
+              jobKeys={jobKeys}
+              showJobStatus={showJobStatus}
+              jobStatus={jobStatus}
+              handleStatusClick={handleStatusClick}
+              setShowJobStatus={setShowJobStatus}
+              isFromDashboard={true}
+            />
+            <div className="flex items-center">
+              <div className=" relative flex space-x-1 jobOptions">
+                <button
+                  title="Sell"
+                  className={` ${
+                    jobStatus != "completed" && jobKeys.platform == "aramco"
+                      ? "bgLightGray"
+                      : jobStatus == "completed"
+                      ? "lightGrayBg"
+                      : "bg-gray-100"
+                  } w-7 h-7 md:w-6 md:h-6 rounded-full flexCenter`}
                 >
-                  <path
-                    d="M12.3332 8.43333V10.9C12.3332 12.98 10.3932 14.6667 7.99984 14.6667C5.6065 14.6667 3.6665 12.98 3.6665 10.9V8.43333C3.6665 10.5133 5.6065 12 7.99984 12C10.3932 12 12.3332 10.5133 12.3332 8.43333Z"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12.3332 5.1C12.3332 5.70667 12.1665 6.26666 11.8732 6.74666C11.1598 7.92 9.69317 8.66667 7.99984 8.66667C6.3065 8.66667 4.83984 7.92 4.12651 6.74666C3.83317 6.26666 3.6665 5.70667 3.6665 5.1C3.6665 4.06 4.15317 3.12 4.93317 2.44C5.71983 1.75333 6.79984 1.33333 7.99984 1.33333C9.19984 1.33333 10.2798 1.75333 11.0665 2.43333C11.8465 3.12 12.3332 4.06 12.3332 5.1Z"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12.3332 5.1V8.43333C12.3332 10.5133 10.3932 12 7.99984 12C5.6065 12 3.6665 10.5133 3.6665 8.43333V5.1C3.6665 3.02 5.6065 1.33333 7.99984 1.33333C9.19984 1.33333 10.2798 1.75333 11.0665 2.43333C11.8465 3.12 12.3332 4.06 12.3332 5.1Z"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <button
-                title="Share"
-                className={` ${
-                  jobStatus != "completed" && jobKeys.platform == "aramco"
-                    ? "bgLightGray"
-                    : jobStatus == "completed"
-                    ? "lightGrayBg"
-                    : "bg-gray-100"
-                } w-7 h-7 md:w-6 md:h-6 rounded-full flexCenter`}
-              >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12.3332 8.43333V10.9C12.3332 12.98 10.3932 14.6667 7.99984 14.6667C5.6065 14.6667 3.6665 12.98 3.6665 10.9V8.43333C3.6665 10.5133 5.6065 12 7.99984 12C10.3932 12 12.3332 10.5133 12.3332 8.43333Z"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M12.3332 5.1C12.3332 5.70667 12.1665 6.26666 11.8732 6.74666C11.1598 7.92 9.69317 8.66667 7.99984 8.66667C6.3065 8.66667 4.83984 7.92 4.12651 6.74666C3.83317 6.26666 3.6665 5.70667 3.6665 5.1C3.6665 4.06 4.15317 3.12 4.93317 2.44C5.71983 1.75333 6.79984 1.33333 7.99984 1.33333C9.19984 1.33333 10.2798 1.75333 11.0665 2.43333C11.8465 3.12 12.3332 4.06 12.3332 5.1Z"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M12.3332 5.1V8.43333C12.3332 10.5133 10.3932 12 7.99984 12C5.6065 12 3.6665 10.5133 3.6665 8.43333V5.1C3.6665 3.02 5.6065 1.33333 7.99984 1.33333C9.19984 1.33333 10.2798 1.75333 11.0665 2.43333C11.8465 3.12 12.3332 4.06 12.3332 5.1Z"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  title="Share"
+                  className={` ${
+                    jobStatus != "completed" && jobKeys.platform == "aramco"
+                      ? "bgLightGray"
+                      : jobStatus == "completed"
+                      ? "lightGrayBg"
+                      : "bg-gray-100"
+                  } w-7 h-7 md:w-6 md:h-6 rounded-full flexCenter`}
                 >
-                  <path
-                    d="M11.3066 4.11333C12.64 5.04 13.56 6.51333 13.7466 8.21333"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M2.32666 8.24667C2.49999 6.55333 3.40666 5.08 4.72666 4.14667"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M5.45996 13.96C6.23329 14.3533 7.11329 14.5733 8.03996 14.5733C8.93329 14.5733 9.77329 14.3733 10.5266 14.0067"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M8.03986 5.13333C9.06343 5.13333 9.89319 4.30357 9.89319 3.28C9.89319 2.25643 9.06343 1.42667 8.03986 1.42667C7.01629 1.42667 6.18652 2.25643 6.18652 3.28C6.18652 4.30357 7.01629 5.13333 8.03986 5.13333Z"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M3.22003 13.28C4.2436 13.28 5.07337 12.4502 5.07337 11.4267C5.07337 10.4031 4.2436 9.57333 3.22003 9.57333C2.19646 9.57333 1.3667 10.4031 1.3667 11.4267C1.3667 12.4502 2.19646 13.28 3.22003 13.28Z"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12.7801 13.28C13.8037 13.28 14.6334 12.4502 14.6334 11.4267C14.6334 10.4031 13.8037 9.57333 12.7801 9.57333C11.7565 9.57333 10.9268 10.4031 10.9268 11.4267C10.9268 12.4502 11.7565 13.28 12.7801 13.28Z"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <button
-                title="Export"
-                className={` ${
-                  jobStatus != "completed" && jobKeys.platform == "aramco"
-                    ? "bgLightGray"
-                    : jobStatus == "completed"
-                    ? "lightGrayBg"
-                    : "bg-gray-100"
-                } w-7 h-7 md:w-6 md:h-6 rounded-full flexCenter`}
-              >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11.3066 4.11333C12.64 5.04 13.56 6.51333 13.7466 8.21333"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M2.32666 8.24667C2.49999 6.55333 3.40666 5.08 4.72666 4.14667"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M5.45996 13.96C6.23329 14.3533 7.11329 14.5733 8.03996 14.5733C8.93329 14.5733 9.77329 14.3733 10.5266 14.0067"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M8.03986 5.13333C9.06343 5.13333 9.89319 4.30357 9.89319 3.28C9.89319 2.25643 9.06343 1.42667 8.03986 1.42667C7.01629 1.42667 6.18652 2.25643 6.18652 3.28C6.18652 4.30357 7.01629 5.13333 8.03986 5.13333Z"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M3.22003 13.28C4.2436 13.28 5.07337 12.4502 5.07337 11.4267C5.07337 10.4031 4.2436 9.57333 3.22003 9.57333C2.19646 9.57333 1.3667 10.4031 1.3667 11.4267C1.3667 12.4502 2.19646 13.28 3.22003 13.28Z"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M12.7801 13.28C13.8037 13.28 14.6334 12.4502 14.6334 11.4267C14.6334 10.4031 13.8037 9.57333 12.7801 9.57333C11.7565 9.57333 10.9268 10.4031 10.9268 11.4267C10.9268 12.4502 11.7565 13.28 12.7801 13.28Z"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  title="Export"
+                  className={` ${
+                    jobStatus != "completed" && jobKeys.platform == "aramco"
+                      ? "bgLightGray"
+                      : jobStatus == "completed"
+                      ? "lightGrayBg"
+                      : "bg-gray-100"
+                  } w-7 h-7 md:w-6 md:h-6 rounded-full flexCenter`}
                 >
-                  <path
-                    d="M6.21338 4.33333L7.92005 2.62667L9.62671 4.33333"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeMiterlimit="10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M7.91992 9.45333V2.67333"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeMiterlimit="10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M2.6665 8C2.6665 10.9467 4.6665 13.3333 7.99984 13.3333C11.3332 13.3333 13.3332 10.9467 13.3332 8"
-                    stroke={jobStatus == "completed" ? "white" : "gray"}
-                    strokeMiterlimit="10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6.21338 4.33333L7.92005 2.62667L9.62671 4.33333"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeMiterlimit="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M7.91992 9.45333V2.67333"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeMiterlimit="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M2.6665 8C2.6665 10.9467 4.6665 13.3333 7.99984 13.3333C11.3332 13.3333 13.3332 10.9467 13.3332 8"
+                      stroke={jobStatus == "completed" ? "white" : "gray"}
+                      strokeMiterlimit="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
