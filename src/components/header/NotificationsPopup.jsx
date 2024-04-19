@@ -92,27 +92,31 @@ export default function NotificationsPopup({
             {notificationData?.length > 0 &&
               notificationData?.map((notification, index) => (
                 <div
-                  className='flex flex-col'
+                  className='flex flex-col justify-start'
                   key={index}
                   id={notification?._id}
                   onClick={() =>
-                    router.push(`/dashboard/job/${notification?.job}`)
+                    router.push(
+                      `/dashboard/c/${notification?.url?.split('/')[0]}`
+                    )
                   }
                 >
                   <div className='w-full flex justify-between relative items-center py-3 border-b border-gray-300 notificationItem'>
-                    {!notification?.read && (
-                      <span className='bg-blue-500 w-2 h-2 rounded-full' />
-                    )}
-                    <div className='flex flex-col mr-1 px-3'>
-                      <span className='text-sm font-semibold pb-1 capitalize'>
+                    <span
+                      className={`bg-blue-500 w-2 h-2 rounded-full ${
+                        notification?.read ? 'hidden' : 'block'
+                      } `}
+                    />
+                    <div className='flex flex-col mr-1 px-3 flex-1'>
+                      <span className='text-sm font-semibold capitalize'>
                         {notification?.title}
                       </span>
-                      <span className='text-xs text-gray-800'>
+                      {/* <span className='text-xs text-gray-800'>
                         {notification?.message}
-                      </span>
+                      </span> */}
                     </div>
                     <span className='text-xs w-1/6 pr-2 text-gray-700'>
-                      <small className='flex flex-row flex-wrap justify-center w-full text-center'>
+                      <small className='flex flex-row flex-wrap justify-end w-full text-right'>
                         {getTimeLabel(notification?.createdAt)}
                       </small>
                     </span>
