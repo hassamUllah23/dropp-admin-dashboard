@@ -127,6 +127,7 @@ export default function Navbar() {
                     isApiLoading={isApiLoading}
                     notificationData={notificationsData}
                     markAllNotificationAsRead={markAllNotificationAsRead}
+                    onClose={() => setShowNotification(false)}
                   />
                 )}
               </span>

@@ -5,6 +5,7 @@ export default function NotificationsPopup({
   notificationData,
   isApiLoading,
   markAllNotificationAsRead,
+  onClose,
 }) {
   const router = useRouter();
   const getTimeLabel = (isoTimestamp) => {
@@ -37,6 +38,11 @@ export default function NotificationsPopup({
       const differenceInYears = Math.floor(differenceInSeconds / 31556952);
       return `${differenceInYears} year${differenceInYears > 1 ? 's' : ''} ago`;
     }
+  };
+
+  const handleNotificationLink = (url) => {
+    router.push(`/dashboard/job/${url}`)
+    onClose();
   };
 
   // Check if notificationData is not empty
@@ -95,20 +101,14 @@ export default function NotificationsPopup({
                   className='flex flex-col justify-start'
                   key={index}
                   id={notification?._id}
-                  onClick={() =>
-                    router.push(
-                      `/dashboard/c/${notification?.url?.split('/')[0]}`
-                    )
-                  }
+                  onClick={() => handleNotificationLink(notification?.job)}
                 >
                   <div className='w-full flex justify-between relative items-center py-3 border-b border-gray-300 notificationItem'>
-                    <span
-                      className={`bg-blue-500 w-2 h-2 rounded-full ${
-                        notification?.read ? 'hidden' : 'block'
-                      } `}
-                    />
-                    <div className='flex flex-col mr-1 px-3 flex-1'>
-                      <span className='text-sm font-semibold capitalize'>
+                    {!notification?.read && (
+                      <span className='bg-blue-500 w-2 h-2 rounded-full' />
+                    )}
+                    <div className='flex flex-col mr-1 px-3'>
+                      <span className='text-sm font-semibold pb-1 capitalize'>
                         {notification?.title}
                       </span>
                       {/* <span className='text-xs text-gray-800'>
