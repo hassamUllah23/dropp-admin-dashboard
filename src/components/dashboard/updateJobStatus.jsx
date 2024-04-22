@@ -44,7 +44,7 @@ const UpdateJobStatus = ({
     >
       <button
         onClick={showStatuses}
-        disabled={jobStatus === "completed"}
+        // disabled={jobStatus === "completed"}
         className={`w-[4.4rem] btn-status leading-6 text-[.5rem] flexCenter rounded-2xl font-medium ${
           jobStatus === "assigned"
             ? "assignedBg assignedClr"
