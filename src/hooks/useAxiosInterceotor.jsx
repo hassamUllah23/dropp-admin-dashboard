@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { getRefreshToken } from "@/utils/apiCalls/authApi";
-import { instance } from "@/utils/instances";
-import { selectAuth } from "@/lib";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { getRefreshToken } from '@/utils/apiCalls/authApi';
+import { instance } from '@/utils/instances';
+import { selectAuth } from '@/lib';
 
 const useAxiosInterceotor = () => {
   const auth = useSelector(selectAuth);
@@ -14,17 +14,17 @@ const useAxiosInterceotor = () => {
     const requestIntercept = instance.interceptors.request.use(
       (config) => {
         setIsApiLoading(true);
-        config.headers["retryCall"] = 1;
-        if (!config.headers["Authorization"]) {
+        config.headers['retryCall'] = 1;
+        if (!config.headers['Authorization']) {
           config.headers[
-            "Authorization"
+            'Authorization'
           ] = `Bearer ${auth?.userInfo?.accessToken}`;
         }
         return config;
       },
       (error) => {
         setIsApiLoading(false);
-        // toast.error(error?.response?.data?.errors || error.message);
+        toast.error(error?.response?.data?.errors || error.message);
         return Promise.reject(error);
       }
     );
@@ -44,13 +44,13 @@ const useAxiosInterceotor = () => {
             dispatch,
           });
           prevRequest.headers[
-            "Authorization"
+            'Authorization'
           ] = `Bearer ${result?.data?.accessToken}`;
           return instance(prevRequest);
         }
-        // if (+prevRequest.headers['retryCall'] === 1)
-        //   toast.error(error?.response?.data?.errors || error.message);
-        prevRequest.headers["retryCall"] = 2;
+        if (+prevRequest.headers['retryCall'] === 1)
+          toast.error(error?.response?.data?.errors || error.message);
+        prevRequest.headers['retryCall'] = 2;
         return Promise.reject(error);
       }
     );
