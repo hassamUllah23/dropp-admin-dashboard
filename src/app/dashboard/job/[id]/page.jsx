@@ -5,13 +5,15 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { JOB_COMPLETED } from "@/utils/constants";
 import ViewJobAsset from "@/components/dashboard/chat/adminAssetUpload/ViewJobAsset";
-
+import { useSelector } from '@/lib';
 export default function Chat({ params: { id } }) {
   const scrollToBox = useRef(null);
   const { handleApiCall } = useApiHook();
   const [loading, setLoading] = useState(false);
   const [job, setJob] = useState(null);
-
+  const notifications = useSelector(
+    (state) => state.notification.notifications
+  );
   const handleUploadAdminAsset = async (file) => {
     try {
       setLoading(true);
@@ -60,6 +62,19 @@ export default function Chat({ params: { id } }) {
       getJob();
     }
   }, [id, loading]);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      console.log('notifications', notifications)
+      const jobId = notifications[0].jobId;
+      const type = notifications[0].type;
+      if(jobId === id && type === 'mintingAndTokenization')
+      {
+        console.log('inside notifications', notifications)
+        getJob();
+      }
+    }
+  }, [notifications]);
 
   const updateJobAndTokenize = async () => {
     await getJob();

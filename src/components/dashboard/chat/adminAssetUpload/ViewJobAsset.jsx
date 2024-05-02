@@ -379,7 +379,7 @@ const ViewJobAsset = ({
                 </div>
               )}
 
-              {tokenizedNFTUrls?.length > 0 && (
+              {tokenizedNFTUrls?.length > 0 ? (
                 <div className='bg-gray-100 absolute right-0 bottom-3 rounded-md px-2 py-1'>
                   <a
                     href={tokenizedNFTUrls}
@@ -404,7 +404,15 @@ const ViewJobAsset = ({
                     </span>
                   </a>
                 </div>
-              )}
+              ) : (
+                  <div
+                    className={`bg-gray-100 absolute right-0 top-1 rounded-xl px-2 py-1 `}
+                  >
+                    <span className='inline-block text-sm pl-1 max-w-56 text-white'>
+                      Asset is being tokenized...
+                    </span>
+                  </div>
+                )}
             </div>
           </div>
         </div>
