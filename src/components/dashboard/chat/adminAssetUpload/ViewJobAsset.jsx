@@ -18,6 +18,7 @@ const ViewJobAsset = ({
   type,
   description,
   tokenizedNFTUrls,
+  uploadedBy,
   jobKeys,
   setLoading,
   status,
@@ -407,7 +408,7 @@ const ViewJobAsset = ({
                 </div>
               ) : (
                 <div>
-                  {showMinting && (
+                  {uploadedBy === 'admin' && (
                     <div
                         className={`bg-gray-100 absolute right-0 bottom-2 rounded-xl px-2 py-1 `}
                       >

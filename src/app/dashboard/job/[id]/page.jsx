@@ -132,6 +132,7 @@ export default function Chat({ params: { id } }) {
                   }
                   description={job?.description}
                   tokenizedNFTUrls={job?.tokenizedNFTUrls || []}
+                  uploadedBy={job?.outputs[0]?.uploadedBy}
                   jobKeys={job}
                   status={job?.status}
                   showMinting={showInitialMsg}
