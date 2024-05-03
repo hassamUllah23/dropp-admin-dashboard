@@ -40,7 +40,7 @@ const UpdateJobStatus = ({
 
   return (
     <div
-      className={`${!isFromDashboard && 'absolute top-4 right-8 md:right-14'}`}
+      className={`${!isFromDashboard && 'absolute top-4 right-4'}`}
       ref={assignTaskPopupRef}
     >
       <button

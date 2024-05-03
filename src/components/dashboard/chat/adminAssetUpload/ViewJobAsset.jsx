@@ -21,6 +21,7 @@ const ViewJobAsset = ({
   jobKeys,
   setLoading,
   status,
+  showMinting
 }) => {
   const [uploadedVideoCount] = useState(!!url ? 1 : 0);
   const [savedVideos, setSavedVideos] = useState(null);
@@ -405,13 +406,18 @@ const ViewJobAsset = ({
                   </a>
                 </div>
               ) : (
-                  <div
-                    className={`bg-gray-100 absolute right-0 bottom-2 rounded-xl px-2 py-1 `}
-                  >
-                    <span className='inline-block text-sm pl-1 max-w-56 text-white'>
-                      Asset is being tokenized...
-                    </span>
-                  </div>
+                <div>
+                  {showMinting && (
+                    <div
+                        className={`bg-gray-100 absolute right-0 bottom-2 rounded-xl px-2 py-1 `}
+                      >
+                        <span className='inline-block text-sm pl-1 max-w-56 text-white'>
+                          Asset is being tokenized...
+                        </span>
+                      </div>
+                      )}
+                </div>
+                  
                 )}
             </div>
           </div>

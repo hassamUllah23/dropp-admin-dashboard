@@ -11,6 +11,7 @@ export default function Chat({ params: { id } }) {
   const { handleApiCall } = useApiHook();
   const [loading, setLoading] = useState(false);
   const [job, setJob] = useState(null);
+  const [showInitialMsg, setShowInitialMsg] = useState(false);
   const notifications = useSelector(
     (state) => state.notification.notifications
   );
@@ -31,6 +32,7 @@ export default function Chat({ params: { id } }) {
 
         if (result?.status === 200) {
           toast.success("The output has been attached with this job.");
+          setShowInitialMsg(true)
           updateJobAndTokenize();
         }
       }
@@ -132,6 +134,7 @@ export default function Chat({ params: { id } }) {
                   tokenizedNFTUrls={job?.tokenizedNFTUrls || []}
                   jobKeys={job}
                   status={job?.status}
+                  showMinting={showInitialMsg}
                 />
               )}
 
