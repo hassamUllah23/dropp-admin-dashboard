@@ -80,7 +80,7 @@ export default function NotificationsPopup({
       </span>
 
       <div className='w-full'>
-        <div className='w-full flex justify-start relative items-center py-4 px-2'>
+        <div className='w-full flex justify-between relative items-center py-4 px-2'>
           <span className='text-base font-semibold'>Notification Panel</span>
           <span
             className='text-xs hover:text-slate-300'
@@ -103,12 +103,12 @@ export default function NotificationsPopup({
                   id={notification?._id}
                   onClick={() => handleNotificationLink(notification?.job)}
                 >
-                  <div className='w-full flex justify-start relative items-center py-3 border-b border-gray-300 notificationItem'>
+                  <div className='w-full flex justify-between relative items-center py-2 border-b border-gray-300 notificationItem'>
                     {!notification?.read && (
                       <span className='bg-blue-500 w-2 h-2 rounded-full' />
                     )}
-                    <div className='flex flex-col mr-1 px-3'>
-                      <span className='text-sm font-semibold pb-1 capitalize'>
+                    <div className='flex flex-col mr-1 px-3 flex-1'>
+                      <span className='text-sm font-semibold pb-1 capitalize leading-5'>
                         {notification?.title}
                       </span>
                       {/* <span className='text-xs text-gray-800'>
