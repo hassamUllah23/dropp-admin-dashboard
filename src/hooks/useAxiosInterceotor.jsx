@@ -24,7 +24,7 @@ const useAxiosInterceotor = () => {
       },
       (error) => {
         setIsApiLoading(false);
-        toast.error(error?.response?.data?.errors || error.message);
+        //toast.error(error?.response?.data?.errors || error.message);
         return Promise.reject(error);
       }
     );
@@ -49,7 +49,7 @@ const useAxiosInterceotor = () => {
           return instance(prevRequest);
         }
         if (+prevRequest.headers['retryCall'] === 1)
-          toast.error(error?.response?.data?.errors || error.message);
+          //toast.error(error?.response?.data?.errors || error.message);
         prevRequest.headers['retryCall'] = 2;
         return Promise.reject(error);
       }

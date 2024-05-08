@@ -7,6 +7,7 @@ import NotificationsPopup from './NotificationsPopup';
 import { clearNotifications } from '@/lib/slices/notification/notificationSlice';
 import { useRouter } from 'next/navigation';
 import useApiHook from '@/hooks/useApiHook';
+import { toast } from 'react-toastify';
 
 export default function Navbar() {
   const auth = useSelector(selectAuth);
@@ -57,10 +58,17 @@ export default function Navbar() {
     const result = await handleApiCall({
       method: 'GET',
       url: '/employee/notification/all',
-    });
-    if (result?.status === 200) {
-      setNotificationsData(result?.data?.notifications);
-    }
+    })
+    .then((res) => {
+      console.log(res?.data);
+      if (res?.status === 200) {
+        setNotificationsData(res?.data?.notifications);
+      }
+      return res;
+  }).catch((error) => {
+    console.log('error error : ' + error?.response?.data?.errors);
+      toast.error('error: ' + error?.response?.data?.errors);
+  });
   };
 
   const markAllNotificationAsRead = async () => {
