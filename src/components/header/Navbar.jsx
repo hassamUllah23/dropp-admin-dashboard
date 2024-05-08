@@ -66,8 +66,7 @@ export default function Navbar() {
       }
       return res;
   }).catch((error) => {
-    console.log('error error : ' + error?.response?.data?.errors);
-      toast.error('error: ' + error?.response?.data?.errors);
+    if(error?.response?.data?.errors === 'Invalid token') handleLogout()
   });
   };
 
