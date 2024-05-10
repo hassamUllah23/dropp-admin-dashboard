@@ -65,7 +65,6 @@ const page = () => {
       });
       setFilteredEmployees(filteredData);
     }
-    
   };
 
   const handleSearchInputChange = (e) => {
@@ -225,19 +224,12 @@ const page = () => {
                           {item.isEditing ? (
                             <input
                               type="number"
-                              value={employees[index].balance}
                               onChange={(e) => handleInputChange(e, index)}
                               autoFocus
                               className="bg-[#0C0C0C] rounded-[4px] p-3"
                             />
                           ) : (
                             <div className="flex gap-[5px] items-center">
-                              {/* <img
-                                src="/assets/images/sidebar/dropcoin.png"
-                                alt="dropcoin"
-                                width={21.93}
-                                height={26.01}
-                              /> */}
                               <span className="text-[14px] leading-[16.1px]">
                                 {item?.balance}
                               </span>
