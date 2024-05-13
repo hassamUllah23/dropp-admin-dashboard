@@ -52,7 +52,7 @@ export default function NotificationsPopup({
         <div className='w-full'>
           <div className='w-full flex justify-start items-center py-1'>
             <span className='text-base font-semibold'>
-              No new notification{' '}
+              No new notifications{' '}
             </span>
           </div>
         </div>

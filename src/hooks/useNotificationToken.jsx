@@ -53,15 +53,15 @@ const useNotificationToken = () => {
             }
           } else {
             toast.error(
-              'Notification permission has been denied. If you want to receive notification you must need to enable that.'
+              'Notification permission has been denied. If you want to receive notifications you must enable the notifications in your browser settings.'
             );
           }
         }
       } catch (error) {
         toast.error(
-          'An error occurred while retrieving token. Please check the permissions and try again.'
+          'Notification token not received. If you want to receive notifications you must enable the notifications in your browser settings and reload the page again.'
         );
-        if (notificationPermissionStatus === 'granted') retrieveToken();
+        //if (notificationPermissionStatus === 'granted') retrieveToken();
       }
     };
 
