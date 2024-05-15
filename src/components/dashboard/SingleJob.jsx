@@ -45,12 +45,17 @@ export default function SingleJob({ jobKeys }) {
       method: 'PUT',
       url: `/jobs/${jobId}/update-status/`,
       data: { status: status, jobId: jobId },
+    })
+    .then((res) => {
+      if (res.status === 201) {
+        setJobStatus(status);
+        setShowJobStatus(false);
+      }
+      return res;
+    })
+    .catch((error) => {
+      toast.error(error?.response?.data?.errors);
     }).finally(() => setShowLoading(false));
-
-    if (result?.status === 200) {
-      setJobStatus(status);
-      setShowJobStatus(false);
-    }
   };
 
   const routeToJob = () => {
