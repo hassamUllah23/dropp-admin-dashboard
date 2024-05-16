@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { getRefreshToken } from '@/utils/apiCalls/authApi';
 import { instance } from '@/utils/instances';
-import { selectAuth } from '@/lib';
-
+import { selectAuth, toggleLogin } from '@/lib';
+import { useRouter } from 'next/navigation';
 const useAxiosInterceotor = () => {
   const auth = useSelector(selectAuth);
   const [isApiLoading, setIsApiLoading] = useState(false);
   const dispatch = useDispatch();
-
+  const router = useRouter();
   useEffect(() => {
     const requestIntercept = instance.interceptors.request.use(
       (config) => {
@@ -42,11 +42,22 @@ const useAxiosInterceotor = () => {
           const result = await getRefreshToken({
             userInfo: auth?.userInfo,
             dispatch,
+          }).then((res) => {
+            if (res.status === 200) {
+              prevRequest.headers[
+                'Authorization'
+              ] = `Bearer ${result?.data?.accessToken}`;
+              return instance(prevRequest);
+            }
+            return res;
+          })
+          .catch((error) => {
+            localStorage.removeItem('accessToken');
+            dispatch(toggleLogin({ isLogin: false, userInfo: null }));
+            router.push('/sign-in');
+            //toast.error(error?.response?.data?.errors);
           });
-          prevRequest.headers[
-            'Authorization'
-          ] = `Bearer ${result?.data?.accessToken}`;
-          return instance(prevRequest);
+          
         }
         if (+prevRequest.headers['retryCall'] === 1)
           //toast.error(error?.response?.data?.errors || error.message);

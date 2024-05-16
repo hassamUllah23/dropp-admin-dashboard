@@ -207,9 +207,10 @@ export default function SingleJob({ jobKeys }) {
             jobKeys.platform == 'aramco' ? ' font-semibold' : 'font-medium'
           }`}
         >
+          {jobKeys.description?.length === 0 && <span className=' inline-block'></span>}
           {jobKeys.description?.length > 35
             ? `${jobKeys.description?.slice(0, 35)}...`
-            : jobKeys.description}
+            : jobKeys.description + ' '}
         </p>
 
         <div className='flex items-center pb-3'>
@@ -238,6 +239,7 @@ export default function SingleJob({ jobKeys }) {
               : 'border-black'
           }`}
         >
+        {jobKeys.artifacts?.length === 0 && <span className=' block w-11 h-11 rounded-lg assignedClr'></span>}
           {jobKeys?.artifacts.slice(0, 3).map((artifacts, index) =>
             artifacts?.type === 'image' ? (
               <img
