@@ -39,67 +39,87 @@ const Page = () => {
       } else {
         emails = values.map((item) => item.email);
       }
+  
       const result = await handleApiCall({
         method: "post",
         url: "/auth/admin/sign-up-email",
         data: { emails },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          const newArr = [];
-        const newArr2 = [];
-        const newArr3 = [];
-        res?.data?.data?.sendEmails?.map((obj) => {
-          const findEmail = emails.find((item) => item === obj.email);
-          newArr.push({
-            email: findEmail,
+      });
+  
+      if (result.status === 200) {
+        const sentEmails = [];
+        const alreadyExists = [];
+        const failedEmails = [];
+        
+        // Mark emails that were sent successfully
+        result?.data?.data?.sendEmails?.forEach((obj) => {
+          sentEmails.push({
+            email: obj.email,
             status: "Sent",
           });
         });
-        console.log(res)
-        res?.data?.data?.alreadyExists?.map((email) => {
-          const findEmail = emails.find((item) => item === email);
-          newArr2.push({
-            email: findEmail,
+  
+        // Mark emails that already exist
+        result?.data?.data?.alreadyExists?.forEach((email) => {
+          alreadyExists.push({
+            email,
             status: "Already Exists",
           });
         });
-        res?.data?.data?.emailsSendFail?.map((email) => {
-          const findEmail = emails.find((item) => item === email);
-          newArr3.push({
-            email: findEmail,
+  
+        // Mark emails that don't exist
+        result?.data?.data?.emailsSendFail?.forEach((email) => {
+          failedEmails.push({
+            email,
             status: "Failed",
           });
         });
-        const finalArr = [...newArr, ...newArr2, ...newArr3];
-        console.log('finlaArr', finalArr, action)
-        if (action == "bulk") {
+        // notExistEmails.forEach((email) => {
+        //   failedEmails.push({
+        //     email,
+        //     status: "Failed",
+        //   });
+        // });
+  
+        const finalArr = [...sentEmails, ...alreadyExists, ...failedEmails];
+        console.log('finalArr', finalArr, action);
+  
+        if (action === "bulk") {
           setEmails(finalArr);
-          toast.success(res?.data?.data?.message);
+          toast.success(result?.data?.data?.message);
         } else {
-          if (formAction){
-            const { resetForm } = formAction
-            resetForm()
-          };
-          if (newArr.length === 1) {
+          if (formAction) {
+            const { resetForm } = formAction;
+            resetForm();
+          }
+          
+          if (sentEmails.length === 1) {
             toast.success("Email sent successfully");
-          } else if (newArr2.length === 1) {
+          } else if (alreadyExists.length === 1) {
             toast.error("Email already exists");
-          } else if (newArr3.length === 1) {
+          } else if (failedEmails.length === 1) {
             toast.error("Email failed to send");
           }
         }
-        }
-        return res;
-      })
-      .catch((error) => {
+      }
+      return result;
+    } catch (error) {
+      console.log("error", error);
+      let errors = error?.response?.data?.errors?.[0];
+      console.log('errors')
+      console.log(errors);
+      if (errors) 
+      {
+        toast.error(error?.response?.data?.errors[0]);
+      }
+      else
+      {
         toast.error(error?.response?.data?.errors);
-      });
-    } catch (err) {
-      console.log("error", err);
-      toast.error(err?.message);
+      }
+      
     }
   };
+  
 
   const openFileDialog = () => {
     fileInputRef.current.click();
@@ -334,7 +354,7 @@ const Page = () => {
                         <tbody>
                           {emails.map((item, index) => (
                             <tr key={index} className="border border-gray-100">
-                              <td className="px-4 py-2 border-r border-gray-100 h-[3.5rem]">
+                              <td className="px-4 py-2 border-r border-gray-100 h-[3.5rem] ellipsis">
                                 {(action === "edit" && index === itemIndex) ||
                                 (action === "add" && index === 0) ? (
                                   <input
