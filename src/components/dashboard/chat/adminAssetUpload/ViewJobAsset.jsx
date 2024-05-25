@@ -98,6 +98,7 @@ const ViewJobAsset = ({
   const handleStatusClick = async (status) => {
     setLoading(true);
     setShowJobStatus(false);
+    
     const result = await handleApiCall({
       method: 'PUT',
       url: `/jobs/${jobKeys?.id}/update-status/`,
@@ -105,8 +106,8 @@ const ViewJobAsset = ({
     })
     
     .then((res) => {
-      if (res.status === 201) {
-        setJobStatus(res?.data?.status);
+      if (res.status === 200) {
+        setJobStatus(status);
         setShowJobStatus(false);
       }
       return res;
