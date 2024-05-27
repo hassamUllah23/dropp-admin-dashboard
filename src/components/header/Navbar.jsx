@@ -58,19 +58,16 @@ export default function Navbar() {
     const result = await handleApiCall({
       method: 'GET',
       url: '/employee/notification/all',
-    }).then((res) => {
-      if (res.status === 200) {
+    })
+    .then((res) => {
+      console.log(res?.data);
+      if (res?.status === 200) {
         setNotificationsData(res?.data?.notifications);
       }
       return res;
-    })
-    .catch((error) => {
-      if(error?.response?.data?.errors === 'Invalid token')
-        {
-          handleLogout();
-        }
-    });
-
+  }).catch((error) => {
+    if(error?.response?.data?.errors === 'Invalid token') handleLogout()
+  });
   };
 
   const markAllNotificationAsRead = async () => {
