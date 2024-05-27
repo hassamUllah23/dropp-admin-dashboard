@@ -55,22 +55,23 @@ export default function Navbar() {
   }, [notificationRef]);
 
   const getNotification = async () => {
-    const result = await handleApiCall({
+    await handleApiCall({
       method: 'GET',
       url: '/employee/notification/all',
-    }).then((res) => {
-      if (res.status === 200) {
+    })
+    .then((res) => {
+      console.log(res?.data);
+      if (res?.status === 200) {
         setNotificationsData(res?.data?.notifications);
       }
       return res;
-    })
-    .catch((error) => {
-      if(error?.response?.data?.errors === 'Invalid token')
-        {
-          handleLogout();
-        }
-    });
-
+  }).catch((error) => {
+    if(error?.response?.data?.errors === 'Invalid token') 
+      {
+        toast.error("Session expired, please login again");
+        handleLogout()
+      }
+  });
   };
 
   const markAllNotificationAsRead = async () => {

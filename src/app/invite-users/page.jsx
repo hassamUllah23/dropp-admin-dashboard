@@ -222,7 +222,7 @@ const Page = () => {
   };
   return (
     <>
-      <div className="p-2.5 pt-4 md:pt-10 max-w-screen-3xl w-full m-auto flex flex-col min-w-80 z-10 text-white">
+      {/* <div className="p-2.5 pt-4 md:pt-10 max-w-screen-3xl w-full m-auto flex flex-col min-w-80 z-10 text-white">
         <div className="flex justify-between mb-2 md:mb-5 px-3 md:px-10">
           <div className="flex text-sm p-1.5 lightGrayBg leading-8 rounded-md">
             <button
@@ -479,7 +479,7 @@ const Page = () => {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
 
       <div className="mt-10"></div>
     </>

@@ -41,10 +41,10 @@ export default function SideBar({ onClose }) {
     router.push('/dashboard');
   };
 
-  const linkToInviteUsers = () => {
-    onClose();
-    router.push('/invite-users');
-  };
+  // const linkToInviteUsers = () => {
+  //   onClose();
+  //   router.push('/invite-users');
+  // };
 
   const linkToUsersList = () => {
     onClose();
@@ -142,7 +142,7 @@ export default function SideBar({ onClose }) {
                 <span className=' text-sm pl-2'> Dashboard</span>
               </p>
             </div>
-            <div className='w-full py-2'>
+            {/* <div className='w-full py-2'>
               <p
                 className='flex items-middle text-white/80 cursor-pointer'
                 onClick={linkToInviteUsers}
@@ -164,7 +164,7 @@ export default function SideBar({ onClose }) {
 
                 <span className=' text-sm pl-2'> Invite users</span>
               </p>
-            </div>
+            </div> */}
             <div className='w-full py-2'>
               <p
                 className='flex items-middle text-white/80 cursor-pointer'
