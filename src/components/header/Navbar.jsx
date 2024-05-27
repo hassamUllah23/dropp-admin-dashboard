@@ -55,7 +55,7 @@ export default function Navbar() {
   }, [notificationRef]);
 
   const getNotification = async () => {
-    const result = await handleApiCall({
+    await handleApiCall({
       method: 'GET',
       url: '/employee/notification/all',
     })
@@ -66,7 +66,11 @@ export default function Navbar() {
       }
       return res;
   }).catch((error) => {
-    if(error?.response?.data?.errors === 'Invalid token') handleLogout()
+    if(error?.response?.data?.errors === 'Invalid token') 
+      {
+        toast.error("Session expired, please login again");
+        handleLogout()
+      }
   });
   };
 
