@@ -16,14 +16,18 @@ import TextToImageModel from './ChatModels/TextToImageModel';
 import ThreeDModal from './ChatModels/ThreeDModal';
 import DigitalHuman from './ChatModels/DigitalHuman';
 import { RotatingLines } from 'react-loader-spinner';
+import NetworkModel from './Networks/NetworkModel';
 export default function SideBar({ onClose }) {
   const { handleApiCall, isApiLoading } = useApiHook();
   const [showIntegration, setShowIntegration] = useState(true);
   const [showIntegrationPopup, setShowIntegrationPopup] = useState(false);
   const [AiModals, setAiModals] = useState([]);
+  const [networkModal, setNetworkModals] = useState([]);
   const [showSpinner, setShowSpinner] = useState(true);
+  const [showNetworkSpinner, setShowNetworkSpinner] = useState(true);
   const router = useRouter();
   const auth = useSelector(selectAuth);
+
   const toggleIntegration = () => {
     setShowIntegration(!showIntegration);
   };
@@ -37,14 +41,14 @@ export default function SideBar({ onClose }) {
     router.push('/dashboard');
   };
 
-  const linkToInviteUsers = () => {
-    onClose();
-    router.push('/invite-users');
-  };
+  // const linkToInviteUsers = () => {
+  //   onClose();
+  //   router.push('/invite-users');
+  // };
 
   const linkToUsersList = () => {
     onClose();
-    router.push('/active-users');
+    router.push('/users');
   };
 
   const linkToSettings = () => {
@@ -61,14 +65,25 @@ export default function SideBar({ onClose }) {
     });
     setShowSpinner(false);
     setAiModals(result?.data);
-  }
+  };
+
+  const loadNetworks = async () => {
+    const result = await handleApiCall({
+      method: 'GET',
+      url: '/settings',
+    });
+    setShowNetworkSpinner(false);
+    setNetworkModals(result?.data);
+  };
+
   useEffect(() => {
     loadModels();
-  },[])
-  
+    loadNetworks();
+  }, []);
+
   return (
     <div className='relative z-10'>
-      <div className='fixed w-[22rem] flex flex-col min-h-screen blackBG p-4 pt-3 right-0 top-0 bottom-0 text-white text-base z-20'>
+      <div className='fixed w-[22rem] flex flex-col min-h-screen blackBG p-4 pt-3 right-0 top-0 bottom-0 text-white text-base z-20 overflow-auto md:overflow-visible md:over'>
         <span
           className='absolute top-9 right-9 md:top-12 md:right-12'
           onClick={onClose}
@@ -102,7 +117,7 @@ export default function SideBar({ onClose }) {
         </div>
 
         <div className='flex flex-col screenHeightForSidebar overflow-y-auto'>
-          <div className=' flex space-x-2  items-center blackBorderBottom py-4 md:py-5'>
+          {/* <div className=' flex space-x-2  items-center blackBorderBottom py-4 md:py-5'>
             <div className='justify-center items-center w-7 h-8 md:w-12 md:h-14 mr-2'>
               <img
                 src='/assets/images/sidebar/dropcoin.png'
@@ -116,7 +131,7 @@ export default function SideBar({ onClose }) {
                 300.56
               </p>
             </div>
-          </div>
+          </div> */}
 
           <div className=' w-full blackBorderBottom pt-2 pb-3 md:pt-3 md:pb-4'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Pages</p>
@@ -132,7 +147,7 @@ export default function SideBar({ onClose }) {
                 <span className=' text-sm pl-2'> Dashboard</span>
               </p>
             </div>
-            <div className='w-full py-2'>
+            {/* <div className='w-full py-2'>
               <p
                 className='flex items-middle text-white/80 cursor-pointer'
                 onClick={linkToInviteUsers}
@@ -154,7 +169,7 @@ export default function SideBar({ onClose }) {
 
                 <span className=' text-sm pl-2'> Invite users</span>
               </p>
-            </div>
+            </div> */}
             <div className='w-full py-2'>
               <p
                 className='flex items-middle text-white/80 cursor-pointer'
@@ -263,37 +278,77 @@ export default function SideBar({ onClose }) {
             </div>
           </div>
 
-          <div className=' w-full  pt-2 pb-3 md:pt-3 md:pb-4 textModals'>
+          <div className=' w-full  pt-2 pb-3 md:pt-3 md:pb-4 textModals blackBorderBottom'>
             <p className=' pt-3  py-1 font-semibold pb-3'>Select Ai Models</p>
-                <div className='w-full relative'>
-                  <div className='flex items-middle relative z-40'>
-                    <ChatModel model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)} />
-                  </div>
-                  <div className='flex items-middle relative z-30'>
-                    <TextToImageModel model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)}  />
-                  </div>
-                  <div className='flex items-middle relative z-20'>
-                    <ThreeDModal model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)} />
-                  </div>
-                  <div className='flex items-middle relative z-10'>
-                    <DigitalHuman model={AiModals} showLoading={(value) => setShowSpinner(value)} resetData={(value) => setAiModals(value)} />
-                  </div>
-                  {showSpinner && (
-                    <div className='flexCenter absolute right-0 top-0 left-0 bottom-0 bg-black/80 z-50'>
-                      <RotatingLines
-                        visible={true}
-                        height='20'
-                        width='20'
-                        color='blue'
-                        strokeWidth='5'
-                        animationDuration='0.75'
-                        ariaLabel='rotating-lines-loading'
-                    />
-                    </div>
-                  )}
-
+            <div className='w-full relative'>
+              <div className='flex items-middle relative z-40'>
+                <ChatModel
+                  model={AiModals}
+                  showLoading={(value) => setShowSpinner(value)}
+                  resetData={(value) => setAiModals(value)}
+                />
+              </div>
+              <div className='flex items-middle relative z-30'>
+                <TextToImageModel
+                  model={AiModals}
+                  showLoading={(value) => setShowSpinner(value)}
+                  resetData={(value) => setAiModals(value)}
+                />
+              </div>
+              <div className='flex items-middle relative z-20'>
+                <ThreeDModal
+                  model={AiModals}
+                  showLoading={(value) => setShowSpinner(value)}
+                  resetData={(value) => setAiModals(value)}
+                />
+              </div>
+              <div className='flex items-middle relative z-10'>
+                <DigitalHuman
+                  model={AiModals}
+                  showLoading={(value) => setShowSpinner(value)}
+                  resetData={(value) => setAiModals(value)}
+                />
+              </div>
+              {showSpinner && (
+                <div className='flexCenter absolute right-0 top-0 left-0 bottom-0 bg-black/80 z-50'>
+                  <RotatingLines
+                    visible={true}
+                    height='20'
+                    width='20'
+                    color='blue'
+                    strokeWidth='5'
+                    animationDuration='0.75'
+                    ariaLabel='rotating-lines-loading'
+                  />
                 </div>
-              
+              )}
+            </div>
+          </div>
+
+          <div className=' w-full pt-0 pb-3 md:pb-4 textModals'>
+            <p className=' pt-3  py-1 font-semibold pb-3'>Select Network</p>
+            <div className='w-full relative'>
+              <div className='flex items-middle relative z-40'>
+                <NetworkModel
+                  model={networkModal}
+                  showLoading={(value) => setShowNetworkSpinner(value)}
+                  resetData={(value) => setNetworkModals(value)}
+                />
+              </div>
+              {showNetworkSpinner && (
+                <div className='flexCenter absolute right-0 top-0 left-0 bottom-0 bg-black/80 z-50'>
+                  <RotatingLines
+                    visible={true}
+                    height='20'
+                    width='20'
+                    color='blue'
+                    strokeWidth='5'
+                    animationDuration='0.75'
+                    ariaLabel='rotating-lines-loading'
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           <div className=' w-full blackBorderBottom  pt-2 pb-3 md:pt-3 md:pb-4 hidden'>

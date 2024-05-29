@@ -19,12 +19,20 @@ export default function Dashboard() {
   let url = `/jobs/all/admin?page=${page}&pageSize=${pageSize}`;
 
   const loadJobs = async () => {
-    const result = await handleApiCall({
+    await handleApiCall({
       method: 'GET',
       url: url,
+    }).then((res) => {
+      if (res.status === 200) {
+        setAllJobs(res?.data?.jobs);
+        calculatePageCount(res?.data?.count);
+      }
+      return res;
+    })
+    .catch((error) => {
+      //toast.error(error?.response?.data?.errors);
     });
-    setAllJobs(result?.data?.jobs);
-    await calculatePageCount(result?.data?.count);
+    
   };
 
   const calculatePageCount = async (count) => {
@@ -58,7 +66,7 @@ export default function Dashboard() {
   return (
     <div className='p-2.5 pt-4 md:pt-10 max-w-screen-3xl h-fu w-full m-auto flex flex-col min-w-80 z-10 text-white'>
       <div className='flex justify-end mb-2 md:mb-5 pr-3 md:pr-10'>
-        <button className=' text-sm px-5 lightGrayBg leading-10 rounded-2xl flexCenter'>
+        <button className=' text-sm px-5 lightGrayBg leading-10 rounded-2xl hidden'>
           <svg
             width='24'
             height='24'
@@ -81,7 +89,7 @@ export default function Dashboard() {
       <div className='grid grid-cols-3 gap-x-4 items-center md:px-5 mx-3 md:mx-5 mb-2'>
         <div>
           <span className='text-base leading-5'>
-            Showing {page} - {pageCount} of {count}
+            Page {page} - {pageCount} of {count}
           </span>
         </div>
         <div className='flex justify-center'>

@@ -39,62 +39,87 @@ const Page = () => {
       } else {
         emails = values.map((item) => item.email);
       }
+  
       const result = await handleApiCall({
         method: "post",
         url: "/auth/admin/sign-up-email",
         data: { emails },
       });
-      // Update email status after sending email
+  
       if (result.status === 200) {
-        const newArr = [];
-        const newArr2 = [];
-        const newArr3 = [];
-        result?.data?.data?.sendEmails?.map((obj) => {
-          const findEmail = emails.find((item) => item === obj.email);
-          newArr.push({
-            email: findEmail,
+        const sentEmails = [];
+        const alreadyExists = [];
+        const failedEmails = [];
+        
+        // Mark emails that were sent successfully
+        result?.data?.data?.sendEmails?.forEach((obj) => {
+          sentEmails.push({
+            email: obj.email,
             status: "Sent",
           });
         });
-        console.log(result)
-        result?.data?.data?.alreadyExists?.map((email) => {
-          const findEmail = emails.find((item) => item === email);
-          newArr2.push({
-            email: findEmail,
+  
+        // Mark emails that already exist
+        result?.data?.data?.alreadyExists?.forEach((email) => {
+          alreadyExists.push({
+            email,
             status: "Already Exists",
           });
         });
-        result?.data?.data?.emailsSendFail?.map((email) => {
-          const findEmail = emails.find((item) => item === email);
-          newArr3.push({
-            email: findEmail,
+  
+        // Mark emails that don't exist
+        result?.data?.data?.emailsSendFail?.forEach((email) => {
+          failedEmails.push({
+            email,
             status: "Failed",
           });
         });
-        const finalArr = [...newArr, ...newArr2, ...newArr3];
-        console.log('finlaArr', finalArr, action)
-        if (action == "bulk") {
+        // notExistEmails.forEach((email) => {
+        //   failedEmails.push({
+        //     email,
+        //     status: "Failed",
+        //   });
+        // });
+  
+        const finalArr = [...sentEmails, ...alreadyExists, ...failedEmails];
+        console.log('finalArr', finalArr, action);
+  
+        if (action === "bulk") {
           setEmails(finalArr);
           toast.success(result?.data?.data?.message);
         } else {
-          if (formAction){
-            const { resetForm } = formAction
-            resetForm()
-          };
-          if (newArr.length === 1) {
+          if (formAction) {
+            const { resetForm } = formAction;
+            resetForm();
+          }
+          
+          if (sentEmails.length === 1) {
             toast.success("Email sent successfully");
-          } else if (newArr2.length === 1) {
+          } else if (alreadyExists.length === 1) {
             toast.error("Email already exists");
-          } else if (newArr3.length === 1) {
+          } else if (failedEmails.length === 1) {
             toast.error("Email failed to send");
           }
         }
       }
-    } catch (err) {
-      console.log("error", err);
-      toast.error(err?.message);
+      return result;
+    } catch (error) {
+      console.log("error", error);
+      let errors = error?.response?.data?.errors?.[0];
+      console.log('errors')
+      console.log(errors);
+      if (errors) 
+      {
+        toast.error(error?.response?.data?.errors[0]);
+      }
+      else
+      {
+        toast.error(error?.response?.data?.errors);
+      }
+      
     }
   };
+  
 
   const openFileDialog = () => {
     fileInputRef.current.click();
@@ -197,7 +222,7 @@ const Page = () => {
   };
   return (
     <>
-      <div className="p-2.5 pt-4 md:pt-10 max-w-screen-3xl w-full m-auto flex flex-col min-w-80 z-10 text-white">
+      {/* <div className="p-2.5 pt-4 md:pt-10 max-w-screen-3xl w-full m-auto flex flex-col min-w-80 z-10 text-white">
         <div className="flex justify-between mb-2 md:mb-5 px-3 md:px-10">
           <div className="flex text-sm p-1.5 lightGrayBg leading-8 rounded-md">
             <button
@@ -329,7 +354,7 @@ const Page = () => {
                         <tbody>
                           {emails.map((item, index) => (
                             <tr key={index} className="border border-gray-100">
-                              <td className="px-4 py-2 border-r border-gray-100 h-[3.5rem]">
+                              <td className="px-4 py-2 border-r border-gray-100 h-[3.5rem] ellipsis">
                                 {(action === "edit" && index === itemIndex) ||
                                 (action === "add" && index === 0) ? (
                                   <input
@@ -454,7 +479,7 @@ const Page = () => {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
 
       <div className="mt-10"></div>
     </>

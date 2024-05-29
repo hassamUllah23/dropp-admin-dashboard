@@ -7,15 +7,31 @@ import JSZip from 'jszip';
 import Link from 'next/link';
 import GetInitials from '../common/GetInitials';
 import VideoUrl from './VideoUrl';
+import UpdateJobStatus from '../../updateJobStatus';
+import useApiHook from '@/hooks/useApiHook';
+import { toast } from 'react-toastify';
 
-const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrls }) => {
+const ViewJobAsset = ({
+  user,
+  artifacts,
+  url,
+  type,
+  description,
+  tokenizedNFTUrls,
+  uploadedBy,
+  jobKeys,
+  setLoading,
+  status,
+  showMinting
+}) => {
   const [uploadedVideoCount] = useState(!!url ? 1 : 0);
   const [savedVideos, setSavedVideos] = useState(null);
   const { output } = useSelector((state) => state.job);
   const [progress, setProgress] = useState(0);
+  const [showJobStatus, setShowJobStatus] = useState(false);
+  const [jobStatus, setJobStatus] = useState(jobKeys.status);
   const dispatch = useDispatch();
-  console.log('asset url');
-  console.log(url);
+  const { handleApiCall } = useApiHook();
   const calculateAvatarSize = () => {
     const viewportWidth = window.innerWidth;
     if (viewportWidth < 1024) {
@@ -40,7 +56,6 @@ const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrl
     anchor.click();
     document.body.removeChild(anchor);
   };
-
   const handleGlbDownload = () => {
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -80,6 +95,28 @@ const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrl
       .catch((error) => console.error(error));
   };
 
+  const handleStatusClick = async (status) => {
+    setLoading(true);
+    setShowJobStatus(false);
+    
+    const result = await handleApiCall({
+      method: 'PUT',
+      url: `/jobs/${jobKeys?.id}/update-status/`,
+      data: { status: status, jobId: jobKeys?.id },
+    })
+    
+    .then((res) => {
+      if (res.status === 200) {
+        setJobStatus(status);
+        setShowJobStatus(false);
+      }
+      return res;
+    })
+    .catch((error) => {
+      toast.error(error?.response?.data?.errors);
+    }).finally(() => setLoading(false));
+  };
+
   useEffect(() => {
     const modelViewer = document.getElementById(`model-viewer`);
     const progressHandler = (event) => {
@@ -107,7 +144,7 @@ const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrl
         type='module'
         src='https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'
       />
-      <div className='text-white flex justify-start items-center pl-8  md:pl-16 pt-2'>
+      <div className='text-white flex justify-between items-center pl-8  md:pl-16 pt-2'>
         <Link href='/dashboard' className='flex items-center'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -137,10 +174,17 @@ const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrl
             </div>
             <div className='w-full relative'>
               <div className=' p-8 md:p-14 relative bg-no-repeat bg-cover bgGrayImage rounded-xl'>
+                <UpdateJobStatus
+                  jobKeys={jobKeys}
+                  showJobStatus={showJobStatus}
+                  jobStatus={jobStatus}
+                  handleStatusClick={handleStatusClick}
+                  setShowJobStatus={setShowJobStatus}
+                />
                 <div className=' absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer'>
                   <img
                     src='/assets/images/chat/info.svg'
-                    className=' w-4 h-4 md:w-7 md:h-7'
+                    className=' w-4 h-4 md:w-7 md:h-7 hidden'
                   />
                 </div>
                 {savedVideos != null && (
@@ -252,7 +296,6 @@ const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrl
                 <div className='media-container max-w-[32rem] m-auto text-center'>
                   {type === 'video' ? (
                     <VideoUrl url={url} />
-                    
                   ) : (
                     <>
                       <div className='w-full glbModal h-[16rem] md:h-[24rem]'>
@@ -272,7 +315,11 @@ const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrl
                             autoplay
                             animation-name='Running'
                             ar-modes='webxr scene-viewer'
-                            camera-orbit='0deg 180deg 5m'
+                            camera-orbit={
+                              status != 'in-queue'
+                                ? '0deg 90deg 5m'
+                                : '180deg 90deg 5m'
+                            }
                           >
                             {progress < 100 && (
                               <div className='bg-transparent left-2 right-2 bottom-0 absolute'>
@@ -338,36 +385,48 @@ const ViewJobAsset = ({ user, artifacts, url, type, description, tokenizedNFTUrl
                       strokeLinejoin='round'
                     />
                   </svg>
-                </div>                
+                </div>
               )}
 
-              {tokenizedNFTUrls?.length > 0 && (
-                  <div className='bg-gray-100 absolute right-0 bottom-3 rounded-md px-2 py-1'>
-                    <a
-                      href={tokenizedNFTUrls}
-                      className=' text-gray-600 text-xs flexCenter cursor-pointer'
-                      target='_blank'
-                      rel='noopener noreferrer'
-                    >
-                      <span>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 16 16'
-                          fill='#fff'
-                          className='w-4 h-4'
-                        >
-                          <path d='M7.628 1.099a.75.75 0 0 1 .744 0l5.25 3a.75.75 0 0 1 0 1.302l-5.25 3a.75.75 0 0 1-.744 0l-5.25-3a.75.75 0 0 1 0-1.302l5.25-3Z' />
-                          <path d='m2.57 7.24-.192.11a.75.75 0 0 0 0 1.302l5.25 3a.75.75 0 0 0 .744 0l5.25-3a.75.75 0 0 0 0-1.303l-.192-.11-4.314 2.465a2.25 2.25 0 0 1-2.232 0L2.57 7.239Z' />
-                          <path d='m2.378 10.6.192-.11 4.314 2.464a2.25 2.25 0 0 0 2.232 0l4.314-2.465.192.11a.75.75 0 0 1 0 1.303l-5.25 3a.75.75 0 0 1-.744 0l-5.25-3a.75.75 0 0 1 0-1.303Z' />
-                        </svg>
-                      </span>
-                      <span className='inline-block pl-1 max-w-48'>
-                        Tokenized NFT Url
-                      </span>
-                    </a>
-                  </div>
+              {tokenizedNFTUrls?.length > 0 ? (
+                <div className='bg-gray-100 absolute right-0 bottom-3 rounded-md px-2 py-1'>
+                  <a
+                    href={tokenizedNFTUrls}
+                    className=' text-gray-600 text-xs flexCenter cursor-pointer'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <span>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 16 16'
+                        fill='#fff'
+                        className='w-4 h-4'
+                      >
+                        <path d='M7.628 1.099a.75.75 0 0 1 .744 0l5.25 3a.75.75 0 0 1 0 1.302l-5.25 3a.75.75 0 0 1-.744 0l-5.25-3a.75.75 0 0 1 0-1.302l5.25-3Z' />
+                        <path d='m2.57 7.24-.192.11a.75.75 0 0 0 0 1.302l5.25 3a.75.75 0 0 0 .744 0l5.25-3a.75.75 0 0 0 0-1.303l-.192-.11-4.314 2.465a2.25 2.25 0 0 1-2.232 0L2.57 7.239Z' />
+                        <path d='m2.378 10.6.192-.11 4.314 2.464a2.25 2.25 0 0 0 2.232 0l4.314-2.465.192.11a.75.75 0 0 1 0 1.303l-5.25 3a.75.75 0 0 1-.744 0l-5.25-3a.75.75 0 0 1 0-1.303Z' />
+                      </svg>
+                    </span>
+                    <span className='inline-block pl-1 max-w-48'>
+                      Tokenized NFT Url
+                    </span>
+                  </a>
+                </div>
+              ) : (
+                <div>
+                  {uploadedBy === 'admin' && (
+                    <div
+                        className={`bg-gray-100 absolute right-0 bottom-2 rounded-xl px-2 py-1 `}
+                      >
+                        <span className='inline-block text-sm pl-1 max-w-56 text-white'>
+                          Asset is being tokenized...
+                        </span>
+                      </div>
+                      )}
+                </div>
+                  
                 )}
-
             </div>
           </div>
         </div>

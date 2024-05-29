@@ -5,6 +5,7 @@ export default function NotificationsPopup({
   notificationData,
   isApiLoading,
   markAllNotificationAsRead,
+  onClose,
 }) {
   const router = useRouter();
   const getTimeLabel = (isoTimestamp) => {
@@ -39,6 +40,11 @@ export default function NotificationsPopup({
     }
   };
 
+  const handleNotificationLink = (url) => {
+    router.push(`/dashboard/job/${url}`)
+    onClose();
+  };
+
   // Check if notificationData is not empty
   if (!notificationData || notificationData.length === 0) {
     return (
@@ -46,7 +52,7 @@ export default function NotificationsPopup({
         <div className='w-full'>
           <div className='w-full flex justify-start items-center py-1'>
             <span className='text-base font-semibold'>
-              No new notification{' '}
+              No new notifications{' '}
             </span>
           </div>
         </div>
@@ -92,27 +98,25 @@ export default function NotificationsPopup({
             {notificationData?.length > 0 &&
               notificationData?.map((notification, index) => (
                 <div
-                  className='flex flex-col'
+                  className='flex flex-col justify-start'
                   key={index}
                   id={notification?._id}
-                  onClick={() =>
-                    router.push(`/dashboard/job/${notification?.job}`)
-                  }
+                  onClick={() => handleNotificationLink(notification?.job)}
                 >
-                  <div className='w-full flex justify-between relative items-center py-3 border-b border-gray-300 notificationItem'>
+                  <div className='w-full flex justify-between relative items-center py-2 border-b border-gray-300 notificationItem'>
                     {!notification?.read && (
                       <span className='bg-blue-500 w-2 h-2 rounded-full' />
                     )}
-                    <div className='flex flex-col mr-1 px-3'>
-                      <span className='text-sm font-semibold pb-1 capitalize'>
+                    <div className='flex flex-col mr-1 px-3 flex-1'>
+                      <span className='text-sm font-semibold pb-1 capitalize leading-5'>
                         {notification?.title}
                       </span>
-                      <span className='text-xs text-gray-800'>
+                      {/* <span className='text-xs text-gray-800'>
                         {notification?.message}
-                      </span>
+                      </span> */}
                     </div>
                     <span className='text-xs w-1/6 pr-2 text-gray-700'>
-                      <small className='flex flex-row flex-wrap justify-center w-full text-center'>
+                      <small className='flex flex-row flex-wrap justify-end w-full text-right'>
                         {getTimeLabel(notification?.createdAt)}
                       </small>
                     </span>

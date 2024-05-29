@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { setJob } from '@/lib/slices/job/jobActions';
 import LoadingSvg from '../common/LoadingSvg';
 import useApiHook from '@/hooks/useApiHook';
+import UpdateJobStatus from './updateJobStatus';
+import { toast } from 'react-toastify';
 
 export default function SingleJob({ jobKeys }) {
   const { handleApiCall } = useApiHook();
@@ -20,9 +22,6 @@ export default function SingleJob({ jobKeys }) {
   const router = useRouter();
   let isAdmin = auth?.userInfo?.user?.role;
   const dispatch = useDispatch();
-  const assignTaskPopup = () => {
-    setShowAssignTaskPopup(!showAssignTaskPopup);
-  };
 
   let jobId = jobKeys.id;
   const createdAt = new Date(jobKeys.createdAt);
@@ -46,13 +45,17 @@ export default function SingleJob({ jobKeys }) {
       method: 'PUT',
       url: `/jobs/${jobId}/update-status/`,
       data: { status: status, jobId: jobId },
-    });
-
-    if (result?.status === 200) {
-      setJobStatus(status);
-      setShowJobStatus(false);
-      setShowLoading(false);
-    }
+    })
+    .then((res) => {
+      if (res.status === 201) {
+        setJobStatus(status);
+        setShowJobStatus(false);
+      }
+      return res;
+    })
+    .catch((error) => {
+      toast.error(error?.response?.data?.errors);
+    }).finally(() => setShowLoading(false));
   };
 
   const routeToJob = () => {
@@ -204,9 +207,10 @@ export default function SingleJob({ jobKeys }) {
             jobKeys.platform == 'aramco' ? ' font-semibold' : 'font-medium'
           }`}
         >
+          {jobKeys.description?.length === 0 && <span className=' inline-block'></span>}
           {jobKeys.description?.length > 35
             ? `${jobKeys.description?.slice(0, 35)}...`
-            : jobKeys.description}
+            : jobKeys.description + ' '}
         </p>
 
         <div className='flex items-center pb-3'>
@@ -235,6 +239,7 @@ export default function SingleJob({ jobKeys }) {
               : 'border-black'
           }`}
         >
+        {jobKeys.artifacts?.length === 0 && <span className=' block w-11 h-11 rounded-lg assignedClr'></span>}
           {jobKeys?.artifacts.slice(0, 3).map((artifacts, index) =>
             artifacts?.type === 'image' ? (
               <img
@@ -243,6 +248,19 @@ export default function SingleJob({ jobKeys }) {
                 className='w-11 h-11 rounded-lg'
                 alt='Image'
               />
+            ) : artifacts?.type === 'video' ? (
+              <span
+                key={index}
+                className={`flexCenter w-11 h-11 rounded-lg ${
+                  jobKeys.platform == 'aramco'
+                    ? ' bgLightGray clrDarkGray'
+                    : 'lightGrayBg'
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+              </span>
             ) : (
               <span
                 key={index}
@@ -293,152 +311,18 @@ export default function SingleJob({ jobKeys }) {
           </div>
         ) : (
           <div
-            className='flex items-center pt-4 justify-between relative statusArea'
+            className='flex items-center pt-4 justify-between relative'
             ref={assignTaskPopupRef}
           >
-            <button
-              onClick={showStatuses}
-              disabled={jobStatus === 'completed'}
-              className={`w-[4.4rem] btn-status leading-6 text-[.5rem] flexCenter rounded-2xl font-medium ${
-                jobStatus == 'assigned'
-                  ? 'assignedBg assignedClr'
-                  : jobStatus == 'rejected'
-                  ? 'rejectedBg rejectedClr'
-                  : jobStatus == 'generating'
-                  ? 'generatingBg generatingClr'
-                  : jobStatus == 'in-queue'
-                  ? 'queueBg queueBgClr'
-                  : 'completedBg completedClr'
-              }`}
-            >
-              <span
-                className={`inline-block w-2 h-2 rounded-full mr-1 ${
-                  jobStatus == 'assigned'
-                    ? 'assignedSpanBg'
-                    : jobStatus == 'rejected'
-                    ? 'rejectedSpanBg'
-                    : jobStatus == 'generating'
-                    ? 'generatingSpanBg'
-                    : jobStatus == 'in-queue'
-                    ? 'queueBgSpanBg'
-                    : 'completedSpanBg'
-                }`}
-              ></span>
-              {jobStatus == 'assigned'
-                ? 'Assigned'
-                : jobStatus == 'rejected'
-                ? 'Rejected'
-                : jobStatus == 'generating'
-                ? 'Generating'
-                : jobStatus == 'in-queue'
-                ? 'In Queue'
-                : 'Completed'}
-            </button>
-
-            {showJobStatus && (
-              <div className='flex flex-col absolute top-12 left-0 bgDarkGray py-2 px-4 leading-5 text-white text-xs font-light w-40 rounded-lg z-10 cursor-pointer'>
-                <p
-                  className='blackBorderBottom py-2 hover:font-semibold'
-                  onClick={() => handleStatusClick('assigned')}
-                >
-                  Assigned
-                </p>
-                <p
-                  className='blackBorderBottom py-2 hover:font-semibold'
-                  onClick={() => handleStatusClick('rejected')}
-                >
-                  Rejected
-                </p>
-                <p
-                  className='blackBorderBottom py-2 hover:font-semibold'
-                  onClick={() => handleStatusClick('generating')}
-                >
-                  Generating
-                </p>
-                <p
-                  className='blackBorderBottom py-2 hover:font-semibold'
-                  onClick={() => handleStatusClick('completed')}
-                >
-                  Completed
-                </p>
-                <p
-                  className='py-2 hover:font-semibold'
-                  onClick={() => handleStatusClick('in-queue')}
-                >
-                  In-queue
-                </p>
-              </div>
-            )}
+            <UpdateJobStatus
+              jobKeys={jobKeys}
+              showJobStatus={showJobStatus}
+              jobStatus={jobStatus}
+              handleStatusClick={handleStatusClick}
+              setShowJobStatus={setShowJobStatus}
+              isFromDashboard={true}
+            />
             <div className='flex items-center'>
-              {isAdmin == 'admins' && (
-                <div className='flex assignedEmployees blackBG py-2 pl-2 mr-1 rounded-3xl'>
-                  <div className='flex -space-x-2 rtl:space-x-reverse  items-center pr-1'>
-                    {employees
-                      .filter((employee) => employee.assigned === true)
-                      .slice(0, 2)
-                      .map((employee, index) => (
-                        <img
-                          className={`w-6 h-6 border rounded-full ${
-                            jobKeys.platform == 'aramco'
-                              ? ' border-white'
-                              : ' border-gray-150'
-                          }`}
-                          src={employee.image}
-                          key={index}
-                          alt=''
-                        />
-                      ))}
-
-                    {employees.filter((employee) => employee.assigned === true)
-                      .length > 2 && (
-                      <button
-                        className={`flex items-center justify-center w-6 h-6 text-[.6rem] font-semibold text-black bg-white rounded-full hover:bg-gray-800  border ${
-                          jobKeys.platform == 'aramco'
-                            ? ' border-white'
-                            : ' border-gray-150'
-                        }`}
-                      >
-                        +
-                        {Math.min(
-                          employees.filter(
-                            (employee) => employee.assigned === true
-                          )?.length - 2
-                        )}
-                      </button>
-                    )}
-
-                    <span
-                      className='inline-block pl-4 cursor-pointer'
-                      onClick={assignTaskPopup}
-                    >
-                      <svg
-                        width='11'
-                        height='12'
-                        viewBox='0 0 11 12'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path
-                          d='M8.85323 4.64445L5.95545 7.54223C5.61323 7.88446 5.05323 7.88446 4.71101 7.54223L1.81323 4.64445'
-                          stroke='#8D939C'
-                          strokeWidth='0.666667'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        />
-                      </svg>
-                    </span>
-                  </div>
-
-                  {/* {showAssignTaskPopup && (
-                  <div className=' absolute left-0 m-auto right-0 top-14 w-full flexCenter z-10'>
-                    <div className='w-52'>
-                      <AssignJob employees={employees} />
-                    </div>
-                  </div>
-                )} */}
-                </div>
-              )}
-
               <div className=' relative flex space-x-1 jobOptions'>
                 <button
                   title='Sell'

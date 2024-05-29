@@ -1,50 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import useApiHook from '@/hooks/useApiHook';
 
-const ThreeDModal = ({ model, showLoading, resetData }) => {
+const NetworkModel = ({ model, showLoading, resetData }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('Shap e');
+  const [selectedOption, setSelectedOption] = useState('');
+
   const { handleApiCall } = useApiHook();
+
   const handleOptionClick = async (value, value2) => {
+    if (value === model.solana) {
+      showLoading(false);
+      return;
+    }
+
     setSelectedOption(value2);
     setIsOpen(false);
     showLoading(true);
+
     const values = {
-      aiModelId: model._id,
-      text: model.text,
-      image: model.image,
-      threeD: value,
-      digitalHuman: model.digitalHuman,
-      translation: model.translation,
+      settingsId: model.id,
+      solana: value,
+      polygon: model.polygon,
     };
+
     const result = await handleApiCall({
       method: 'PUT',
-      url: '/ai-models/update',
+      url: '/settings/change',
       data: values,
     });
+
     if (result?.status === 200) {
       showLoading(false);
       resetData(result?.data);
     }
   };
+
   useEffect(() => {
+    // Set initial selected option based on model data
     setSelectedOption(
-      model.threeD === 'shap_e'
-        ? 'Shap e'
-        : model.threeD === 'dreamgaussian'
-        ? 'Dream Gaussian'
-        : model.threeD === 'dust3r'
-        ? 'Dust3R'
-        : model.threeD === 'triposr'
-        ? 'TripoSR'
-        : model.threeD === 'open_lrm_v2'
-        ? 'Open LRM V2'
-        : 'Open LRM'
+      model.solana === 'mainnet'
+        ? 'Mainnet'
+        : model.solana === 'devnet'
+        ? 'Devnet'
+        : null
     );
   }, [model]);
+
   return (
     <div className='w-full py-1 flex items-center justify-between flex-wrap relative'>
-      <p className='pt-2 py-1 text-white/80 pb-3 text-sm'>3D Model</p>
+      <p className='pt-2 py-1 text-white/80 pb-3 text-sm'>Solana Network</p>
       <div className='relative inline-block'>
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -69,42 +73,16 @@ const ThreeDModal = ({ model, showLoading, resetData }) => {
         {isOpen && (
           <ul className='absolute bg-black w-40 border border-gray-150 py-1 mt-1 rounded-lg text-xs'>
             <li
-              onClick={() => handleOptionClick('shap_e', 'Shap e')}
+              onClick={() => handleOptionClick('mainnet', 'Mainnet')}
               className='cursor-pointer px-3 py-1 hover:bg-gray-100'
             >
-              Shap e
+              Mainnet
             </li>
             <li
-              onClick={() =>
-                handleOptionClick('dreamgaussian', 'Dream Gaussian')
-              }
+              onClick={() => handleOptionClick('devnet', 'Devnet')}
               className='cursor-pointer px-3 py-1 hover:bg-gray-100'
             >
-              Dream Gaussian
-            </li>
-            <li
-              onClick={() => handleOptionClick('open_lrm', 'Open LRM')}
-              className='cursor-pointer px-3 py-1 hover:bg-gray-100'
-            >
-              Open Lrm
-            </li>
-            <li
-              onClick={() => handleOptionClick('open_lrm_v2', 'Open LRM V2')}
-              className='cursor-pointer px-3 py-1 hover:bg-gray-100'
-            >
-              Open LRM V2
-            </li>
-            <li
-              onClick={() => handleOptionClick('triposr', 'tripoSR')}
-              className='cursor-pointer px-3 py-1 hover:bg-gray-100'
-            >
-              TripoSR
-            </li>
-            <li
-              onClick={() => handleOptionClick('dust3r', 'Dust3R')}
-              className='cursor-pointer px-3 py-1 hover:bg-gray-100'
-            >
-              Dust3R
+              Devnet
             </li>
           </ul>
         )}
@@ -113,4 +91,4 @@ const ThreeDModal = ({ model, showLoading, resetData }) => {
   );
 };
 
-export default ThreeDModal;
+export default NetworkModel;

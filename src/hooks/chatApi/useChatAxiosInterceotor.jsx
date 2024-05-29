@@ -22,7 +22,7 @@ const useChatAxiosInterceotor = () => {
       },
       (error) => {
         setIsApiLoading(false);
-        toast.error(error?.response?.data?.error || error.message);
+        //toast.error(error?.response?.data?.error || error.message);
         return Promise.reject(error);
       }
     );
@@ -36,7 +36,7 @@ const useChatAxiosInterceotor = () => {
         setIsApiLoading(false);
         const prevRequest = error.config;
         if (+prevRequest.headers['retryCall'] === 1)
-          toast.error(error?.response?.data?.error || error.message);
+          //toast.error(error?.response?.data?.error || error.message);
         prevRequest.headers['retryCall'] = 2;
         return Promise.reject(error);
       }

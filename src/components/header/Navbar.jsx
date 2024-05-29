@@ -7,6 +7,7 @@ import NotificationsPopup from './NotificationsPopup';
 import { clearNotifications } from '@/lib/slices/notification/notificationSlice';
 import { useRouter } from 'next/navigation';
 import useApiHook from '@/hooks/useApiHook';
+import { toast } from 'react-toastify';
 
 export default function Navbar() {
   const auth = useSelector(selectAuth);
@@ -54,13 +55,23 @@ export default function Navbar() {
   }, [notificationRef]);
 
   const getNotification = async () => {
-    const result = await handleApiCall({
+    await handleApiCall({
       method: 'GET',
       url: '/employee/notification/all',
-    });
-    if (result?.status === 200) {
-      setNotificationsData(result?.data?.notifications);
-    }
+    })
+    .then((res) => {
+      console.log(res?.data);
+      if (res?.status === 200) {
+        setNotificationsData(res?.data?.notifications);
+      }
+      return res;
+  }).catch((error) => {
+    if(error?.response?.data?.errors === 'Invalid token') 
+      {
+        toast.error("Session expired, please login again");
+        handleLogout()
+      }
+  });
   };
 
   const markAllNotificationAsRead = async () => {
@@ -100,6 +111,7 @@ export default function Navbar() {
             <div className='flex pr-1'>
               <span
                 ref={notificationRef}
+                title='Notifications'
                 className='cursor-pointer relative w-8 md:w-10 inline-block flexCenter rounded-xl py-1 pl-2 md:pl-3 text-white notifications'
               >
                 <svg
@@ -126,10 +138,11 @@ export default function Navbar() {
                     isApiLoading={isApiLoading}
                     notificationData={notificationsData}
                     markAllNotificationAsRead={markAllNotificationAsRead}
+                    onClose={() => setShowNotification(false)}
                   />
                 )}
               </span>
-              <button className='text-white ml-3 mr-2' onClick={handleLogout}>
+              <button className='text-white ml-3 mr-2' onClick={handleLogout} title='Logout'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
@@ -166,6 +179,7 @@ export default function Navbar() {
           ) : (
             <div className='flex'>
               <Link
+                title='Sign In'
                 href='/sign-in'
                 className='cursor-pointer w-10 md:w-14 flexCenter rounded-xl py-1 text-black'
               >

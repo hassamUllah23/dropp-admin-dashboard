@@ -32,9 +32,12 @@ export default function Layout({ children }) {
               jobId: payload?.data?.jobId,
               isRead: false,
               createdAt: Date.now(),
+              type:payload?.data?.type
             },
           ];
           dispatch(addNotification(notification));
+          console.log('notification')
+          console.log(notification)
         } catch (error) {
           console.error('Error handling message:', error);
         }
