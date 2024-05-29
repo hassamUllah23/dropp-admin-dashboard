@@ -16,7 +16,7 @@ const page = () => {
     filteredRewards.map((reward) => ({ ...reward, isEditing: false }))
   );
 
-  let url = `/settings/questing`;
+  let url = `/settings/all`;
 
   // // Function to handle input change
   const handleInputChange = (e, index) => {
@@ -39,8 +39,18 @@ const page = () => {
       url: url,
     });
 
-    setRewards(result.data);
-    await calculatePageCount(result?.data?.count);
+    console.log('********', result?.data)
+    
+    const rewardsArray = [
+      { rewardPoints: result?.data?.initialAirDropPoints, rewardType: 'INTIAL AIR DROP', rewardKey: 'initialAirDropPoints'},
+      { rewardPoints: result?.data?.wardrobeWizardPoints, rewardType: 'WARDROBE WIZARD', rewardKey: 'wardrobeWizardPoints'},
+      { rewardPoints: result?.data?.image360Points, rewardType: 'AI 360 IMAGE', rewardKey: 'image360Points'},
+      { rewardPoints: result?.data?.shareDiscordPoints, rewardType: 'SHARE', rewardKey: 'shareDiscordPoints'},
+      { rewardPoints: result?.data?.shareTwitterPoints, rewardType: 'SHARE', rewardKey: 'shareTwitterPoints'},
+    ]
+
+    setRewards(rewardsArray);
+    await calculatePageCount(result);
   };
 
   const filterRewards = (searchValue) => {
@@ -69,12 +79,20 @@ const page = () => {
   };
 
   const handleBalanceSave = async (item, index) => {
+
+    const rewardKey = rewards[index].rewardKey;
+    const rewardPoints = rewards[index].rewardPoints;
+
+    const update = {};
+     update[`${rewardKey}`] = rewardPoints;
+    // console.log('*******', item?_id)
+
     const result = await handleApiCall({
       method: "PUT",
-      url: `/settings/change-questing-settings`,
+      url: `/settings/change`,
       data: {
         rewardId: item._id,
-        rewardPoints: rewards[index].rewardPoints,
+        update,
       },
     });
 
