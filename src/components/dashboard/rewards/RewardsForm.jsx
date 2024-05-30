@@ -1,38 +1,27 @@
 'use client';
 
-import GetInitials from '@/components/common/GetInitials';
-import { selectAuth, updateUserInfo, useDispatch, useSelector } from '@/lib';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
 import { RotatingLines } from 'react-loader-spinner';
-import { validationSchemaForName } from '@/schema/auth/authSchema';
+import * as Yup from 'yup';
 
 const RewardsForm = () => {
   const [showLoading, setShowLoading] = useState(false);
-  const dispatch = useDispatch();
   const [initialValues, setInitialValues] = useState(null);
-  const auth = useSelector(selectAuth);
   const { handleApiCall, isApiLoading } = useApiHook();
-  const fileInputRef = useRef();
 
-  const handleProfile = async (values) => {
+  const saveRewards = async (values) => {
     setShowLoading(true);
-    const result = await handleApiCall({
+    await handleApiCall({
       method: 'put',
-      url: '/user/update',
+      url: '/settings/change',
       data: values,
     })
       .then((res) => {
         if (res.status === 200) {
-          dispatch(
-            updateUserInfo({
-              wallets: auth?.userInfo?.user?.wallets,
-              ...res?.data,
-            })
-          );
-          toast.success('Profile updated.');
+          toast.success('Rewards updated.');
           setShowLoading(false);
         }
         return res;
@@ -44,24 +33,19 @@ const RewardsForm = () => {
   };
 
   const getRewards = async () => {
-    const result = await handleApiCall({
+    await handleApiCall({
       method: 'get',
       url: '/settings/all',
     })
       .then((res) => {
-        console.log(res)
         if (res.status === 200) {
           setInitialValues({
             image360Points: res?.data?.image360Points,
-            initialAccountCreationPoints: res?.data?.initialAccountCreationPoints,
             initialAirDropPoints: res?.data?.initialAirDropPoints,
-            initialVirtualPoints: res?.data?.initialVirtualPoints,
-            initialWardDropPoints: res?.data?.initialWardDropPoints,
-            polygon: res?.data?.polygon,
             shareDiscordPoints: res?.data?.shareDiscordPoints,
             shareTwitterPoints: res?.data?.shareTwitterPoints,
-            solana: res?.data?.solana,
             wardrobeWizardPoints: res?.data?.wardrobeWizardPoints,
+            settingsId:res?.data?._id
           });
         }
         return res;
@@ -72,100 +56,61 @@ const RewardsForm = () => {
   };
 
   useEffect(() => {
-    getRewards()
+    getRewards();
   }, []);
 
+  const validationSchema = Yup.object().shape({
+    image360Points: Yup.number().required('Required'),
+    initialAirDropPoints: Yup.number().required('Required'),
+    shareDiscordPoints: Yup.number().required('Required'),
+    shareTwitterPoints: Yup.number().required('Required'),
+    wardrobeWizardPoints: Yup.number().required('Required'),
+  });
 
+  const titles = {
+    image360Points: '360 Image Points',
+    initialAirDropPoints: 'Initial Air Drop Points',
+    shareDiscordPoints: 'Share on Discord Points',
+    shareTwitterPoints: 'Share on Twitter Points',
+    wardrobeWizardPoints: 'Wardrobe Wizard Points',
+    settingsId: 'Settings ID',
+  };
 
   return (
     <div className='md:col-span-2 w-full block'>
-      {initialValues && (
+      {initialValues ? (
         <Formik
           initialValues={initialValues}
-          onSubmit={handleProfile}
-          validationSchema={validationSchemaForName}
+          onSubmit={saveRewards}
+          validationSchema={validationSchema}
         >
           <Form className='md:col-span-2 w-full block'>
-            <div className='grid grid-cols-1 gap-x-6 sm:grid-cols-6'>
-              <div className='col-span-full flex items-center gap-x-8 relative profileContainer'>
-                
-              </div>
-
-              <div className='sm:col-span-3'>
-                <label
-                  htmlFor='first-name'
-                  className='block text-sm font-medium leading-6 text-white'
-                >
-                  initialAccountCreationPoints
-                </label>
-                <Field
-                  type='text'
-                  name='initialAccountCreationPoints'
-                  id='initialAccountCreationPoints'
-                  placeholder='Enter first name'
-                  className='mt-2 px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6'
-                />
-                <ErrorMessage
-                  name='initialAccountCreationPoints'
-                  component='div'
-                  className='text-red-600 pt-4'
-                />
-              </div>
-
-              <div className='sm:col-span-3'>
-                <label
-                  htmlFor='last-name'
-                  className='block text-sm font-medium leading-6 text-white'
-                >
-                  Last name
-                </label>
-                <Field
-                  type='text'
-                  id='lastName'
-                  name='lastName'
-                  placeholder='Enter last name'
-                  className='mt-2 px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6'
-                />
-                <ErrorMessage
-                  name='lastName'
-                  component='div'
-                  className='text-red-600  pt-4'
-                />
-              </div>
-
-              <div className='col-span-full'>
-                <label
-                  htmlFor='email'
-                  className='block text-sm font-medium leading-6 text-white'
-                >
-                  Email address
-                </label>
-                <div className='mt-2'>
-                  <input
-                    type='email'
-                    name='email'
-                    value={auth?.userInfo?.user?.email || ''}
-                    readOnly
-                    disabled
-                    className='mt-2 px-3 block w-full cursor-not-allowed rounded-md border-0 bg-gray py-1.5  text-gray-400 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6'
+            <div className='grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6 rewardsCol'>
+              {Object.keys(initialValues).map((key) => (
+                <div className='sm:col-span-3' key={key}>
+                  <label
+                    htmlFor={key}
+                    className='block text-sm font-medium leading-6 text-white'
+                  >
+                    {titles[key]}
+                  </label>
+                  <Field
+                    type='number'
+                    name={key}
+                    id={key}
+                    placeholder={`Enter ${key}`}
+                    className='mt-2 px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6'
+                  />
+                  <ErrorMessage
+                    name={key}
+                    component='div'
+                    className='text-red-600 pt-4'
                   />
                 </div>
-              </div>
+              ))}
 
-              <div className='col-span-full'>
-                <label
-                  htmlFor='userName'
-                  className='block text-sm font-medium leading-6 text-white'
-                >
-                  Username
-                </label>
-                <Field
-                  type='text'
-                  id='userName'
-                  name='userName'
-                  className='mt-2 px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6'
-                />
-              </div>
+
+            
             </div>
 
             <div className='mt-8 flex'>
@@ -186,12 +131,24 @@ const RewardsForm = () => {
                     wrapperClass=''
                   />
                 ) : (
-                  <p>Update Profile</p>
+                  <p>Update Settings</p>
                 )}
               </button>
             </div>
           </Form>
         </Formik>
+      ) : (
+        <div className='md:col-span-2 w-full block'>
+          
+          <div role="status" className='flexCenter'>
+              <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+              </svg>
+              <span className="sr-only">Loading...</span>
+          </div>
+
+        </div>
       )}
     </div>
   );
