@@ -40,11 +40,12 @@ const RewardsForm = () => {
       .then((res) => {
         if (res.status === 200) {
           setInitialValues({
-            image360Points: res?.data?.image360Points,
-            initialAirDropPoints: res?.data?.initialAirDropPoints,
+            initialVirtualPoints: res?.data?.initialVirtualPoints,
+            initialWardDropPoints: res?.data?.initialWardDropPoints,
             shareDiscordPoints: res?.data?.shareDiscordPoints,
             shareTwitterPoints: res?.data?.shareTwitterPoints,
-            wardrobeWizardPoints: res?.data?.wardrobeWizardPoints,
+            initialAccountCreationPoints:
+              res?.data?.initialAccountCreationPoints,
             settingsId: res?.data?._id,
           });
         }
@@ -60,19 +61,19 @@ const RewardsForm = () => {
   }, []);
 
   const validationSchema = Yup.object().shape({
-    image360Points: Yup.number().required("Required"),
-    initialAirDropPoints: Yup.number().required("Required"),
+    initialVirtualPoints: Yup.number().required("Required"),
+    initialWardDropPoints: Yup.number().required("Required"),
     shareDiscordPoints: Yup.number().required("Required"),
     shareTwitterPoints: Yup.number().required("Required"),
-    wardrobeWizardPoints: Yup.number().required("Required"),
+    initialAccountCreationPoints: Yup.number().required("Required"),
   });
 
   const titles = {
-    image360Points: "360 Image Points",
-    initialAirDropPoints: "Initial Air Drop Points",
+    initialVirtualPoints: "360 Image Points",
+    initialWardDropPoints: "Wardrobe Points",
     shareDiscordPoints: "Share on Discord Points",
     shareTwitterPoints: "Share on Twitter Points",
-    wardrobeWizardPoints: "Wardrobe Wizard Points",
+    initialAccountCreationPoints: "Account creation points",
     settingsId: "Settings ID",
   };
 
