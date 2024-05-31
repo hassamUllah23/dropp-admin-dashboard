@@ -5,25 +5,29 @@ import useApiHook from "@/hooks/useApiHook";
 import { toast } from 'react-toastify';
 const BalanceEditor = ({ employee, index, handleInputChange, handleBalanceSave, handleCancel }) => {
   const [isEditing, setIsEditing] = useState(employee.isEditing);
+  const [employeeBalance, setEmployeeBalance] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const { handleApiCall } = useApiHook();
   const saveBalance = async (item, index) => {
+    if (employeeBalance === 0) return;
     setShowLoading(true)
     const result = await handleApiCall({
       method: "PUT",
       url: `/balance/update`,
       data: {
         userId: item._id,
-        balance: employee.balance,
+        balance: employeeBalance,
       },
     });
     console.log(result);
     if (result.status === 200) {
+      
         handleBalanceSave()
         setTimeout(() => {
             setShowLoading(false)
             setIsEditing(false)
-            toast.success(result.data.message);    
+            toast.success(result.data.message); 
+            setEmployeeBalance(0)   
         }, 1000);
         
     } else {
@@ -42,8 +46,9 @@ const BalanceEditor = ({ employee, index, handleInputChange, handleBalanceSave, 
         {isEditing ? (
           <input
             type='number'
-            onChange={(e) => handleInputChange(e, index)}
+            onChange={(e) => setEmployeeBalance(e.target.value)}
             autoFocus
+            value={employeeBalance}
             className='bg-[#0C0C0C] rounded-[4px] p-3'
           />
         ) : (
