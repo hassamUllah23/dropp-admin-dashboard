@@ -60,7 +60,7 @@ const page = () => {
       const filteredData = employees.filter((employee) => {
         const lowerCaseSearchValue = searchValue.toLowerCase();
         const fullName =
-          `${employee.firstName} ${employee.lastName}`.toLowerCase();
+          `${employee.name}`.toLowerCase();
         return fullName.includes(lowerCaseSearchValue);
       });
       setFilteredEmployees(filteredData);
@@ -214,7 +214,7 @@ const page = () => {
                 return (
                   <tr key={index} className="my-3 row w-full darkGrayBg">
                     <td className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black">
-                      {`${item.firstName} ${item.lastName}`}
+                      {`${item.name}`}
                     </td>
                     <td className="py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black">
                       {item.email}
