@@ -46,6 +46,8 @@ const RewardsForm = () => {
             shareTwitterPoints: res?.data?.shareTwitterPoints,
             initialAccountCreationPoints:
               res?.data?.initialAccountCreationPoints,
+            followDiscordPoints: res?.data?.followDiscordPoints,
+            followTwitterPoints: res?.data?.followTwitterPoints,
             settingsId: res?.data?._id,
           });
         }
@@ -66,6 +68,8 @@ const RewardsForm = () => {
     shareDiscordPoints: Yup.number().required("Required"),
     shareTwitterPoints: Yup.number().required("Required"),
     initialAccountCreationPoints: Yup.number().required("Required"),
+    followDiscordPoints: Yup.number().required("Required"),
+    followTwitterPoints: Yup.number().required("Required"),
   });
 
   const titles = {
@@ -73,6 +77,8 @@ const RewardsForm = () => {
     initialWardDropPoints: "Wardrobe Points",
     shareDiscordPoints: "Share on Discord Points",
     shareTwitterPoints: "Share on Twitter Points",
+    followDiscordPoints: "Follow Discord Points",
+    followTwitterPoints: "Follow Twitter Points",
     initialAccountCreationPoints: "Account creation points",
     settingsId: "Settings ID",
   };
