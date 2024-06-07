@@ -4,7 +4,10 @@ import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import SideBar from './SideBar';
 import NotificationsPopup from './NotificationsPopup';
-import { clearNotifications } from '@/lib/slices/notification/notificationSlice';
+import {
+  clearNotifications,
+  clearSocketNotifications,
+} from '@/lib/slices/notification/notificationSlice';
 import { useRouter } from 'next/navigation';
 import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
@@ -59,19 +62,19 @@ export default function Navbar() {
       method: 'GET',
       url: '/employee/notification/all',
     })
-    .then((res) => {
-      console.log(res?.data);
-      if (res?.status === 200) {
-        setNotificationsData(res?.data?.notifications);
-      }
-      return res;
-  }).catch((error) => {
-    if(error?.response?.data?.errors === 'Invalid token') 
-      {
-        toast.error("Session expired, please login again");
-        handleLogout()
-      }
-  });
+      .then((res) => {
+        console.log(res?.data);
+        if (res?.status === 200) {
+          setNotificationsData(res?.data?.notifications);
+        }
+        return res;
+      })
+      .catch((error) => {
+        if (error?.response?.data?.errors === 'Invalid token') {
+          toast.error('Session expired, please login again');
+          handleLogout();
+        }
+      });
   };
 
   const markAllNotificationAsRead = async () => {
@@ -86,6 +89,7 @@ export default function Navbar() {
 
   useEffect(() => {
     if (auth?.isLogin && notifications.length > 0) {
+      console.log('Notifications recieved on navbar');
       setNotificationsData(notifications);
       setShowNotificationDot(true);
       getNotification();
@@ -94,6 +98,7 @@ export default function Navbar() {
 
   useEffect(() => {
     dispatch(clearNotifications());
+    dispatch(clearSocketNotifications());
     if (auth?.isLogin) getNotification();
   }, []);
 
@@ -142,7 +147,11 @@ export default function Navbar() {
                   />
                 )}
               </span>
-              <button className='text-white ml-3 mr-2' onClick={handleLogout} title='Logout'>
+              <button
+                className='text-white ml-3 mr-2'
+                onClick={handleLogout}
+                title='Logout'
+              >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
