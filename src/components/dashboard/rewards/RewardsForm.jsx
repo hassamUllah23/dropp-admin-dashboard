@@ -50,6 +50,7 @@ const RewardsForm = () => {
               res?.data?.initialAccountCreationPoints,
             followDiscordPoints: res?.data?.followDiscordPoints,
             followTwitterPoints: res?.data?.followTwitterPoints,
+            walletPoints: res.data?.walletPoints,
             leaderboardStartDate: new Date(res?.data?.leaderboardStartDate),
             leaderboardEndDate: new Date(res?.data?.leaderboardEndDate),
             settingsId: res?.data?._id,
@@ -72,6 +73,7 @@ const RewardsForm = () => {
     shareDiscordPoints: Yup.number().required('Required'),
     shareTwitterPoints: Yup.number().required('Required'),
     initialAccountCreationPoints: Yup.number().required('Required'),
+    walletPoints: Yup.number().required('Required'),
     followDiscordPoints: Yup.number().required('Required'),
     followTwitterPoints: Yup.number().required('Required'),
     leaderboardStartDate: Yup.date().required('Required'),
@@ -88,6 +90,7 @@ const RewardsForm = () => {
     initialAccountCreationPoints: 'Account creation points',
     leaderboardStartDate: 'Leaderboard Start Date',
     leaderboardEndDate: 'Leaderboard End Date',
+    walletPoints: 'Wallet connection points',
     settingsId: 'Settings ID',
   };
 
