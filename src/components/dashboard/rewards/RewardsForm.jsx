@@ -53,6 +53,8 @@ const RewardsForm = () => {
             walletPoints: res.data?.walletPoints,
             leaderboardStartDate: new Date(res?.data?.leaderboardStartDate),
             leaderboardEndDate: new Date(res?.data?.leaderboardEndDate),
+            xTwitePoints: res.data?.xTwitePoints,
+            xTwiteUrl: res.data?.xTwiteUrl,
             settingsId: res?.data?._id,
           });
         }
@@ -78,6 +80,8 @@ const RewardsForm = () => {
     followTwitterPoints: Yup.number().required('Required'),
     leaderboardStartDate: Yup.date().required('Required'),
     leaderboardEndDate: Yup.date().required('Required'),
+    xTwitePoints: Yup.number().required('Required'),
+    xTwiteUrl: Yup.string().required('Required'),
   });
 
   const titles = {
@@ -90,8 +94,17 @@ const RewardsForm = () => {
     initialAccountCreationPoints: 'Account creation points',
     leaderboardStartDate: 'Leaderboard Start Date',
     leaderboardEndDate: 'Leaderboard End Date',
-    walletPoints: 'Wallet connection points',
+    walletPoints: 'Wallet Connection Points',
+    xTwitePoints: 'Twitter Tweet Points',
+    xTwiteUrl: 'Twitter Tweet Link',
     settingsId: 'Settings ID',
+  };
+
+  const getFieldType = (key) => {
+    if (key === 'xTwiteUrl') {
+      return 'text';
+    }
+    return 'number';
   };
 
   return (
@@ -130,7 +143,7 @@ const RewardsForm = () => {
                       <div></div>
                     ) : (
                       <Field
-                        type='number'
+                        type={getFieldType(key)}
                         name={key}
                         id={key}
                         placeholder={`Enter ${key}`}
