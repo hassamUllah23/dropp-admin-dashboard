@@ -53,8 +53,8 @@ const RewardsForm = () => {
             walletPoints: res.data?.walletPoints,
             leaderboardStartDate: new Date(res?.data?.leaderboardStartDate),
             leaderboardEndDate: new Date(res?.data?.leaderboardEndDate),
-            xTwitePoints: res.data?.xTwitePoints,
-            xTwiteUrl: res.data?.xTwiteUrl,
+            retweetPoints: res.data?.retweetPoints,
+            tweetUrl: res.data?.tweetUrl,
             settingsId: res?.data?._id,
           });
         }
@@ -80,8 +80,8 @@ const RewardsForm = () => {
     followTwitterPoints: Yup.number().required('Required'),
     leaderboardStartDate: Yup.date().required('Required'),
     leaderboardEndDate: Yup.date().required('Required'),
-    xTwitePoints: Yup.number().required('Required'),
-    xTwiteUrl: Yup.string().required('Required'),
+    retweetPoints: Yup.number().required('Required'),
+    tweetUrl: Yup.string().required('Required'),
   });
 
   const titles = {
@@ -95,13 +95,13 @@ const RewardsForm = () => {
     leaderboardStartDate: 'Leaderboard Start Date',
     leaderboardEndDate: 'Leaderboard End Date',
     walletPoints: 'Wallet Connection Points',
-    xTwitePoints: 'Twitter Tweet Points',
-    xTwiteUrl: 'Twitter Tweet Link',
+    tweetUrl: 'Twitter Tweet ID',
+    retweetPoints: 'Twitter Retweet Points',
     settingsId: 'Settings ID',
   };
 
   const getFieldType = (key) => {
-    if (key === 'xTwiteUrl') {
+    if (key === 'tweetUrl') {
       return 'text';
     }
     return 'number';
@@ -141,6 +141,19 @@ const RewardsForm = () => {
                       />
                     ) : key === 'settingsId' ? (
                       <div></div>
+                    ) : key === 'tweetUrl' ? (
+                      <div className='relative'>
+                        <span className='text-white/70 absolute left-2 top-[.6rem] text-base'>
+                          x.com/droppgroup/status/
+                        </span>
+                        <Field
+                          type={getFieldType(key)}
+                          name={key}
+                          id={key}
+                          placeholder={`Enter Tweet Id`}
+                          className='mt-2 px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6 pl-[12rem]'
+                        />
+                      </div>
                     ) : (
                       <Field
                         type={getFieldType(key)}
