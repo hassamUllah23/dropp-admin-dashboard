@@ -31,7 +31,7 @@ export default function UpdateJobAsset({
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (type === "digital") {
+    if (type === "digital" || type === "avatar") {
       // Only allow mp4 videos for 'digital' type
       if (file.type.startsWith("video/mp4")) {
         handleFiles(file);
@@ -80,7 +80,7 @@ export default function UpdateJobAsset({
                   <div className="flex flex-col items-center">
                     <input
                       type="file"
-                      accept={type === "digital" ? "video/*" : ".glb"}
+                      accept={type === "product" ? ".glb" : "video/*"}
                       ref={fileInputRef}
                       onChange={handleFileChange}
                       className="hidden"
