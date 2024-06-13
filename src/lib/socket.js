@@ -1,7 +1,7 @@
 // lib/socket.js
 import { io } from 'socket.io-client';
-
-const socket = io('https://slgo.online', {
+import { NEXT_PUBLIC_SOCKET_URL } from '@/config/config';
+const socket = io(NEXT_PUBLIC_SOCKET_URL, {
   transports: ['websocket'],
 });
 
