@@ -285,6 +285,30 @@ input:-webkit-autofill:active {
     background: black !important;
   }
 }
+
+/* Custom scroll bar on mobile device*/
+
+.scrollbar-custom {
+  overflow-x: auto;
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: black;
+  border-radius: 5px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb{
+  background: #858484;
+}
 .border-gradient {
   border: 1px solid;
   border-image-slice: 1;
