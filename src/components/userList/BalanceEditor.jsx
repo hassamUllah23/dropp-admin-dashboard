@@ -14,6 +14,7 @@ const BalanceEditor = ({
   const [employeeBalance, setEmployeeBalance] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const { handleApiCall } = useApiHook();
+  
   const saveBalance = async (item, index) => {
     if (employeeBalance === 0) return;
     setShowLoading(true);
