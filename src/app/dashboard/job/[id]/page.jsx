@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { JOB_COMPLETED } from "@/utils/constants";
 import ViewJobAsset from "@/components/dashboard/chat/adminAssetUpload/ViewJobAsset";
-import { useSelector } from '@/lib';
+import { useSelector } from "@/lib";
 export default function Chat({ params: { id } }) {
   const scrollToBox = useRef(null);
   const { handleApiCall } = useApiHook();
@@ -18,7 +18,7 @@ export default function Chat({ params: { id } }) {
   const handleUploadAdminAsset = async (file) => {
     try {
       setLoading(true);
-      const type = job.type === "digital" ? "video" : "glb";
+      const type = job.type === "product" ? "glb" : "video";
       if (file && type) {
         const formDataFiles = new FormData();
         formDataFiles.append(`${type}`, file);
@@ -32,7 +32,7 @@ export default function Chat({ params: { id } }) {
 
         if (result?.status === 200) {
           toast.success("The output has been attached with this job.");
-          setShowInitialMsg(true)
+          setShowInitialMsg(true);
           updateJobAndTokenize();
         }
       }
@@ -67,12 +67,11 @@ export default function Chat({ params: { id } }) {
 
   useEffect(() => {
     if (notifications.length > 0) {
-      console.log('notifications', notifications)
+      console.log("notifications receieved in job page", notifications);
       const jobId = notifications[0].jobId;
       const type = notifications[0].type;
-      if(jobId === id && type === 'mintingAndTokenization')
-      {
-        console.log('inside notifications', notifications)
+      if (jobId === id && type === "mintingAndTokenization") {
+        console.log("inside notifications", notifications);
         getJob();
       }
     }

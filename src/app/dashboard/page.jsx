@@ -22,17 +22,17 @@ export default function Dashboard() {
     await handleApiCall({
       method: 'GET',
       url: url,
-    }).then((res) => {
-      if (res.status === 200) {
-        setAllJobs(res?.data?.jobs);
-        calculatePageCount(res?.data?.count);
-      }
-      return res;
     })
-    .catch((error) => {
-      //toast.error(error?.response?.data?.errors);
-    });
-    
+      .then((res) => {
+        if (res.status === 200) {
+          setAllJobs(res?.data?.jobs);
+          calculatePageCount(res?.data?.count);
+        }
+        return res;
+      })
+      .catch((error) => {
+        //toast.error(error?.response?.data?.errors);
+      });
   };
 
   const calculatePageCount = async (count) => {
@@ -60,6 +60,7 @@ export default function Dashboard() {
   }, [page, pageSize]);
 
   useEffect(() => {
+    console.log('received socket notification');
     loadJobs();
   }, [notifications]);
 

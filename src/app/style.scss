@@ -285,6 +285,30 @@ input:-webkit-autofill:active {
     background: black !important;
   }
 }
+
+/* Custom scroll bar on mobile device*/
+
+.scrollbar-custom {
+  overflow-x: auto;
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: black;
+  border-radius: 5px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb{
+  background: #858484;
+}
 .border-gradient {
   border: 1px solid;
   border-image-slice: 1;
@@ -399,7 +423,9 @@ input:-webkit-autofill:active {
 .completedClr {
   color: #26ab4b;
 }
-.textModals option{ padding: 5px 0;}
+.textModals option {
+  padding: 5px 0;
+}
 .textModals select option:hover {
   background-color: #f0f0f0;
 }
@@ -434,7 +460,7 @@ input:-webkit-autofill:active {
     #9595ff 99.08%
   );
 }
-
+// .rewardsCol div:last-child{display: none;}
 .user-prompt {
   border: 1px;
   width: 100%;
@@ -524,6 +550,19 @@ input:-webkit-autofill:active {
 .notificationItem:last-child {
   border: 0 none;
 }
+.react-datepicker-wrapper {
+  width: 100%;
+}
+.react-datepicker__day--selected {
+  background-color: #000 !important;
+}
+.react-datepicker__header {
+  background-color: #1b1b1b !important;
+}
+.react-datepicker__current-month,
+.react-datepicker__day-names div {
+  color: #fff !important;
+}
 
 .tokenize {
   background-color: white;
@@ -540,7 +579,6 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
-

@@ -1,9 +1,10 @@
-"use client";
-import { useState, useEffect } from "react";
-import useApiHook from "@/hooks/useApiHook";
-import { RotatingLines } from "react-loader-spinner";
-import { toast } from "react-toastify";
-// import BalanceEditor from "@/components/userList/BalanceEditor";
+'use client';
+import { useState, useEffect } from 'react';
+import useApiHook from '@/hooks/useApiHook';
+import { RotatingLines } from 'react-loader-spinner';
+import { toast } from 'react-toastify';
+import BalanceEditor from '@/components/userList/BalanceEditor';
+import useDebounceHook from '@/hooks/useDebounceHook';
 
 const page = () => {
   const { handleApiCall, isApiLoading } = useApiHook();
@@ -38,7 +39,7 @@ const page = () => {
     setUsers(updatedUsers);
   };
 
-  const getAllUsers = async () => {
+  const getAllUsers = async (e) => {
     const result = await handleApiCall({
       method: 'GET',
       url: url,
@@ -49,29 +50,15 @@ const page = () => {
 
     setDropdownStates(
       result.data?.users.map((employee) =>
-        employee.status === "active" ? "active" : "inactive"
+        employee.status === 'active' ? 'active' : 'inactive'
       )
     );
   };
 
-  // const filterEmployees = (searchValue) => {
-  //   if (searchValue.trim() === "") {
-  //     setFilteredUsers(employees);
-  //   } else {
-  //     const filteredData = employees.filter((employee) => {
-  //       const lowerCaseSearchValue = searchValue.toLowerCase();
-  //       const fullName = `${employee.name}`.toLowerCase();
-  //       return fullName.includes(lowerCaseSearchValue);
-  //     });
-  //     setFilteredUsers(filteredData);
-  //   }
+  // const handleSearchInputChange = (e) => {
+  //   const newSearchValue = e.target.value;
+  //   setSearchValue(newSearchValue);
   // };
-
-  const handleSearchInputChange = (e) => {
-    console.log(e.target.value);
-    const newSearchValue = e.target.value;
-    setSearchValue(newSearchValue);
-  };
 
   const calculatePageCount = async (count) => {
     setCount(count);
@@ -119,24 +106,8 @@ const page = () => {
     }
   };
 
-  const handleBalanceSave = async (item, index) => {
+  const handleBalanceSave = () => {
     getAllEmployees();
-    // const result = await handleApiCall({
-    //   method: "PUT",
-    //   url: `/balance/update`,
-    //   data: {
-    //     userId: item._id,
-    //     balance: employees[index].balance,
-    //   },
-    // });
-    // console.log(result);
-    // if (result.status === 200) {
-    //   item.isEditing = false;
-
-    //   toast.success(result.data.message);
-    // } else {
-    //   toast.error("Something went wrong");
-    // }
   };
 
   const handleCancel = async (index) => {
@@ -144,10 +115,15 @@ const page = () => {
     toggleEditing(index);
   };
 
+  const handleInputChanges = useDebounceHook({
+    callback: getAllUsers,
+    delay: 550,
+  });
+
   useEffect(() => {
     if (searchValue.trim().length > 3 || searchValue.length === 0) {
       setPage(1);
-      getAllUsers();
+      handleInputChanges(searchValue);
     }
   }, [searchValue]);
 
@@ -170,7 +146,7 @@ const page = () => {
         range.push(i);
       }
       if (end < pageCount) {
-        range.push("...");
+        range.push('...');
         range.push(pageCount - 1, pageCount);
       }
     } else {
@@ -190,7 +166,7 @@ const page = () => {
       if (start > 1) {
         range.push(1);
         if (start > 2) {
-          range.push("...");
+          range.push('...');
         }
       }
       for (let i = start; i <= end; i++) {
@@ -199,7 +175,7 @@ const page = () => {
 
       if (end < pageCount) {
         if (end < pageCount - 1) {
-          range.push("...");
+          range.push('...');
         }
         range.push(pageCount);
       }
@@ -222,7 +198,7 @@ const page = () => {
             className='w-full bg-transparent'
             placeholder='Search'
             value={searchValue}
-            onChange={handleSearchInputChange}
+            onChange={(e) => setSearchValue(e.target.value)}
           />
           <label htmlFor='search' className='cursor-pointer'>
             <img
@@ -235,11 +211,11 @@ const page = () => {
         </div>
       </div>
 
-      <div className="scrollbar-custom mb-6">
-        <table className="table-auto overflow-scroll text-white w-[1024px] lg:w-full border border-transparent mb-3">
-          <thead className="bg-[#262626] text-white rounded-[4px]">
-            <tr className="">
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-center rounded-l-[4px]">
+      <div className='scrollbar-custom mb-6'>
+        <table className='table-auto overflow-scroll text-white w-[1024px] lg:w-full border border-transparent mb-3'>
+          <thead className='bg-[#262626] text-white rounded-[4px]'>
+            <tr className=''>
+              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-center rounded-l-[4px]'>
                 Name
               </th>
               <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left'>
@@ -254,7 +230,7 @@ const page = () => {
               <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px]'>
                 Status
               </th>
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-r-[4px] text-center">
+              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-r-[4px] text-center'>
                 Actions
               </th>
             </tr>
@@ -263,25 +239,25 @@ const page = () => {
             {users.length > 0 ? (
               users.map((item, index) => {
                 return (
-                  <tr key={index} className="my-3 row w-full darkGrayBg">
-                    <td className="py-4 px-2 text-sm text-[#FFFFFF] text-center leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black">
+                  <tr key={index} className='my-3 row w-full darkGrayBg'>
+                    <td className='py-4 px-2 text-sm text-[#FFFFFF] text-center leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black'>
                       {`${item.name}`}
                     </td>
-                    <td className="py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black w-[200px] sm:w-[unset] md:w-[unset] lg:w-[unset] ">
+                    <td className='py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black w-[200px] sm:w-[unset] md:w-[unset] lg:w-[unset] '>
                       {item.email}
                     </td>
-                    <td className="py-4 px-2 w-[150px] sm:w-[150px] md:w-[170px] lg:w-[238px]  text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black">
-                      {item?.createdAt.split("T")[0]}
+                    <td className='py-4 px-2 w-[150px] sm:w-[150px] md:w-[170px] lg:w-[238px]  text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black'>
+                      {item?.createdAt.split('T')[0]}
                     </td>
-                    {/* <td className="coinsUpdate w-[125px] sm:w-[200px] md:w-[125px] lg:w-[161px] py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8  border-t-8 border-black">
+                    <td className='coinsUpdate w-[125px] sm:w-[200px] md:w-[125px] lg:w-[161px] py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8  border-t-8 border-black'>
                       <BalanceEditor
                         employee={item}
                         index={index}
                         handleInputChange={handleInputChange}
-                        handleBalanceSave={() => handleBalanceSave(item, index)}
+                        handleBalanceSave={handleBalanceSave}
                         handleCancel={handleCancel}
                       />
-                    </td> */}
+                    </td>
                     <td className='py-4 px-2 text-[10px] text-black leading-[21.74px] text-center border-b-8  border-t-8 border-black'>
                       <div className='relative inline-block text-left'>
                         <div>
@@ -344,8 +320,8 @@ const page = () => {
                         )}
                       </div>
                     </td>
-                    <td className="py-4 px-2 border-b-8 border-t-8 border-black">
-                      <div className="flex justify-center items-center">
+                    <td className='py-4 px-2 border-b-8 border-t-8 border-black'>
+                      <div className='flex justify-center items-center'>
                         <button
                           className='bg-[#850101] p-1 rounded-[4px] cursor-not-allowed'
                           disabled={true}
@@ -376,7 +352,7 @@ const page = () => {
         <div className='flex gap-[10px] items-center justify-center mb-3'>
           {page > 1 && (
             <button
-              className="w-9 h-9 flex items-center justify-center bg-[#1B1B1B] rounded-[6px] cursor-pointer hover:bg-[#262626]"
+              className='w-9 h-9 flex items-center justify-center bg-[#1B1B1B] rounded-[6px] cursor-pointer hover:bg-[#262626]'
               onClick={() => setPage(page - 1)}
             >
               <img
@@ -387,15 +363,15 @@ const page = () => {
               />
             </button>
           )}
-          <div className="flex gap-[10px]">
+          <div className='flex gap-[10px]'>
             {getPageNumbers().map((pageNumber, index) => (
               <div
                 key={index}
                 className={`bg-[#1B1B1B] py-2 px-[9px] sm:px-[14px] md:px-[14px] lg:px-[14px] rounded-[6px] cursor-pointer ${
-                  pageNumber === page && "!bg-[#262626]"
+                  pageNumber === page && '!bg-[#262626]'
                 }`}
                 onClick={() => {
-                  if (pageNumber !== "...") {
+                  if (pageNumber !== '...') {
                     setPage(pageNumber);
                   }
                 }}
