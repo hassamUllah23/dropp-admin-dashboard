@@ -7,6 +7,7 @@ import NotificationsPopup from './NotificationsPopup';
 import { clearNotifications } from '@/lib/slices/notification/notificationSlice';
 import { useRouter } from 'next/navigation';
 import useApiHook from '@/hooks/useApiHook';
+import { toast } from 'react-toastify';
 
 export default function Navbar() {
   const auth = useSelector(selectAuth);
@@ -54,13 +55,23 @@ export default function Navbar() {
   }, [notificationRef]);
 
   const getNotification = async () => {
-    const result = await handleApiCall({
+    await handleApiCall({
       method: 'GET',
       url: '/employee/notification/all',
-    });
-    if (result?.status === 200) {
-      setNotificationsData(result?.data?.notifications);
-    }
+    })
+    .then((res) => {
+      console.log(res?.data);
+      if (res?.status === 200) {
+        setNotificationsData(res?.data?.notifications);
+      }
+      return res;
+  }).catch((error) => {
+    if(error?.response?.data?.errors === 'Invalid token') 
+      {
+        toast.error("Session expired, please login again");
+        handleLogout()
+      }
+  });
   };
 
   const markAllNotificationAsRead = async () => {

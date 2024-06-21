@@ -23,7 +23,14 @@ const useNotificationToken = () => {
         token: token,
       },
       token: auth.userInfo?.accessToken,
-    });
+    }).then((res) => {
+      if (res.status === 200) {
+      }
+      return res;
+    })
+    .catch((error) => {
+      //toast.error(error?.response?.data?.errors);
+    })
   };
 
   useEffect(() => {

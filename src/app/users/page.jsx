@@ -1,8 +1,9 @@
-'use client';
-import { useState, useEffect } from 'react';
-import useApiHook from '@/hooks/useApiHook';
-import { RotatingLines } from 'react-loader-spinner';
-import { toast } from 'react-toastify';
+"use client";
+import { useState, useEffect } from "react";
+import useApiHook from "@/hooks/useApiHook";
+import { RotatingLines } from "react-loader-spinner";
+import { toast } from "react-toastify";
+// import BalanceEditor from "@/components/userList/BalanceEditor";
 
 const page = () => {
   const { handleApiCall, isApiLoading } = useApiHook();
@@ -43,29 +44,23 @@ const page = () => {
       url: url,
     });
 
-    console.log(result.data?.users);
-
-    const sortedUsers = result.data?.users?.sort((a, b) =>
-      a.firstName.localeCompare(b.firstName)
-    );
-
-    setUsers(sortedUsers);
+    setUsers(result.data?.users);
     await calculatePageCount(result?.data?.count);
 
     setDropdownStates(
-      sortedUsers.map((user) =>
-        user.status === 'active' ? 'active' : 'inactive'
+      result.data?.users.map((employee) =>
+        employee.status === "active" ? "active" : "inactive"
       )
     );
   };
 
-  // const filterUsers = (searchValue) => {
-  //   if (searchValue.trim() === '') {
-  //     setFilteredUsers(users);
+  // const filterEmployees = (searchValue) => {
+  //   if (searchValue.trim() === "") {
+  //     setFilteredUsers(employees);
   //   } else {
-  //     const filteredData = users.filter((user) => {
+  //     const filteredData = employees.filter((employee) => {
   //       const lowerCaseSearchValue = searchValue.toLowerCase();
-  //       const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+  //       const fullName = `${employee.name}`.toLowerCase();
   //       return fullName.includes(lowerCaseSearchValue);
   //     });
   //     setFilteredUsers(filteredData);
@@ -125,26 +120,27 @@ const page = () => {
   };
 
   const handleBalanceSave = async (item, index) => {
-    const result = await handleApiCall({
-      method: 'PUT',
-      url: `/balance/update`,
-      data: {
-        userId: item._id,
-        balance: users[index].balance,
-      },
-    });
+    getAllEmployees();
+    // const result = await handleApiCall({
+    //   method: "PUT",
+    //   url: `/balance/update`,
+    //   data: {
+    //     userId: item._id,
+    //     balance: employees[index].balance,
+    //   },
+    // });
+    // console.log(result);
+    // if (result.status === 200) {
+    //   item.isEditing = false;
 
-    if (result.status === 200) {
-      item.isEditing = false;
-      getAllUsers();
-      toast.success(result.data.message);
-    } else {
-      toast.error('Something went wrong');
-    }
+    //   toast.success(result.data.message);
+    // } else {
+    //   toast.error("Something went wrong");
+    // }
   };
 
-  const handleCancle = async (index) => {
-    getAllUsers();
+  const handleCancel = async (index) => {
+    getAllEmployees();
     toggleEditing(index);
   };
 
@@ -162,6 +158,55 @@ const page = () => {
   useEffect(() => {
     setShowDropDown(filteredUsers.map(() => false));
   }, [filteredUsers]);
+
+  const getPageNumbers = () => {
+    const delta = 0;
+    const range = [];
+    let start = 1;
+    let end = Math.min(start + 1, pageCount);
+
+    if (page === 1) {
+      for (let i = start; i <= end; i++) {
+        range.push(i);
+      }
+      if (end < pageCount) {
+        range.push("...");
+        range.push(pageCount - 1, pageCount);
+      }
+    } else {
+      start = Math.max(1, page - delta);
+      end = Math.min(page + delta, pageCount);
+
+      if (page - start < delta) {
+        end = Math.min(page + delta + (delta - (page - start)), pageCount);
+        start = Math.max(1, end - 2 * delta);
+      }
+
+      if (end - page < delta) {
+        start = Math.max(1, start - (delta - (end - page)));
+        end = Math.min(page + delta, pageCount);
+      }
+
+      if (start > 1) {
+        range.push(1);
+        if (start > 2) {
+          range.push("...");
+        }
+      }
+      for (let i = start; i <= end; i++) {
+        range.push(i);
+      }
+
+      if (end < pageCount) {
+        if (end < pageCount - 1) {
+          range.push("...");
+        }
+        range.push(pageCount);
+      }
+    }
+
+    return range;
+  };
 
   return (
     <div className='px-3 md:px-14 py-6 w-full m-auto flex flex-col text-white'>
@@ -190,11 +235,11 @@ const page = () => {
         </div>
       </div>
 
-      <div className='overflow-x-auto '>
-        <table className='table-auto overflow-scroll text-white w-[1024px] lg:w-full border border-transparent mb-6'>
-          <thead className='bg-[#262626] text-white rounded-[4px]'>
-            <tr className=''>
-              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left rounded-l-[4px]'>
+      <div className="scrollbar-custom mb-6">
+        <table className="table-auto overflow-scroll text-white w-[1024px] lg:w-full border border-transparent mb-3">
+          <thead className="bg-[#262626] text-white rounded-[4px]">
+            <tr className="">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-center rounded-l-[4px]">
                 Name
               </th>
               <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left'>
@@ -209,7 +254,7 @@ const page = () => {
               <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px]'>
                 Status
               </th>
-              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-r-[4px] text-right'>
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-r-[4px] text-center">
                 Actions
               </th>
             </tr>
@@ -218,86 +263,25 @@ const page = () => {
             {users.length > 0 ? (
               users.map((item, index) => {
                 return (
-                  <tr key={index} className='my-3 row w-full darkGrayBg'>
-                    <td className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black'>
-                      {`${item.firstName} ${item.lastName}`}
+                  <tr key={index} className="my-3 row w-full darkGrayBg">
+                    <td className="py-4 px-2 text-sm text-[#FFFFFF] text-center leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black">
+                      {`${item.name}`}
                     </td>
-                    <td className='py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black'>
+                    <td className="py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black w-[200px] sm:w-[unset] md:w-[unset] lg:w-[unset] ">
                       {item.email}
                     </td>
-                    <td className='py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black'>
-                      {item?.createdAt.split('T')[0]}
+                    <td className="py-4 px-2 w-[150px] sm:w-[150px] md:w-[170px] lg:w-[238px]  text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black">
+                      {item?.createdAt.split("T")[0]}
                     </td>
-                    <td className='coinsUpdate w-[300px] py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8  border-t-8 border-black'>
-                      <div className='relative group cursor-pointer'>
-                        <div className='flex gap-2 items-center'>
-                          {item.isEditing ? (
-                            <input
-                              type='number'
-                              onChange={(e) => handleInputChange(e, index)}
-                              autoFocus
-                              className='bg-[#0C0C0C] rounded-[4px] p-3'
-                            />
-                          ) : (
-                            <div className='flex gap-[5px] items-center'>
-                              <span className='text-[14px] leading-[16.1px]'>
-                                {item?.balance}
-                              </span>
-                            </div>
-                          )}
-                          {item.isEditing ? (
-                            <div className='flex gap-2'>
-                              <button onClick={() => handleCancle(index)}>
-                                <img
-                                  src='/close-square.svg'
-                                  alt='close-button'
-                                  width={32}
-                                  height={32}
-                                />
-                              </button>
-                              {isApiLoading ? (
-                                <div className='flex justify-center items-center'>
-                                  <RotatingLines
-                                    height='20'
-                                    width='20'
-                                    color='gray'
-                                    strokeColor='white'
-                                    strokeWidth='5'
-                                    animationDuration='0.75'
-                                    ariaLabel='rotating-lines-loading'
-                                  />
-                                </div>
-                              ) : (
-                                <button
-                                  onClick={() => handleBalanceSave(item, index)}
-                                >
-                                  <img
-                                    src='/tick-square.svg'
-                                    alt='close-button'
-                                    width={32}
-                                    height={32}
-                                  />
-                                </button>
-                              )}
-                            </div>
-                          ) : (
-                            <div className='absolute right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center items-center'>
-                              <button
-                                onClick={() => toggleEditing(index)}
-                                className=' w-[21.33px] h-[21.33px]'
-                              >
-                                <img
-                                  src='/edit-2.svg'
-                                  alt='arrow'
-                                  width={21.33}
-                                  height={21.33}
-                                />
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </td>
+                    {/* <td className="coinsUpdate w-[125px] sm:w-[200px] md:w-[125px] lg:w-[161px] py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8  border-t-8 border-black">
+                      <BalanceEditor
+                        employee={item}
+                        index={index}
+                        handleInputChange={handleInputChange}
+                        handleBalanceSave={() => handleBalanceSave(item, index)}
+                        handleCancel={handleCancel}
+                      />
+                    </td> */}
                     <td className='py-4 px-2 text-[10px] text-black leading-[21.74px] text-center border-b-8  border-t-8 border-black'>
                       <div className='relative inline-block text-left'>
                         <div>
@@ -360,8 +344,8 @@ const page = () => {
                         )}
                       </div>
                     </td>
-                    <td className='py-4 px-2 border-b-8 border-t-8 border-black'>
-                      <div className='flex justify-end items-center'>
+                    <td className="py-4 px-2 border-b-8 border-t-8 border-black">
+                      <div className="flex justify-center items-center">
                         <button
                           className='bg-[#850101] p-1 rounded-[4px] cursor-not-allowed'
                           disabled={true}
@@ -392,7 +376,7 @@ const page = () => {
         <div className='flex gap-[10px] items-center justify-center mb-3'>
           {page > 1 && (
             <button
-              className='w-9 h-9 flex items-center justify-center  bg-[#1B1B1B] rounded-[6px] cursor-pointer hover:bg-[#262626]'
+              className="w-9 h-9 flex items-center justify-center bg-[#1B1B1B] rounded-[6px] cursor-pointer hover:bg-[#262626]"
               onClick={() => setPage(page - 1)}
             >
               <img
@@ -403,16 +387,20 @@ const page = () => {
               />
             </button>
           )}
-          <div className='flex gap-[10px]'>
-            {Array.from({ length: pageCount }, (_, i) => (
+          <div className="flex gap-[10px]">
+            {getPageNumbers().map((pageNumber, index) => (
               <div
-                key={i}
-                className={`bg-[#1B1B1B] py-2 px-[14px] rounded-[6px] cursor-pointer ${
-                  i + 1 == page && '!bg-[#262626]'
+                key={index}
+                className={`bg-[#1B1B1B] py-2 px-[9px] sm:px-[14px] md:px-[14px] lg:px-[14px] rounded-[6px] cursor-pointer ${
+                  pageNumber === page && "!bg-[#262626]"
                 }`}
-                onClick={() => setPage(i + 1)}
+                onClick={() => {
+                  if (pageNumber !== "...") {
+                    setPage(pageNumber);
+                  }
+                }}
               >
-                {i + 1}
+                {pageNumber}
               </div>
             ))}
           </div>

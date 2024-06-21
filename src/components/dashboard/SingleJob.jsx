@@ -45,12 +45,17 @@ export default function SingleJob({ jobKeys }) {
       method: 'PUT',
       url: `/jobs/${jobId}/update-status/`,
       data: { status: status, jobId: jobId },
+    })
+    .then((res) => {
+      if (res.status === 201) {
+        setJobStatus(status);
+        setShowJobStatus(false);
+      }
+      return res;
+    })
+    .catch((error) => {
+      toast.error(error?.response?.data?.errors);
     }).finally(() => setShowLoading(false));
-
-    if (result?.status === 200) {
-      setJobStatus(status);
-      setShowJobStatus(false);
-    }
   };
 
   const routeToJob = () => {
@@ -202,9 +207,10 @@ export default function SingleJob({ jobKeys }) {
             jobKeys.platform == 'aramco' ? ' font-semibold' : 'font-medium'
           }`}
         >
+          {jobKeys.description?.length === 0 && <span className=' inline-block'></span>}
           {jobKeys.description?.length > 35
             ? `${jobKeys.description?.slice(0, 35)}...`
-            : jobKeys.description}
+            : jobKeys.description + ' '}
         </p>
 
         <div className='flex items-center pb-3'>
@@ -233,6 +239,7 @@ export default function SingleJob({ jobKeys }) {
               : 'border-black'
           }`}
         >
+        {jobKeys.artifacts?.length === 0 && <span className=' block w-11 h-11 rounded-lg assignedClr'></span>}
           {jobKeys?.artifacts.slice(0, 3).map((artifacts, index) =>
             artifacts?.type === 'image' ? (
               <img
@@ -241,6 +248,19 @@ export default function SingleJob({ jobKeys }) {
                 className='w-11 h-11 rounded-lg'
                 alt='Image'
               />
+            ) : artifacts?.type === 'video' ? (
+              <span
+                key={index}
+                className={`flexCenter w-11 h-11 rounded-lg ${
+                  jobKeys.platform == 'aramco'
+                    ? ' bgLightGray clrDarkGray'
+                    : 'lightGrayBg'
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+              </span>
             ) : (
               <span
                 key={index}

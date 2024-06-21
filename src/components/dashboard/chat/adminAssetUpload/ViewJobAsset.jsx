@@ -98,16 +98,23 @@ const ViewJobAsset = ({
   const handleStatusClick = async (status) => {
     setLoading(true);
     setShowJobStatus(false);
+    
     const result = await handleApiCall({
       method: 'PUT',
       url: `/jobs/${jobKeys?.id}/update-status/`,
       data: { status: status, jobId: jobKeys?.id },
+    })
+    
+    .then((res) => {
+      if (res.status === 200) {
+        setJobStatus(status);
+        setShowJobStatus(false);
+      }
+      return res;
+    })
+    .catch((error) => {
+      toast.error(error?.response?.data?.errors);
     }).finally(() => setLoading(false));
-
-    if (result?.status === 200) {
-      setJobStatus(result?.data?.status);
-      setShowJobStatus(false);
-    }
   };
 
   useEffect(() => {

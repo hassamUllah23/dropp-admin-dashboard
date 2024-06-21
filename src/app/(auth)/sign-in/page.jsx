@@ -43,7 +43,7 @@ const SignIn = () => {
     <div className='relative z-10 flex items-center justify-center max-w-[37rem] h-full m-auto px-5 md:px-0'>
       <div className='relative overflow-hidden m-auto flex flex-col justify-center items-start w-full text-white px-3 py-5 md:p-8 charcoalBg rounded-2xl border border-gray-100'>
         <p className='md:text-6xl text-base font-bold pt-0 md:pt-5 text-center max-w-[20.5rem] m-auto leading-6 md:leading-8'>
-          Welcome To The droppPhygital Testnet
+          Welcome To The dropp Testnet
         </p>
         <Formik
           initialValues={{
