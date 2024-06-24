@@ -43,6 +43,7 @@ const RewardsForm = () => {
         if (res.status === 200) {
           setInitialValues({
             initialVirtualPoints: res?.data?.initialVirtualPoints,
+            skyboxGeneration: res?.data?.skyboxGeneration,
             initialWardDropPoints: res?.data?.initialWardDropPoints,
             shareDiscordPoints: res?.data?.shareDiscordPoints,
             shareTwitterPoints: res?.data?.shareTwitterPoints,
@@ -71,6 +72,7 @@ const RewardsForm = () => {
 
   const validationSchema = Yup.object().shape({
     initialVirtualPoints: Yup.number().required('Required'),
+    skyboxGeneration: Yup.number().required('Required'),
     initialWardDropPoints: Yup.number().required('Required'),
     shareDiscordPoints: Yup.number().required('Required'),
     shareTwitterPoints: Yup.number().required('Required'),
@@ -86,6 +88,7 @@ const RewardsForm = () => {
 
   const titles = {
     initialVirtualPoints: '360 Image Points',
+    skyboxGeneration: 'Max limit of 360 generation',
     initialWardDropPoints: 'Wardrobe Points',
     shareDiscordPoints: 'Share on Discord Points',
     shareTwitterPoints: 'Share on Twitter Points',

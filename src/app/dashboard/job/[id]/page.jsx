@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { JOB_COMPLETED } from "@/utils/constants";
 import ViewJobAsset from "@/components/dashboard/chat/adminAssetUpload/ViewJobAsset";
 import { useSelector } from "@/lib";
+import useNotificationSound from "@/hooks/useNotificationSound";
 export default function Chat({ params: { id } }) {
   const scrollToBox = useRef(null);
   const { handleApiCall } = useApiHook();
@@ -15,6 +16,10 @@ export default function Chat({ params: { id } }) {
   const notifications = useSelector(
     (state) => state.notification.notifications
   );
+
+  const playNotificationSound = useNotificationSound();
+  const prevNotificationsLength = useRef(notifications.length);
+
   const handleUploadAdminAsset = async (file) => {
     try {
       setLoading(true);
@@ -66,6 +71,12 @@ export default function Chat({ params: { id } }) {
   }, [id, loading]);
 
   useEffect(() => {
+
+    if (notifications.length > prevNotificationsLength.current) {
+      playNotificationSound();
+      prevNotificationsLength.current = notifications.length;
+    }
+
     if (notifications.length > 0) {
       console.log("notifications receieved in job page", notifications);
       const jobId = notifications[0].jobId;
