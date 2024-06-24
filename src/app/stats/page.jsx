@@ -14,14 +14,9 @@ export default function page() {
   const [showLoading, setShowLoading] = useState(false);
   const [filterType, setfilterType] = useState('');
   const [chartData, setChartData] = useState([]);
-  const [data, setData] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const { handleApiCall, isApiLoading } = useApiHook();
-
-  //     const handleTab = (tabValue) => {
-  //     setTabValue(tabValue);
-  //   };
 
   const handleStartDate = (date) => {
     setStartDate(date);
@@ -265,71 +260,6 @@ export default function page() {
             </div>
           </div>
         </div>
-        {/* <div className='flex flex-row gap-y-5 pt-5 text-white'>
-                    <div className="date-filter">
-                        <button onClick={() => handleDateChange('yesterday')} className='mt-2 ml-2 rounded-md bg-Gradient px-10 py-3 text-sm font-semibold text-black shadow-sm'>
-                            {showLoading && filterType == 'yesterday' ? (
-                                <LoadingRotatingLines />
-                                ) : (
-                                    <p>Yesterday</p>
-                            )}
-                        </button>
-                        <button onClick={() => handleDateChange('lastWeek')} className='mt-2 ml-2 rounded-md bg-Gradient px-10 py-3 text-sm font-semibold text-black shadow-sm'>
-                            {showLoading && filterType == 'lastWeek' ? (
-                                <LoadingRotatingLines />
-                                ) : (
-                                    <p>Last Week</p>
-                            )}
-                         </button>
-                        <button onClick={() => handleDateChange('lastMonth')} className='mt-2 ml-2 rounded-md bg-Gradient px-10 py-3 text-sm font-semibold text-black shadow-sm'>
-                            {showLoading && filterType == 'lastMonth' ? (
-                                <LoadingRotatingLines />
-                                ) : (
-                                    <p>Last Month</p>
-                            )}
-                        </button>
-                        <button onClick={() => setShowCustomDateFields(!showCustomDateFields)} className='mt-2 ml-2 rounded-md bg-Gradient px-10 py-3 text-sm font-semibold text-black shadow-sm'>Custom Date</button>
-                        <div>
-                            {showCustomDateFields ? (
-                                <>
-                                    <div className='flex w-full h-auto mt-3'>
-                                        <div className='pr-2 pl-2'>Start Date:
-                                            <DatePicker
-                                                name='startDate'
-                                                selected={startDate}
-                                                onChange={handleStartDate}
-                                                dateFormat='dd-MM-yyyy'
-                                                className='mt-2 px-3 block rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
-                                            />
-                                        </div>
-                                        <div className='pr-2 pl-2'>End Date:
-                                            <DatePicker
-                                                name='endDate'
-                                                selected={endDate}
-                                                onChange={handleEndDate}
-                                                dateFormat='dd-MM-yyyy'
-                                                className='mt-2 px-3 block rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className='text-white'>
-                                            <button className='mt-2 ml-2 rounded-md bg-Gradient px-10 py-3 text-sm font-semibold text-black shadow-sm' onClick={() => handleDateChange('custom')}>
-                                                {showLoading && filterType == 'custom' ? (
-                                                <LoadingRotatingLines />
-                                                ) : (
-                                                    <p>Submit</p>
-                                                        )}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </>
-                            ) : ('')}
-                            
-                        </div>
-                    </div>
-                    
-                </div> */}
 
         {chartData?.length > 0 ? (
           <div className='flex flex-row w-full justify-center items-center h-auto'>
