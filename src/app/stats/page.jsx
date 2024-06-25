@@ -13,6 +13,7 @@ export default function page() {
   const [tabValue, setTabValue] = useState('today');
   const [showLoading, setShowLoading] = useState(false);
   const [filterType, setfilterType] = useState('');
+  const [data, setData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -89,6 +90,7 @@ export default function page() {
       });
       setShowLoading(false);
       if (result.status === 200) {
+        setData(result.data);
         setChartData(() => [
           {
             label: 'Registrations',
@@ -115,7 +117,6 @@ export default function page() {
             borderColor: 'rgba(255, 206, 86, 1)',
           },
         ]);
-        console.log(chartData, 'in parent');
       }
     } catch (error) {
       toast.error('Something went wrong');
@@ -210,6 +211,9 @@ export default function page() {
                         Start Date:
                         <DatePicker
                           name='startDate'
+                          showYearDropdown
+                          showMonthDropdown
+                          dropdownMode='select'
                           selected={startDate}
                           onChange={handleStartDate}
                           dateFormat='dd-MM-yyyy'
@@ -220,6 +224,9 @@ export default function page() {
                         End Date:
                         <DatePicker
                           name='endDate'
+                          showYearDropdown
+                          showMonthDropdown
+                          dropdownMode='select'
                           selected={endDate}
                           onChange={handleEndDate}
                           dateFormat='dd-MM-yyyy'
@@ -253,7 +260,7 @@ export default function page() {
         {chartData?.length > 0 ? (
           <div className='flex flex-row w-full justify-center items-center h-auto'>
             <div className='w-1/2'>
-              <PieChart chartDataX={chartData} />
+              <PieChart chartDataX={chartData} cData={data} />
             </div>
           </div>
         ) : null}

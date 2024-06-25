@@ -582,3 +582,7 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+.react-datepicker__year-select, .react-datepicker__month-select{
+  color:black;
+}
