@@ -153,11 +153,11 @@ export default function page() {
           })}
         </div>
         <div className='flex flex-col gap-y-5 pt-5'>
-          <h2 className='text-base text-[20px] font-semibold leading-7 text-white'>
+          <h2 className='text-[25px] font-semibold leading-7 text-white mb-2'>
             Date Filters
           </h2>
         </div>
-        <div className='flex flex-col mb-0 md:mb-2 px-3 md:px-10'>
+        <div className='flex flex-col mb-0 md:mb-2'>
           <div className='flex text-base md:text-1xl font-bold p-1 md:p-2 leading-5 md:leading-8 rounded-md lightGrayBg text-white'>
             <button
               className={`${
@@ -170,7 +170,7 @@ export default function page() {
             <button
               className={`${
                 tabValue == 'yesterday' && 'darkGrayBg'
-              } px-6 uppercase py-3 rounded-lg transition-all ease-in-out  hover:bg-gray-100 `}
+              } px-6 uppercase py-3 rounded-lg transition-all ease-in-out hover:bg-gray-100 ml-2`}
               onClick={() => handleTab('yesterday')}
             >
               Yesterday
