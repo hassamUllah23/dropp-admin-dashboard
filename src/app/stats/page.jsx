@@ -89,17 +89,6 @@ export default function page() {
       });
       setShowLoading(false);
       if (result.status === 200) {
-        setData({
-          newSignupsCount: result.data?.newSignupsCount
-            ? result.data?.newSignupsCount
-            : 0,
-          connectedWalletCount: result.data?.connectedWalletCount
-            ? result.data?.connectedWalletCount
-            : 0,
-          newActivationsCount: result.data?.newActivationsCount
-            ? result.data?.newActivationsCount
-            : 0,
-        });
         setChartData(() => [
           {
             label: 'Registrations',
