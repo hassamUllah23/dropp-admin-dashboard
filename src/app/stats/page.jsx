@@ -176,7 +176,7 @@ export default function page() {
             );
           })}
         </div>
-        <div className='col-span-4 max-sm:col-span-1 max-sm:mt-4 text-white p-4'>
+        <div className='col-span-4 max-sm:col-span-1 max-sm:mt-4 text-white px-4'>
           <div className='bg-neutral-800 p-4 rounded-md'>
             <div className='flex text-white w-full justify-between'>
               <button
