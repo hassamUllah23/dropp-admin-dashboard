@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import useApiHook from '@/hooks/useApiHook';
 import { RotatingLines } from 'react-loader-spinner';
 import { toast } from 'react-toastify';
@@ -14,6 +14,8 @@ const page = () => {
   const [count, setCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [pageSize] = useState(10);
+  const [deleting, setDeleting] = useState(false)
+  const [deleteUserId, setDeleteUserId] = useState(false)
   const [users, setUsers] = useState(
     filteredUsers.map((user) => ({ ...user, isEditing: false }))
   );
@@ -184,6 +186,31 @@ const page = () => {
     return range;
   };
 
+  const handleDeleteUser = async (userId) => {
+    try {
+      setDeleting(() => true)
+      setDeleteUserId(() => userId)
+      const result = await handleApiCall({
+        method: 'DELETE',
+        url: `/admin/user/delete?user=${userId}`,
+      });
+      toast.success(result?.data?.message ? result?.data?.message : 'User data deleted succesfully')
+
+      setUsers((prev) => {
+        const removeIndex = prev.findIndex((element) => element._id === userId)
+        return (removeIndex !== -1) ? [...prev.splice(removeIndex, 1)] : [...prev]
+      })
+
+      await calculatePageCount(count - 1);
+    } catch (error) {
+      toast.error("Something went wrong, try again.")
+    }
+    finally {
+      setDeleting(() => false)
+      setDeleteUserId(() => null)
+    }
+  }
+
   return (
     <div className='px-3 md:px-14 py-6 w-full m-auto flex flex-col text-white'>
       <div className='flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between my-4'>
@@ -263,15 +290,15 @@ const page = () => {
                         <div>
                           <button
                             type='button'
-                            className={`inline-flex justify-center items-center w-24 rounded-2xl px-2 py-1 text-sm font-medium ${
-                              dropdownStates[index] === 'active'
-                                ? 'bg-[#67C24B]'
-                                : 'bg-[#850101]'
-                            }`}
+                            className={`inline-flex justify-center items-center w-24 rounded-2xl px-2 py-1 text-sm font-medium ${dropdownStates[index] === 'active'
+                              ? 'bg-[#67C24B]'
+                              : 'bg-[#850101]'
+                              }`}
                             id='options-menu'
                             aria-haspopup='true'
                             aria-expanded='true'
                             onClick={() => handleShowDropDown(index)}
+                            disabled={isApiLoading || deleting}
                           >
                             {dropdownStates[index] === 'active'
                               ? 'Active'
@@ -322,17 +349,32 @@ const page = () => {
                     </td>
                     <td className='py-4 px-2 border-b-8 border-t-8 border-black'>
                       <div className='flex justify-center items-center'>
-                        <button
-                          className='bg-[#850101] p-1 rounded-[4px] cursor-not-allowed'
-                          disabled={true}
-                        >
-                          <img
-                            src='/trash.svg'
-                            alt='delete_icon'
-                            width={16}
-                            height={16}
-                          />
-                        </button>
+                        {
+                          deleting && (item?._id === deleteUserId) ? (
+                            <RotatingLines
+                              height='20'
+                              width='20'
+                              color='gray'
+                              strokeColor='white'
+                              strokeWidth='5'
+                              animationDuration='0.75'
+                              ariaLabel='rotating-lines-loading'
+                            />
+                          ) : (
+                            <button
+                              className='bg-[#850101] p-1 rounded-[4px]'
+                              disabled={deleting}
+                              onClick={() => { handleDeleteUser(item._id) }}
+                            >
+                              <img
+                                src='/trash.svg'
+                                alt='delete_icon'
+                                width={16}
+                                height={16}
+                              />
+                            </button>
+                          )
+                        }
                       </div>
                     </td>
                   </tr>
@@ -367,9 +409,8 @@ const page = () => {
             {getPageNumbers().map((pageNumber, index) => (
               <div
                 key={index}
-                className={`bg-[#1B1B1B] py-2 px-[9px] sm:px-[14px] md:px-[14px] lg:px-[14px] rounded-[6px] cursor-pointer ${
-                  pageNumber === page && '!bg-[#262626]'
-                }`}
+                className={`bg-[#1B1B1B] py-2 px-[9px] sm:px-[14px] md:px-[14px] lg:px-[14px] rounded-[6px] cursor-pointer ${pageNumber === page && '!bg-[#262626]'
+                  }`}
                 onClick={() => {
                   if (pageNumber !== '...') {
                     setPage(pageNumber);
