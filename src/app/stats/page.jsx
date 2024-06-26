@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { PieChart } from './PieChart';
 import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
@@ -7,6 +7,7 @@ import { data } from 'autoprefixer';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import LoadingRotatingLines from '@/components/common/LoadingRotatingLines';
+import html2pdf from 'html2pdf.js';
 
 export default function page() {
   const [showCustomDateFields, setShowCustomDateFields] = useState(false);
@@ -24,6 +25,36 @@ export default function page() {
   };
   const handleEndDate = (date) => {
     setEndDate(date);
+  };
+
+  const contentRef = useRef();
+
+  const generatePdf = () => {
+    const element = contentRef.current;
+    const opt = {
+      margin: 0,
+      filename: 'my-document.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    };
+
+    const noPrintElements = document.querySelectorAll('.no-print');
+    noPrintElements.forEach((el) => el.classList.add('hidden'));
+
+    const designChangeElements = document.querySelectorAll('.user-stats');
+    designChangeElements.forEach((el) => el.classList.add('text-black'));
+
+    html2pdf()
+      .from(element)
+      .set(opt)
+      .toPdf()
+      .get('pdf')
+      .then(() => {
+        noPrintElements.forEach((el) => el.classList.remove('hidden'));
+        designChangeElements.forEach((el) => el.classList.remove('text-black'));
+      })
+      .save();
   };
 
   const handleTab = async (type) => {
@@ -130,140 +161,139 @@ export default function page() {
   }, []);
 
   return (
-    <div className='divide-y divide-white/5 w-full mx-auto p-2.5  max-w-7xl'>
-      <div className=''>
-        <div>
-          <h2 className='text-base text-[40px] font-semibold leading-7 text-white'>
-            User Statistics
-          </h2>
-          <p className='mt-1 text-sm leading-6 text-gray-400'></p>
-        </div>
-
-        <div className='flex flex-col gap-y-5 pt-10'>
+    <div ref={contentRef} className='text-white'>
+      <h2 className=' user-stats flex font-bold  w-full px-8 py-5 mt-8'>
+        User Statistics
+      </h2>
+      <div className='grid grid-cols-6 max-sm:grid-cols-1 text-white px-4'>
+        <div className='col-span-2 max-sm:col-span-1 text-white px-4'>
           {chartData.map((element) => {
             return (
-              <div className='text-white'>
-                <h1 className='flex items-center text-[30px] font-[700] leading-[23.48px] pb-4'>
-                  {element.label}
-                </h1>
-                <h1 className='flex items-center text-[20px] font-[500] leading-[23.48px]'>
-                  {element.value}
-                </h1>
+              <div className='flex flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-10 first:mb-4 last:mt-4'>
+                <div className=''>{element.label}</div>
+                <div className='text-4xl font-bold '>{element.value}</div>
               </div>
             );
           })}
         </div>
-        <div className='flex flex-col gap-y-5 pt-5'>
-          <h2 className='text-[25px] font-semibold leading-7 text-white mb-2'>
-            Date Filters
-          </h2>
-        </div>
-        <div className='flex flex-col mb-0 md:mb-2'>
-          <div className='flex text-base md:text-1xl font-bold p-1 md:p-2 leading-5 md:leading-8 rounded-md lightGrayBg text-white'>
-            <button
-              className={`${
-                tabValue == 'today' && 'darkGrayBg'
-              } px-6 uppercase py-3 rounded-lg transition-all ease-in-out  hover:bg-gray-100 `}
-              onClick={() => handleTab('today')}
-            >
-              Today
-            </button>
-            <button
-              className={`${
-                tabValue == 'yesterday' && 'darkGrayBg'
-              } px-6 uppercase py-3 rounded-lg transition-all ease-in-out hover:bg-gray-100 ml-2`}
-              onClick={() => handleTab('yesterday')}
-            >
-              Yesterday
-            </button>
-            <button
-              className={`${
-                tabValue === 'lastWeek' && 'darkGrayBg'
-              } px-6 uppercase py-3 rounded-lg transition-all ease-in-out hover:bg-gray-100 ml-2`}
-              onClick={() => handleTab('lastWeek')}
-            >
-              Last Week
-            </button>
-            <button
-              className={`${
-                tabValue == 'lastMonth' && 'darkGrayBg'
-              } px-6 uppercase py-3 rounded-lg transition-all ease-in-out  hover:bg-gray-100 `}
-              onClick={() => handleTab('lastMonth')}
-            >
-              Last Month
-            </button>
-            <button
-              className={`${
-                tabValue === 'custom' && 'darkGrayBg'
-              } px-6 uppercase py-3 rounded-lg transition-all ease-in-out hover:bg-gray-100 ml-2`}
-              onClick={() => setShowCustomDateFields(!showCustomDateFields)}
-            >
-              Custom
-            </button>
-          </div>
-          <div className='flex flex-row'>
-            <div>
-              {showCustomDateFields ? (
-                <>
-                  <div className='flex w-full h-auto mt-3'>
-                    <div className='flex flex-row'>
-                      <div className='text-white'>
-                        Start Date:
-                        <DatePicker
-                          name='startDate'
-                          showYearDropdown
-                          showMonthDropdown
-                          dropdownMode='select'
-                          selected={startDate}
-                          onChange={handleStartDate}
-                          dateFormat='dd-MM-yyyy'
-                          className='mt-2 px-3 block rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
-                        />
+        <div className='col-span-4 max-sm:col-span-1 max-sm:mt-4 text-white p-4'>
+          <div className='bg-neutral-800 p-4 rounded-md'>
+            <div className='flex text-white w-full justify-between'>
+              <button
+                className='no-print w-60 mt-2 ml-2 rounded-md bg-Gradient px-7 py-3 text-sm font-semibold text-black shadow-sm'
+                onClick={generatePdf}
+              >
+                Download PDF
+              </button>
+              <select
+                className='bg-neutral-800 p-2 rounded-md border border-solid border-gray-600'
+                onChange={(e) => {
+                  if (e.target.value == 'custom') {
+                    setShowCustomDateFields(!showCustomDateFields);
+                  } else {
+                    handleTab(e.target.value);
+                  }
+                }}
+              >
+                <option value='today'>Today</option>
+                <option value='yesterday'>Yesterday</option>
+                <option value='lastWeek'>Last Week</option>
+                <option value='lastMonth'>Last Month</option>
+                <option value='custom'>Custom</option>
+              </select>
+            </div>
+            <div className='flex flex-row'>
+              <div>
+                {showCustomDateFields ? (
+                  <>
+                    <div className='flex w-full h-auto mt-3'>
+                      <div className='flex flex-row'>
+                        <div className='text-white'>
+                          Start Date:
+                          <DatePicker
+                            name='startDate'
+                            showYearDropdown
+                            showMonthDropdown
+                            dropdownMode='select'
+                            selected={startDate}
+                            onChange={handleStartDate}
+                            dateFormat='dd-MM-yyyy'
+                            className='mt-2 px-3 block rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
+                          />
+                        </div>
+                        <div className='text-white'>
+                          End Date:
+                          <DatePicker
+                            name='endDate'
+                            showYearDropdown
+                            showMonthDropdown
+                            dropdownMode='select'
+                            selected={endDate}
+                            onChange={handleEndDate}
+                            dateFormat='dd-MM-yyyy'
+                            className='mt-2 px-3 block rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
+                          />
+                        </div>
                       </div>
-                      <div className='text-white'>
-                        End Date:
-                        <DatePicker
-                          name='endDate'
-                          showYearDropdown
-                          showMonthDropdown
-                          dropdownMode='select'
-                          selected={endDate}
-                          onChange={handleEndDate}
-                          dateFormat='dd-MM-yyyy'
-                          className='mt-2 px-3 block rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
-                        />
+                      <div className=''>
+                        <div className='text-white'>
+                          <div className='hidden'>&nbsp</div>
+                          <button
+                            className='mt-6 ml-2 rounded-md bg-Gradient px-10 py-2  text-sm font-semibold text-black shadow-sm'
+                            onClick={() => handleTab('custom')}
+                          >
+                            {showLoading && filterType == 'custom' ? (
+                              <LoadingRotatingLines />
+                            ) : (
+                              <p>Submit</p>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
-                    <div className=''>
-                      <div className='text-white'>
-                        <button
-                          className='mt-2 ml-2 rounded-md bg-Gradient px-10 py-3 text-sm font-semibold text-black shadow-sm'
-                          onClick={() => handleTab('custom')}
+                  </>
+                ) : (
+                  ''
+                )}
+              </div>
+            </div>
+            <div className='flex w-full'>
+              {chartData?.length > 0 ? (
+                <div className='flex justify-between items-center flex-row w-full h-auto'>
+                  <div className='max-sm:w-full md:w-[50%] p-3'>
+                    {chartData.map((element, index) => {
+                      return (
+                        <div
+                          className='flex items-center w-full px-3 first:mb-4 last:mt-4'
+                          key={index}
                         >
-                          {showLoading && filterType == 'custom' ? (
-                            <LoadingRotatingLines />
-                          ) : (
-                            <p>Submit</p>
-                          )}
-                        </button>
-                      </div>
-                    </div>
+                          <div className='w-1/6'>
+                            <div
+                              className={`p-4 rounded-full w-5 h-5 ${
+                                index === 0 ? 'bg-cyan-500' : ''
+                              } ${index === 1 ? 'bg-emerald-700' : ''} ${
+                                index === 2 ? 'bg-amber-400' : ''
+                              } `}
+                            ></div>
+                          </div>
+                          <div className='w-3/6 text-left text-base mx-2'>
+                            {element.label}
+                          </div>
+                          <div className='w-2/6 text-left text-base'>
+                            {element.value}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                </>
-              ) : (
-                ''
-              )}
+                  <div className='max-sm:w-full flex justify-center md:w-[50%] p-3'>
+                    <PieChart chartDataX={chartData} cData={data} />
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
-
-        {chartData?.length > 0 ? (
-          <div className='flex flex-row w-full justify-center items-center h-auto'>
-            <div className='w-1/2'>
-              <PieChart chartDataX={chartData} cData={data} />
-            </div>
-          </div>
-        ) : null}
       </div>
     </div>
   );

@@ -586,3 +586,17 @@ input[type='number'] {
 .react-datepicker__year-select, .react-datepicker__month-select{
   color:black;
 }
+
+.page-break {
+  page-break-before: always;
+}
+.download-pdf-loading-style{
+  height: 100%;
+  background: #241e1e;
+  opacity: 0.7;
+}
+.download-pdf-loading-style > svg{
+  margin: 0 auto;
+  margin-top: 30%;
+}
+

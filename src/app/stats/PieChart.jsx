@@ -12,8 +12,8 @@ export function PieChart({ chartDataX, cData }) {
       {
         label: 'Total Registerations',
         data: [0, cData?.newSignupsCount, 0],
-        backgroundColor: ['rgba(0, 0, 0, 0)', 'rgba(255, 99, 132, 0.2)'],
-        borderColor: ['rgba(0, 0, 0, 0)', 'rgba(255, 99, 132, 1)'],
+        backgroundColor: ['rgba(0, 0, 0, 0)', '#14C7FF'],
+        borderColor: ['rgba(0, 0, 0, 0)', '#000'],
         borderWidth: 1,
       },
       {
@@ -23,8 +23,8 @@ export function PieChart({ chartDataX, cData }) {
           cData?.newActivationsCount,
           0,
         ],
-        backgroundColor: ['#AAA', '#777'],
-        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(0, 0, 0, 0)'],
+        backgroundColor: ['#000', '#67C24B'],
+        borderColor: ['#000', 'rgba(0, 0, 0, 0)'],
         borderWidth: 1,
       },
       {
@@ -34,8 +34,8 @@ export function PieChart({ chartDataX, cData }) {
           cData?.connectedWalletCount,
           0,
         ],
-        backgroundColor: ['rgba(255, 206, 86, 0.2)', 'hsl(100, 100%, 60%)'],
-        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(0, 0, 0, 0)'],
+        backgroundColor: ['#000', '#FFCE53'],
+        borderColor: ['#000', 'rgba(0, 0, 0, 0)'],
         borderWidth: 1,
       },
     ],
