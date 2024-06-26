@@ -1,29 +1,32 @@
-'use client';
-import { useState, useEffect, useId } from 'react';
-import useApiHook from '@/hooks/useApiHook';
-import { RotatingLines } from 'react-loader-spinner';
-import { toast } from 'react-toastify';
-import BalanceEditor from '@/components/userList/BalanceEditor';
-import useDebounceHook from '@/hooks/useDebounceHook';
+"use client";
+import { useState, useEffect, useId } from "react";
+import useApiHook from "@/hooks/useApiHook";
+import { RotatingLines } from "react-loader-spinner";
+import { toast } from "react-toastify";
+import BalanceEditor from "@/components/userList/BalanceEditor";
+import useDebounceHook from "@/hooks/useDebounceHook";
 
 const page = () => {
   const { handleApiCall, isApiLoading } = useApiHook();
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [pageSize] = useState(10);
-  const [deleting, setDeleting] = useState(false)
-  const [deleteUserId, setDeleteUserId] = useState(false)
+  const [deleting, setDeleting] = useState(false);
+  const [deleteUserId, setDeleteUserId] = useState(false);
   const [users, setUsers] = useState(
     filteredUsers.map((user) => ({ ...user, isEditing: false }))
   );
   const [dropdownStates, setDropdownStates] = useState([]);
   const [showDropDown, setShowDropDown] = useState([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showConfirmationDeleteModal, setShowConfirmationDeleteModal] =
+    useState(false);
+  const [userDeleteId, setUserDeleteId] = useState("");
   const [selectedUserIndex, setSelectedUserIndex] = useState(null);
-  const [confirmationAction, setConfirmationAction] = useState('');
+  const [confirmationAction, setConfirmationAction] = useState("");
   let url = `/employee/all-users?page=${page}&pageSize=${pageSize}&search=${searchValue}`;
 
   // // Function to handle input change
@@ -43,7 +46,7 @@ const page = () => {
 
   const getAllUsers = async (e) => {
     const result = await handleApiCall({
-      method: 'GET',
+      method: "GET",
       url: url,
     });
 
@@ -52,7 +55,7 @@ const page = () => {
 
     setDropdownStates(
       result.data?.users.map((employee) =>
-        employee.status === 'active' ? 'active' : 'inactive'
+        employee.status === "active" ? "active" : "inactive"
       )
     );
   };
@@ -88,7 +91,7 @@ const page = () => {
 
   const confirmAction = async () => {
     const result = await handleApiCall({
-      method: 'PUT',
+      method: "PUT",
       url: `/admin/user/status`,
       data: {
         userId: filteredUsers[selectedUserIndex]._id,
@@ -101,19 +104,18 @@ const page = () => {
       const updatedDropdownStates = [...dropdownStates];
       updatedDropdownStates[index] = option;
       setDropdownStates(updatedDropdownStates);
-      toast.success('Status updated successfully');
+      toast.success("Status updated successfully");
       setShowConfirmationModal(false);
     } else {
-      toast.error('Something went wrong');
+      toast.error("Something went wrong");
     }
   };
 
   const handleBalanceSave = () => {
-    getAllEmployees();
+    getAllUsers();
   };
-
   const handleCancel = async (index) => {
-    getAllEmployees();
+    getAllUsers();
     toggleEditing(index);
   };
 
@@ -148,7 +150,7 @@ const page = () => {
         range.push(i);
       }
       if (end < pageCount) {
-        range.push('...');
+        range.push("...");
         range.push(pageCount - 1, pageCount);
       }
     } else {
@@ -168,7 +170,7 @@ const page = () => {
       if (start > 1) {
         range.push(1);
         if (start > 2) {
-          range.push('...');
+          range.push("...");
         }
       }
       for (let i = start; i <= end; i++) {
@@ -177,7 +179,7 @@ const page = () => {
 
       if (end < pageCount) {
         if (end < pageCount - 1) {
-          range.push('...');
+          range.push("...");
         }
         range.push(pageCount);
       }
@@ -188,49 +190,59 @@ const page = () => {
 
   const handleDeleteUser = async (userId) => {
     try {
-      setDeleting(() => true)
-      setDeleteUserId(() => userId)
+      setDeleting(() => true);
+      setDeleteUserId(() => userId);
       const result = await handleApiCall({
-        method: 'DELETE',
+        method: "DELETE",
         url: `/admin/user/delete?user=${userId}`,
       });
-      toast.success(result?.data?.message ? result?.data?.message : 'User data deleted succesfully')
+      toast.success(
+        result?.data?.message
+          ? result?.data?.message
+          : "User data deleted succesfully"
+      );
 
       setUsers((prev) => {
-        const removeIndex = prev.findIndex((element) => element._id === userId)
-        return (removeIndex !== -1) ? [...prev.splice(removeIndex, 1)] : [...prev]
-      })
-
+        const removeIndex = prev.findIndex((element) => element._id === userId);
+        return removeIndex !== -1
+          ? [...prev.splice(removeIndex, 1)]
+          : [...prev];
+      });
+      setShowConfirmationDeleteModal(false);
       await calculatePageCount(count - 1);
     } catch (error) {
-      toast.error("Something went wrong, try again.")
+      toast.error("Something went wrong, try again.");
+    } finally {
+      setDeleting(() => false);
+      setDeleteUserId(() => null);
     }
-    finally {
-      setDeleting(() => false)
-      setDeleteUserId(() => null)
-    }
-  }
+  };
+
+  const handleDelete = async (id) => {
+    setShowConfirmationDeleteModal(true);
+    setUserDeleteId(id);
+  };
 
   return (
-    <div className='px-3 md:px-14 py-6 w-full m-auto flex flex-col text-white'>
-      <div className='flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between my-4'>
-        <h1 className='flex items-center text-[20px] font-[700] leading-[23.48px]'>
+    <div className="px-3 md:px-14 py-6 w-full m-auto flex flex-col text-white">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between my-4">
+        <h1 className="flex items-center text-[20px] font-[700] leading-[23.48px]">
           Users
         </h1>
 
-        <div className='max-w-[334px] w-full flex items-center border border-white rounded-lg p-2'>
+        <div className="max-w-[334px] w-full flex items-center border border-white rounded-lg p-2">
           <input
-            type='text'
-            id='search'
-            className='w-full bg-transparent'
-            placeholder='Search'
+            type="text"
+            id="search"
+            className="w-full bg-transparent"
+            placeholder="Search"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          <label htmlFor='search' className='cursor-pointer'>
+          <label htmlFor="search" className="cursor-pointer">
             <img
-              src='/search-normal.svg'
-              alt='search icon'
+              src="/search-normal.svg"
+              alt="search icon"
               width={24}
               height={24}
             />
@@ -238,26 +250,26 @@ const page = () => {
         </div>
       </div>
 
-      <div className='scrollbar-custom mb-6'>
-        <table className='table-auto overflow-scroll text-white w-[1024px] lg:w-full border border-transparent mb-3'>
-          <thead className='bg-[#262626] text-white rounded-[4px]'>
-            <tr className=''>
-              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-center rounded-l-[4px]'>
+      <div className="scrollbar-custom mb-6">
+        <table className="table-auto overflow-scroll text-white w-[1024px] lg:w-full border border-transparent mb-3">
+          <thead className="bg-[#262626] text-white rounded-[4px]">
+            <tr className="">
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-center rounded-l-[4px]">
                 Name
               </th>
-              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left'>
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left">
                 Email
               </th>
-              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left'>
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left">
                 Last Activity
               </th>
-              <th className='py-4 px-2 text-sm text-[#FFFFFF] text-left leading-[21.74px]'>
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] text-left leading-[21.74px]">
                 Current Balance
               </th>
-              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px]'>
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px]">
                 Status
               </th>
-              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-r-[4px] text-center'>
+              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-r-[4px] text-center">
                 Actions
               </th>
             </tr>
@@ -266,17 +278,17 @@ const page = () => {
             {users.length > 0 ? (
               users.map((item, index) => {
                 return (
-                  <tr key={index} className='my-3 row w-full darkGrayBg'>
-                    <td className='py-4 px-2 text-sm text-[#FFFFFF] text-center leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black'>
+                  <tr key={index} className="my-3 row w-full darkGrayBg">
+                    <td className="py-4 px-2 text-sm text-[#FFFFFF] text-center leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black">
                       {`${item.name}`}
                     </td>
-                    <td className='py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black w-[200px] sm:w-[unset] md:w-[unset] lg:w-[unset] '>
+                    <td className="py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black w-[200px] sm:w-[unset] md:w-[unset] lg:w-[unset] ">
                       {item.email}
                     </td>
-                    <td className='py-4 px-2 w-[150px] sm:w-[150px] md:w-[170px] lg:w-[238px]  text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black'>
-                      {item?.createdAt.split('T')[0]}
+                    <td className="py-4 px-2 w-[150px] sm:w-[150px] md:w-[170px] lg:w-[238px]  text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black">
+                      {item?.createdAt.split("T")[0]}
                     </td>
-                    <td className='coinsUpdate w-[125px] sm:w-[200px] md:w-[125px] lg:w-[161px] py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8  border-t-8 border-black'>
+                    <td className="coinsUpdate w-[125px] sm:w-[200px] md:w-[125px] lg:w-[161px] py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8  border-t-8 border-black">
                       <BalanceEditor
                         employee={item}
                         index={index}
@@ -285,34 +297,35 @@ const page = () => {
                         handleCancel={handleCancel}
                       />
                     </td>
-                    <td className='py-4 px-2 text-[10px] text-black leading-[21.74px] text-center border-b-8  border-t-8 border-black'>
-                      <div className='relative inline-block text-left'>
+                    <td className="py-4 px-2 text-[10px] text-black leading-[21.74px] text-center border-b-8  border-t-8 border-black">
+                      <div className="relative inline-block text-left">
                         <div>
                           <button
-                            type='button'
-                            className={`inline-flex justify-center items-center w-24 rounded-2xl px-2 py-1 text-sm font-medium ${dropdownStates[index] === 'active'
-                              ? 'bg-[#67C24B]'
-                              : 'bg-[#850101]'
-                              }`}
-                            id='options-menu'
-                            aria-haspopup='true'
-                            aria-expanded='true'
+                            type="button"
+                            className={`inline-flex justify-center items-center w-24 rounded-2xl px-2 py-1 text-sm font-medium ${
+                              dropdownStates[index] === "active"
+                                ? "bg-[#67C24B]"
+                                : "bg-[#850101]"
+                            }`}
+                            id="options-menu"
+                            aria-haspopup="true"
+                            aria-expanded="true"
                             onClick={() => handleShowDropDown(index)}
                             disabled={isApiLoading || deleting}
                           >
-                            {dropdownStates[index] === 'active'
-                              ? 'Active'
-                              : 'Inactive'}
+                            {dropdownStates[index] === "active"
+                              ? "Active"
+                              : "Inactive"}
                             <svg
-                              className='-mr-1 ml-2 h-5 w-5'
-                              xmlns='http://www.w3.org/2000/svg'
-                              viewBox='0 0 20 20'
-                              fill='currentColor'
-                              aria-hidden='true'
+                              className="-mr-1 ml-2 h-5 w-5"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
                             >
                               <path
-                                fillRule='evenodd'
-                                d='M10 12l-6-6h12l-6 6z'
+                                fillRule="evenodd"
+                                d="M10 12l-6-6h12l-6 6z"
                               />
                             </svg>
                           </button>
@@ -320,24 +333,24 @@ const page = () => {
 
                         {showDropDown[index] && (
                           <div
-                            className='origin-top-right absolute right-0 mt-2 w-20 rounded-md shadow-lg border border-white text-white bg-[#0C0C0C] z-[5]'
-                            role='menu'
-                            aria-orientation='vertical'
-                            aria-labelledby='options-menu'
+                            className="origin-top-right absolute right-0 mt-2 w-20 rounded-md shadow-lg border border-white text-white bg-[#0C0C0C] z-[5]"
+                            role="menu"
+                            aria-orientation="vertical"
+                            aria-labelledby="options-menu"
                           >
-                            <div role='none'>
+                            <div role="none">
                               <button
-                                className='text-left block w-full px-4 py-2 text-sm hover:bg-[#67C24B] hover:text-white border-b border-white'
+                                className="text-left block w-full px-4 py-2 text-sm hover:bg-[#67C24B] hover:text-white border-b border-white"
                                 onClick={() =>
-                                  handleOptionClick('active', index)
+                                  handleOptionClick("active", index)
                                 }
                               >
                                 Active
                               </button>
                               <button
-                                className='text-left block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white'
+                                className="text-left block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white"
                                 onClick={() =>
-                                  handleOptionClick('inactive', index)
+                                  handleOptionClick("inactive", index)
                                 }
                               >
                                 Inactive
@@ -347,34 +360,22 @@ const page = () => {
                         )}
                       </div>
                     </td>
-                    <td className='py-4 px-2 border-b-8 border-t-8 border-black'>
-                      <div className='flex justify-center items-center'>
-                        {
-                          deleting && (item?._id === deleteUserId) ? (
-                            <RotatingLines
-                              height='20'
-                              width='20'
-                              color='gray'
-                              strokeColor='white'
-                              strokeWidth='5'
-                              animationDuration='0.75'
-                              ariaLabel='rotating-lines-loading'
-                            />
-                          ) : (
-                            <button
-                              className='bg-[#850101] p-1 rounded-[4px]'
-                              disabled={deleting}
-                              onClick={() => { handleDeleteUser(item._id) }}
-                            >
-                              <img
-                                src='/trash.svg'
-                                alt='delete_icon'
-                                width={16}
-                                height={16}
-                              />
-                            </button>
-                          )
-                        }
+                    <td className="py-4 px-2 border-b-8 border-t-8 border-black">
+                      <div className="flex justify-center items-center">
+                        <button
+                          className="bg-[#850101] p-1 rounded-[4px]"
+                          disabled={deleting}
+                          onClick={() => {
+                            handleDelete(item._id);
+                          }}
+                        >
+                          <img
+                            src="/trash.svg"
+                            alt="delete_icon"
+                            width={16}
+                            height={16}
+                          />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -382,7 +383,7 @@ const page = () => {
               })
             ) : (
               <tr>
-                <td colSpan='5' className='pl-1 pt-4'>
+                <td colSpan="5" className="pl-1 pt-4">
                   No user found
                 </td>
               </tr>
@@ -391,28 +392,29 @@ const page = () => {
         </table>
       </div>
       {pageCount > 1 && (
-        <div className='flex gap-[10px] items-center justify-center mb-3'>
+        <div className="flex gap-[10px] items-center justify-center mb-3">
           {page > 1 && (
             <button
-              className='w-9 h-9 flex items-center justify-center bg-[#1B1B1B] rounded-[6px] cursor-pointer hover:bg-[#262626]'
+              className="w-9 h-9 flex items-center justify-center bg-[#1B1B1B] rounded-[6px] cursor-pointer hover:bg-[#262626]"
               onClick={() => setPage(page - 1)}
             >
               <img
-                src='/arrow-left.svg'
-                alt='arrow-left'
+                src="/arrow-left.svg"
+                alt="arrow-left"
                 width={20}
                 height={20}
               />
             </button>
           )}
-          <div className='flex gap-[10px]'>
+          <div className="flex gap-[10px]">
             {getPageNumbers().map((pageNumber, index) => (
               <div
                 key={index}
-                className={`bg-[#1B1B1B] py-2 px-[9px] sm:px-[14px] md:px-[14px] lg:px-[14px] rounded-[6px] cursor-pointer ${pageNumber === page && '!bg-[#262626]'
-                  }`}
+                className={`bg-[#1B1B1B] py-2 px-[9px] sm:px-[14px] md:px-[14px] lg:px-[14px] rounded-[6px] cursor-pointer ${
+                  pageNumber === page && "!bg-[#262626]"
+                }`}
                 onClick={() => {
-                  if (pageNumber !== '...') {
+                  if (pageNumber !== "...") {
                     setPage(pageNumber);
                   }
                 }}
@@ -423,12 +425,12 @@ const page = () => {
           </div>
           {page < pageCount && (
             <button
-              className='w-9 h-9 flex items-center justify-center bg-[#1B1B1B] rounded-[6px] cursor-pointer hover:bg-[#262626]'
+              className="w-9 h-9 flex items-center justify-center bg-[#1B1B1B] rounded-[6px] cursor-pointer hover:bg-[#262626]"
               onClick={() => setPage(page + 1)}
             >
               <img
-                src='/arrow-down.svg'
-                alt='arrow-right'
+                src="/arrow-down.svg"
+                alt="arrow-right"
                 width={20}
                 height={20}
               />
@@ -438,33 +440,72 @@ const page = () => {
       )}
       <div>
         {showConfirmationModal && (
-          <div className='fixed inset-0 z-50 flex items-center justify-center shadow-lg bg-opacity-50'>
-            <div className='bg-[#0C0C0C] p-4 rounded flex flex-col gap-3 max-w-[500px] w-full border border-white'>
-              <h1 className='text-[26px] font-[700]'>Confirmation</h1>
-              <p className='mb-4'>
+          <div className="fixed inset-0 z-50 flex items-center justify-center shadow-lg bg-opacity-50">
+            <div className="bg-[#0C0C0C] p-4 rounded flex flex-col gap-3 max-w-[500px] w-full border border-white">
+              <h1 className="text-[26px] font-[700]">Confirmation</h1>
+              <p className="mb-4">
                 Are you sure you want to {confirmationAction} the status?
               </p>
-              <div className='flex justify-end gap-4  mt-5'>
+              <div className="flex justify-end gap-4  mt-5">
                 <button
-                  className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-center'
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-center"
                   onClick={() => setShowConfirmationModal(false)}
                 >
                   Cancle
                 </button>
                 <button
-                  className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2 w-[5rem] text-center'
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2 w-[5rem] text-center"
                   onClick={confirmAction}
                 >
                   {isApiLoading ? (
-                    <div className='flex justify-center items-center'>
+                    <div className="flex justify-center items-center">
                       <RotatingLines
-                        height='20'
-                        width='20'
-                        color='gray'
-                        strokeColor='white'
-                        strokeWidth='5'
-                        animationDuration='0.75'
-                        ariaLabel='rotating-lines-loading'
+                        height="20"
+                        width="20"
+                        color="gray"
+                        strokeColor="white"
+                        strokeWidth="5"
+                        animationDuration="0.75"
+                        ariaLabel="rotating-lines-loading"
+                      />
+                    </div>
+                  ) : (
+                    <span>Confirm</span>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      {/* Confirmation Delete Modal */}
+      <div>
+        {showConfirmationDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center shadow-lg bg-opacity-50">
+            <div className="bg-[#0C0C0C] p-4 rounded flex flex-col gap-3 max-w-[500px] w-full border border-white">
+              <h1 className="text-[26px] font-[700]">Confirmation</h1>
+              <p className="mb-4">Are you sure you want to delete this user?</p>
+              <div className="flex justify-end gap-4  mt-5">
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-center"
+                  onClick={() => setShowConfirmationDeleteModal(false)}
+                >
+                  Cancle
+                </button>
+                <button
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2 w-[5rem] text-center"
+                  onClick={() => handleDeleteUser(userDeleteId)}
+                >
+                  {isApiLoading ? (
+                    <div className="flex justify-center items-center">
+                      <RotatingLines
+                        height="20"
+                        width="20"
+                        color="gray"
+                        strokeColor="white"
+                        strokeWidth="5"
+                        animationDuration="0.75"
+                        ariaLabel="rotating-lines-loading"
                       />
                     </div>
                   ) : (
