@@ -306,7 +306,7 @@ input:-webkit-autofill:active {
   border-radius: 5px;
 }
 
-.scrollbar-custom::-webkit-scrollbar-thumb{
+.scrollbar-custom::-webkit-scrollbar-thumb {
   background: #858484;
 }
 .border-gradient {
@@ -563,7 +563,9 @@ input:-webkit-autofill:active {
 .react-datepicker__day-names div {
   color: #fff !important;
 }
-
+.react-datepicker-time__header {
+  color: white !important;
+}
 .tokenize {
   background-color: white;
   margin-right: 1rem;
@@ -583,20 +585,20 @@ input[type='number'] {
   -moz-appearance: textfield;
 }
 
-.react-datepicker__year-select, .react-datepicker__month-select{
-  color:black;
+.react-datepicker__year-select,
+.react-datepicker__month-select {
+  color: black;
 }
 
 .page-break {
   page-break-before: always;
 }
-.download-pdf-loading-style{
+.download-pdf-loading-style {
   height: 100%;
   background: #241e1e;
   opacity: 0.7;
 }
-.download-pdf-loading-style > svg{
+.download-pdf-loading-style > svg {
   margin: 0 auto;
   margin-top: 30%;
 }
-
