@@ -369,7 +369,7 @@ const page = () => {
                               <button
                                 className='text-left block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white'
                                 onClick={() =>
-                                  handleOptionClick('deactivate', index)
+                                  handleOptionClick('deactivated', index)
                                 }
                               >
                                 Deactivate
