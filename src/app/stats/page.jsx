@@ -165,18 +165,18 @@ export default function page() {
       <h2 className=' user-stats flex font-bold  w-full px-8 py-5 mt-8'>
         User Statistics
       </h2>
-      <div className='grid grid-cols-6 max-sm:grid-cols-1 text-white px-4'>
+      <div className='grid grid-cols-7 max-sm:grid-cols-1 text-white px-4'>
         <div className='col-span-2 max-sm:col-span-1 text-white px-4'>
           {chartData.map((element) => {
             return (
-              <div className='flex flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-10 first:mb-4 last:mt-4'>
+              <div className='flex flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-8 first:mb-4 last:mt-4'>
                 <div className=''>{element.label}</div>
                 <div className='text-4xl font-bold '>{element.value}</div>
               </div>
             );
           })}
         </div>
-        <div className='col-span-4 max-sm:col-span-1 max-sm:mt-4 text-white px-4'>
+        <div className='col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4'>
           <div className='bg-neutral-800 p-4 rounded-md'>
             <div className='flex text-white w-full justify-between'>
               <button
@@ -186,7 +186,7 @@ export default function page() {
                 Download PDF
               </button>
               <select
-                className='bg-neutral-800 p-2 rounded-md border border-solid border-gray-600'
+                className='bg-neutral-800 p-1 rounded-md border border-solid border-gray-600 h-12 mt-2 ml-2'
                 onChange={(e) => {
                   if (e.target.value == 'custom') {
                     setShowCustomDateFields(!showCustomDateFields);
@@ -259,15 +259,15 @@ export default function page() {
             </div>
             <div className='flex w-full'>
               {chartData?.length > 0 ? (
-                <div className='flex justify-between items-center flex-row w-full h-auto'>
-                  <div className='max-sm:w-full md:w-[50%] p-3'>
+                <div className='flex flex-wrap justify-between items-center flex-row w-full h-auto'>
+                  <div className='md:w-[50%] w-full p-3'>
                     {chartData.map((element, index) => {
                       return (
                         <div
                           className='flex items-center w-full px-3 first:mb-4 last:mt-4'
                           key={index}
                         >
-                          <div className='w-1/6'>
+                          <div className='w-[20%]'>
                             <div
                               className={`p-4 rounded-full w-5 h-5 ${
                                 index === 0 ? 'bg-cyan-500' : ''
@@ -276,17 +276,17 @@ export default function page() {
                               } `}
                             ></div>
                           </div>
-                          <div className='w-3/6 text-left text-base mx-2'>
+                          <div className='w-[100%] text-left text-base mx-2'>
                             {element.label}
                           </div>
-                          <div className='w-2/6 text-left text-base'>
+                          <div className='w-[40%] md:w-full text-center text-base'>
                             {element.value}
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                  <div className='max-sm:w-full flex justify-center md:w-[50%] p-3'>
+                  <div className='flex justify-left max-sm:w-full md:w-[45%] w-full p-3 items-start max-sm:items-center max-sm:justify-center  md:pr-24'>
                     <PieChart chartDataX={chartData} cData={data} />
                   </div>
                 </div>
