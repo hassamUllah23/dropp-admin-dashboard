@@ -89,14 +89,14 @@ const page = () => {
   };
 
   const handleOptionClick = (option, index) => {
-    setConfirmationAction(option);
-    setSelectedUserIndex(index);
+    setConfirmationAction(() => option);
+    setSelectedUserIndex(() => index);
     setShowDropDown((prevState) => {
       const newState = [...prevState];
       newState[index] = false;
       return newState;
     });
-    setShowConfirmationModal(true);
+    setShowConfirmationModal(() => true);
   };
 
   const confirmAction = async () => {
@@ -104,7 +104,7 @@ const page = () => {
       method: "PUT",
       url: `/admin/user/status`,
       data: {
-        userId: filteredUsers[selectedUserIndex]._id,
+        userId: users[selectedUserIndex]?._id,
         status: confirmationAction,
       },
     });
