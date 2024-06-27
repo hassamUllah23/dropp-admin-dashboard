@@ -54,8 +54,18 @@ const page = () => {
     await calculatePageCount(result?.data?.count);
 
     setDropdownStates(
-      result.data?.users.map((employee) =>
-        employee.status === "active" ? "active" : "inactive"
+      result.data?.users.map((employee) => {
+        if (employee.status === 'pending')
+          return 'pending'
+        if (employee.status === 'active')
+          return 'active'
+        if (employee.status === 'inactive')
+          return 'inactive'
+        if (employee.status === 'deactivated')
+          return 'deactivated'
+        if (employee.status === 'requested_deactivation')
+          return 'requested_deactivation'
+      }
       )
     );
   };
@@ -269,9 +279,9 @@ const page = () => {
               <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px]">
                 Status
               </th>
-              <th className="py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-r-[4px] text-center">
+              {/* <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] rounded-r-[4px] text-center'>
                 Actions
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody>
@@ -301,21 +311,22 @@ const page = () => {
                       <div className="relative inline-block text-left">
                         <div>
                           <button
-                            type="button"
-                            className={`inline-flex justify-center items-center w-24 rounded-2xl px-2 py-1 text-sm font-medium ${
-                              dropdownStates[index] === "active"
-                                ? "bg-[#67C24B]"
-                                : "bg-[#850101]"
-                            }`}
-                            id="options-menu"
-                            aria-haspopup="true"
-                            aria-expanded="true"
+                            type='button'
+                            className={`inline-flex justify-center text-nowrap items-center w-fit rounded-2xl px-2 py-1 text-sm font-medium ${dropdownStates[index] === 'active'
+                              ? 'bg-[#67C24B]'
+                              : 'bg-[#850101]'
+                              }`}
+                            id='options-menu'
+                            aria-haspopup='true'
+                            aria-expanded='true'
                             onClick={() => handleShowDropDown(index)}
                             disabled={isApiLoading || deleting}
                           >
-                            {dropdownStates[index] === "active"
-                              ? "Active"
-                              : "Inactive"}
+                            {dropdownStates[index] === 'active' && 'Active'}
+                            {dropdownStates[index] === 'inactive' && 'Inactive'}
+                            {dropdownStates[index] === 'requested_deactivation' && 'Requested Dectivation'}
+                            {dropdownStates[index] === 'deactivated' && 'Deactivated'}
+                            {dropdownStates[index] === 'pending' && 'Pending'}
                             <svg
                               className="-mr-1 ml-2 h-5 w-5"
                               xmlns="http://www.w3.org/2000/svg"
@@ -333,10 +344,10 @@ const page = () => {
 
                         {showDropDown[index] && (
                           <div
-                            className="origin-top-right absolute right-0 mt-2 w-20 rounded-md shadow-lg border border-white text-white bg-[#0C0C0C] z-[5]"
-                            role="menu"
-                            aria-orientation="vertical"
-                            aria-labelledby="options-menu"
+                            className='origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg border border-white text-white bg-[#0C0C0C] z-[5]'
+                            role='menu'
+                            aria-orientation='vertical'
+                            aria-labelledby='options-menu'
                           >
                             <div role="none">
                               <button
@@ -355,29 +366,49 @@ const page = () => {
                               >
                                 Inactive
                               </button>
+                              <button
+                                className='text-left block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white'
+                                onClick={() =>
+                                  handleOptionClick('deactivate', index)
+                                }
+                              >
+                                Deactivate
+                              </button>
                             </div>
                           </div>
                         )}
                       </div>
                     </td>
-                    <td className="py-4 px-2 border-b-8 border-t-8 border-black">
-                      <div className="flex justify-center items-center">
-                        <button
-                          className="bg-[#850101] p-1 rounded-[4px]"
-                          disabled={deleting}
-                          onClick={() => {
-                            handleDelete(item._id);
-                          }}
-                        >
-                          <img
-                            src="/trash.svg"
-                            alt="delete_icon"
-                            width={16}
-                            height={16}
-                          />
-                        </button>
+                    {/* <td className='py-4 px-2 border-b-8 border-t-8 border-black'>
+                      <div className='flex justify-center items-center'>
+                        {
+                          deleting && (item?._id === deleteUserId) ? (
+                            <RotatingLines
+                              height='20'
+                              width='20'
+                              color='gray'
+                              strokeColor='white'
+                              strokeWidth='5'
+                              animationDuration='0.75'
+                              ariaLabel='rotating-lines-loading'
+                            />
+                          ) : (
+                            <button
+                              className='bg-[#850101] p-1 rounded-[4px]'
+                              disabled={deleting}
+                              onClick={() => { handleDeleteUser(item._id) }}
+                            >
+                              <img
+                                src='/trash.svg'
+                                alt='delete_icon'
+                                width={16}
+                                height={16}
+                              />
+                            </button>
+                          )
+                        }
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })
@@ -410,9 +441,8 @@ const page = () => {
             {getPageNumbers().map((pageNumber, index) => (
               <div
                 key={index}
-                className={`bg-[#1B1B1B] py-2 px-[9px] sm:px-[14px] md:px-[14px] lg:px-[14px] rounded-[6px] cursor-pointer ${
-                  pageNumber === page && "!bg-[#262626]"
-                }`}
+                className={`bg-[#1B1B1B] py-2 px-[9px] sm:px-[14px] md:px-[14px] lg:px-[14px] rounded-[6px] cursor-pointer ${pageNumber === page && "!bg-[#262626]"
+                  }`}
                 onClick={() => {
                   if (pageNumber !== "...") {
                     setPage(pageNumber);
