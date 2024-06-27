@@ -141,6 +141,14 @@ const RewardsForm = () => {
                         onChange={(date) => setFieldValue(key, date)}
                         showTimeSelect
                         dateFormat="dd-MM-yyyy h:mm aa"
+                        minDate={
+                          key === "leaderboardStartDate"
+                            ? new Date()
+                            : new Date(
+                                values["leaderboardStartDate"].getTime() +
+                                  24 * 60 * 60 * 1000
+                              )
+                        }
                         className="mt-2 px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6"
                       />
                     ) : key === "settingsId" ? (
