@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import { PieChart } from './PieChart';
+// import { PieChart } from './PieChart';
 import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
 import { data } from 'autoprefixer';
@@ -287,7 +287,7 @@ export default function page() {
                     })}
                   </div>
                   <div className='flex justify-left max-sm:w-full md:w-[45%] w-full p-3 items-start max-sm:items-center max-sm:justify-center  md:pr-24'>
-                    <PieChart chartDataX={chartData} cData={data} />
+                    {/* <PieChart chartDataX={chartData} cData={data} /> */}
                   </div>
                 </div>
               ) : null}
