@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
@@ -28,7 +29,7 @@ export function PieChart({ chartDataX, cData }) {
         borderWidth: 1,
       },
       {
-        label: 'Users with Wallet Connectins',
+        label: 'Users with Wallet Connections',
         data: [
           cData?.newSignupsCount - cData?.connectedWalletCount,
           cData?.connectedWalletCount,
