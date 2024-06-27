@@ -11,10 +11,11 @@ import html2pdf from 'html2pdf.js';
 
 export default function page() {
   const [showCustomDateFields, setShowCustomDateFields] = useState(false);
-  const [tabValue, setTabValue] = useState('today');
+  const [selectedOption, setSelectedOption] = useState('Today');
   const [showLoading, setShowLoading] = useState(false);
   const [filterType, setfilterType] = useState('');
   const [data, setData] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [chartData, setChartData] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -33,7 +34,7 @@ export default function page() {
     const element = contentRef.current;
     const opt = {
       margin: 0,
-      filename: 'my-document.pdf',
+      filename: 'statistics-document.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
@@ -45,6 +46,11 @@ export default function page() {
     const designChangeElements = document.querySelectorAll('.user-stats');
     designChangeElements.forEach((el) => el.classList.add('text-black'));
 
+    const designChangeDropdown = document.querySelectorAll('.change-bg');
+    designChangeDropdown.forEach((el) =>
+      el.classList.add('bg-neutral-800', 'border-0')
+    );
+
     html2pdf()
       .from(element)
       .set(opt)
@@ -53,12 +59,16 @@ export default function page() {
       .then(() => {
         noPrintElements.forEach((el) => el.classList.remove('hidden'));
         designChangeElements.forEach((el) => el.classList.remove('text-black'));
+        designChangeDropdown.forEach((el) =>
+          el.classList.remove('bg-neutral-800', 'border-0')
+        );
       })
       .save();
   };
 
-  const handleTab = async (type) => {
-    setTabValue(type);
+  const handleOptionClick = async (type, value2) => {
+    setSelectedOption(value2);
+    setIsOpen(false);
     setShowCustomDateFields(false);
     let start, end;
     switch (type) {
@@ -165,8 +175,8 @@ export default function page() {
       <h2 className=' user-stats flex font-bold  w-full px-8 py-5 mt-8'>
         User Statistics
       </h2>
-      <div className='grid grid-cols-7 max-sm:grid-cols-1 text-white px-4'>
-        <div className='col-span-2 max-sm:col-span-1 text-white px-4'>
+      <div className='grid grid-cols-7 max-sm:grid-cols-1 text-white px-4 items-stretch'>
+        <div className='col-span-2 max-sm:col-span-1 text-white px-4 h-full'>
           {chartData.map((element) => {
             return (
               <div className='flex flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-8 first:mb-4 last:mt-4'>
@@ -176,16 +186,16 @@ export default function page() {
             );
           })}
         </div>
-        <div className='col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4'>
+        <div className='col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4 h-full'>
           <div className='bg-neutral-800 p-4 rounded-md'>
             <div className='flex text-white w-full justify-between'>
               <button
-                className='no-print w-40 mt-2 ml-2 rounded-md bg-Gradient px-7 py-3 text-sm font-semibold text-black shadow-sm'
+                className='no-print w-40 mt-2 ml-2 rounded-md bg-Gradient px-7 py-2 text-sm font-semibold text-black shadow-sm'
                 onClick={generatePdf}
               >
                 Download PDF
               </button>
-              <select
+              {/* <select
                 className='bg-neutral-800 p-1 rounded-md border border-solid border-gray-600 h-10 mt-2 ml-2'
                 onChange={(e) => {
                   if (e.target.value == 'custom') {
@@ -200,7 +210,65 @@ export default function page() {
                 <option value='lastWeek'>Last Week</option>
                 <option value='lastMonth'>Last Month</option>
                 <option value='custom'>Custom</option>
-              </select>
+              </select> */}
+              <div className='relative inline-block'>
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className='bg-black change-bg text-left text-sm inline-block px-3 py-2 h-10 rounded-lg font-light cursor-pointer w-40 border border-gray-150'
+                >
+                  {selectedOption}
+                  <svg
+                    width='16'
+                    height='16'
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 20 20'
+                    fill='currentColor'
+                    className=' absolute z-30 top-2 right-2 cursor-pointer'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z'
+                      clipRule='evenodd'
+                    ></path>
+                  </svg>
+                </button>
+                {isOpen && (
+                  <ul className='absolute bg-black w-40 border border-gray-150 py-1 mt-1 rounded-lg text-xs'>
+                    <li
+                      onClick={() => handleOptionClick('today', 'Today')}
+                      className='cursor-pointer px-3 py-1 hover:bg-gray-100'
+                    >
+                      Today
+                    </li>
+                    <li
+                      onClick={() => handleOptionClick('yestery', 'Yesterday')}
+                      className='cursor-pointer px-3 py-1 hover:bg-gray-100'
+                    >
+                      Yesterday
+                    </li>
+                    <li
+                      onClick={() => handleOptionClick('lastWeek', 'Last Week')}
+                      className='cursor-pointer px-3 py-1 hover:bg-gray-100'
+                    >
+                      Last Week
+                    </li>
+                    <li
+                      onClick={() =>
+                        handleOptionClick('lastMonth', 'Last Month')
+                      }
+                      className='cursor-pointer px-3 py-1 hover:bg-gray-100'
+                    >
+                      Last Month
+                    </li>
+                    <li
+                      onClick={() => handleOptionClick('custom', 'Custom')}
+                      className='cursor-pointer px-3 py-1 hover:bg-gray-100'
+                    >
+                      Custom
+                    </li>
+                  </ul>
+                )}
+              </div>
             </div>
             <div className='flex flex-row'>
               <div>
@@ -260,7 +328,7 @@ export default function page() {
             <div className='flex w-full'>
               {chartData?.length > 0 ? (
                 <div className='flex flex-wrap justify-between items-center flex-row w-full h-auto'>
-                  <div className='md:w-[50%] w-full p-3'>
+                  <div className='md:w-[40%] w-full p-3'>
                     {chartData.map((element, index) => {
                       return (
                         <div
@@ -286,7 +354,7 @@ export default function page() {
                       );
                     })}
                   </div>
-                  <div className='flex justify-left max-sm:w-full md:w-[45%] w-full p-3 items-start max-sm:items-center max-sm:justify-center  md:pr-24'>
+                  <div className='pieChart flex justify-left max-sm:w-full md:w-[48%] w-full items-start max-sm:items-center max-sm:justify-center p-3'>
                     <PieChart chartDataX={chartData} cData={data} />
                   </div>
                 </div>
