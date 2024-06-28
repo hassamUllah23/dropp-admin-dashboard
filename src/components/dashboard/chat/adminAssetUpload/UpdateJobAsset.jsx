@@ -33,7 +33,7 @@ export default function UpdateJobAsset({
     const file = e.target.files[0];
     if (type === "digital" || type === "avatar") {
       // Only allow mp4 videos for 'digital' type
-      if (file.type.startsWith("video/mp4")) {
+      if (file?.type?.startsWith("video/mp4")) {
         handleFiles(file);
       } else {
         toast.error("Please upload an MP4 video file.");

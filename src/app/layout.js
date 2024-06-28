@@ -14,6 +14,7 @@ export default function RootLayout({ children }) {
     <html lang='en'>
       <head>
         <title>Dropp CMS</title>
+        <link rel='icon' type='image/svg+xml' href='/Favicon.svg' />
       </head>
       <body className='relative '>
         <StoreProvider>

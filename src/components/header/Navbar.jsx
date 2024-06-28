@@ -11,6 +11,7 @@ import {
 import { useRouter } from 'next/navigation';
 import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
+import useNotificationSound from '@/hooks/useNotificationSound';
 
 export default function Navbar() {
   const auth = useSelector(selectAuth);
@@ -25,6 +26,8 @@ export default function Navbar() {
   const [showNotification, setShowNotification] = useState(false);
   const [showNotificationDot, setShowNotificationDot] = useState(false);
   const notificationRef = useRef(null);
+
+  const playNotificationSound = useNotificationSound();
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -93,6 +96,7 @@ export default function Navbar() {
       setNotificationsData(notifications);
       setShowNotificationDot(true);
       getNotification();
+      playNotificationSound();
     }
   }, [notifications]);
 
