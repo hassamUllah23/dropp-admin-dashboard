@@ -7,11 +7,12 @@ import { data } from 'autoprefixer';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import LoadingRotatingLines from '@/components/common/LoadingRotatingLines';
-import html2pdf from 'html2pdf.js';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function page() {
   const [showCustomDateFields, setShowCustomDateFields] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('Today');
+  const [selectedOption, setSelectedOption] = useState('Last 24 Hours');
   const [showLoading, setShowLoading] = useState(false);
   const [filterType, setfilterType] = useState('');
   const [data, setData] = useState([]);
@@ -20,50 +21,68 @@ export default function page() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const { handleApiCall, isApiLoading } = useApiHook();
+  const contentRef = useRef(null);
+
+  const currentDate = new Date();
 
   const handleStartDate = (date) => {
     setStartDate(date);
+    // Ensure end date is not before start date
+    if (endDate && date > endDate) {
+      setEndDate(date);
+    }
   };
   const handleEndDate = (date) => {
     setEndDate(date);
   };
+  const dropdownRef = useRef(null);
 
-  const contentRef = useRef();
-
-  const generatePdf = () => {
-    const element = contentRef.current;
-    const opt = {
-      margin: 0,
-      filename: 'statistics-document.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-    };
-
+  const handleDownloadPDF = async () => {
     const noPrintElements = document.querySelectorAll('.no-print');
     noPrintElements.forEach((el) => el.classList.add('hidden'));
-
     const designChangeElements = document.querySelectorAll('.user-stats');
     designChangeElements.forEach((el) => el.classList.add('text-black'));
-
     const designChangeDropdown = document.querySelectorAll('.change-bg');
     designChangeDropdown.forEach((el) =>
       el.classList.add('bg-neutral-800', 'border-0')
     );
 
-    html2pdf()
-      .from(element)
-      .set(opt)
-      .toPdf()
-      .get('pdf')
-      .then(() => {
-        noPrintElements.forEach((el) => el.classList.remove('hidden'));
-        designChangeElements.forEach((el) => el.classList.remove('text-black'));
-        designChangeDropdown.forEach((el) =>
-          el.classList.remove('bg-neutral-800', 'border-0')
-        );
-      })
-      .save();
+    const input = contentRef.current;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const element = input.getElementsByClassName('page-break');
+
+    const canvas = await html2canvas(input);
+    const imgData = canvas.toDataURL('image/png');
+    const imgProps = pdf.getImageProperties(imgData);
+    let imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    console.log(imgHeight, 'img height');
+    if (imgHeight > 250) imgHeight = imgHeight - 15;
+    let heightLeft = imgHeight;
+    let position = 0;
+    let index = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      if (index > 0) position = position + 10;
+      const breakPos = element.offsetTop * (pdfWidth / imgProps.width);
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+      heightLeft -= pdfHeight;
+      index++;
+    }
+
+    pdf.save('statistics.pdf');
+
+    noPrintElements.forEach((el) => el.classList.remove('hidden'));
+    designChangeElements.forEach((el) => el.classList.remove('text-black'));
+    designChangeDropdown.forEach((el) =>
+      el.classList.remove('bg-neutral-800', 'border-0')
+    );
   };
 
   const handleOptionClick = async (type, value2) => {
@@ -72,7 +91,7 @@ export default function page() {
     setShowCustomDateFields(false);
     let start, end;
     switch (type) {
-      case 'today':
+      case 'last24Hours':
         start = new Date();
         start.setHours(0, 0, 0, 0);
         end = new Date(start);
@@ -166,9 +185,26 @@ export default function page() {
 
   useEffect(() => {
     getUsersStats();
+    // Add event listener to handle clicks outside of the dropdown
+    document.addEventListener('mousedown', handleClickOutside);
 
-    return () => {};
+    return () => {
+      // Cleanup the event listener on component unmount
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+
+    //return () => {};
   }, []);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
 
   return (
     <div ref={contentRef} className='text-white'>
@@ -179,9 +215,11 @@ export default function page() {
         <div className='col-span-2 max-sm:col-span-1 text-white px-4 h-full'>
           {chartData.map((element) => {
             return (
-              <div className='flex flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-8 first:mb-4 last:mt-4'>
+              <div className='flex flex-wrap flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-8 first:mb-4 last:mt-4'>
                 <div className=''>{element.label}</div>
-                <div className='text-4xl font-bold '>{element.value}</div>
+                <div className='text-4xl font-bold text-center'>
+                  {element.value}
+                </div>
               </div>
             );
           })}
@@ -190,8 +228,8 @@ export default function page() {
           <div className='bg-neutral-800 p-4 rounded-md'>
             <div className='flex text-white w-full justify-between'>
               <button
-                className='no-print w-40 mt-2 ml-2 rounded-md bg-Gradient px-7 py-2 text-sm font-semibold text-black shadow-sm'
-                onClick={generatePdf}
+                className='no-print w-40 rounded-md bg-Gradient px-7 py-2 text-sm font-semibold text-black shadow-sm'
+                onClick={handleDownloadPDF}
               >
                 Download PDF
               </button>
@@ -211,9 +249,12 @@ export default function page() {
                 <option value='lastMonth'>Last Month</option>
                 <option value='custom'>Custom</option>
               </select> */}
-              <div className='relative inline-block'>
+              <div
+                className='max-sm:ml-1 relative inline-block'
+                ref={dropdownRef}
+              >
                 <button
-                  onClick={() => setIsOpen(!isOpen)}
+                  onClick={toggleDropdown}
                   className='bg-black change-bg text-left text-sm inline-block px-3 py-2 h-10 rounded-lg font-light cursor-pointer w-40 border border-gray-150'
                 >
                   {selectedOption}
@@ -235,17 +276,19 @@ export default function page() {
                 {isOpen && (
                   <ul className='absolute bg-black w-40 border border-gray-150 py-1 mt-1 rounded-lg text-xs'>
                     <li
-                      onClick={() => handleOptionClick('today', 'Today')}
+                      onClick={() =>
+                        handleOptionClick('last24Hours', 'Last 24 Hours')
+                      }
                       className='cursor-pointer px-3 py-1 hover:bg-gray-100'
                     >
-                      Today
+                      Last 24 Hours
                     </li>
-                    <li
+                    {/* <li
                       onClick={() => handleOptionClick('yestery', 'Yesterday')}
                       className='cursor-pointer px-3 py-1 hover:bg-gray-100'
                     >
                       Yesterday
-                    </li>
+                    </li> */}
                     <li
                       onClick={() => handleOptionClick('lastWeek', 'Last Week')}
                       className='cursor-pointer px-3 py-1 hover:bg-gray-100'
@@ -261,7 +304,9 @@ export default function page() {
                       Last Month
                     </li>
                     <li
-                      onClick={() => handleOptionClick('custom', 'Custom')}
+                      onClick={() =>
+                        setShowCustomDateFields(!showCustomDateFields)
+                      }
                       className='cursor-pointer px-3 py-1 hover:bg-gray-100'
                     >
                       Custom
@@ -270,13 +315,13 @@ export default function page() {
                 )}
               </div>
             </div>
-            <div className='flex flex-row'>
+            <div className='flex flex-row flex-wrap'>
               <div>
                 {showCustomDateFields ? (
                   <>
-                    <div className='flex w-full h-auto mt-3'>
-                      <div className='flex flex-row'>
-                        <div className='text-white'>
+                    <div className='flex h-auto mt-3'>
+                      <div className='flex flex-wrap'>
+                        <div className='text-white max-sm:w-full mt-3 md:w-[35%]'>
                           Start Date:
                           <DatePicker
                             name='startDate'
@@ -284,12 +329,15 @@ export default function page() {
                             showMonthDropdown
                             dropdownMode='select'
                             selected={startDate}
+                            selectsStart
+                            startDate={startDate}
+                            endDate={endDate}
                             onChange={handleStartDate}
                             dateFormat='dd-MM-yyyy'
-                            className='mt-2 px-3 block rounded-md border-0 bg-white/5 py-1 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
+                            className='mt-2 px-3 md:mr-2 rounded-md border-0 bg-white/5 py-1 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
                           />
                         </div>
-                        <div className='text-white'>
+                        <div className='text-white max-sm:w-full mt-3 md:w-[35%]'>
                           End Date:
                           <DatePicker
                             name='endDate'
@@ -297,18 +345,23 @@ export default function page() {
                             showMonthDropdown
                             dropdownMode='select'
                             selected={endDate}
+                            selectsEnd
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                            maxDate={currentDate}
                             onChange={handleEndDate}
                             dateFormat='dd-MM-yyyy'
-                            className='mt-2 px-3 block rounded-md border-0 bg-white/5 py-1 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
+                            className='mt-2 px-3 md:mr-2 rounded-md border-0 bg-white/5 py-1 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
                           />
                         </div>
-                      </div>
-                      <div className=''>
-                        <div className='text-white'>
+                        <div className='text-white max-sm:w-full mt-3  md:w-[20%]'>
                           <div className='hidden'>&nbsp</div>
                           <button
-                            className='mt-6 ml-2 rounded-md bg-Gradient px-10 py-2  text-sm font-semibold text-black shadow-sm'
-                            onClick={() => handleTab('custom')}
+                            className='md:mt-7 ml-2 max-sm:ml-0 rounded-md bg-Gradient px-10 py-2  text-sm font-semibold text-black shadow-sm'
+                            onClick={() =>
+                              handleOptionClick('custom', 'Custom')
+                            }
                           >
                             {showLoading && filterType == 'custom' ? (
                               <LoadingRotatingLines />
@@ -339,7 +392,7 @@ export default function page() {
                             <div
                               className={`p-4 rounded-full w-5 h-5 ${
                                 index === 0 ? 'bg-cyan-500' : ''
-                              } ${index === 1 ? 'bg-emerald-700' : ''} ${
+                              } ${index === 1 ? 'stats-chart-green' : ''} ${
                                 index === 2 ? 'bg-amber-400' : ''
                               } `}
                             ></div>
@@ -354,7 +407,7 @@ export default function page() {
                       );
                     })}
                   </div>
-                  <div className='pieChart flex justify-left max-sm:w-full md:w-[48%] w-full items-start max-sm:items-center max-sm:justify-center p-3'>
+                  <div className='pieChart flex justify-center max-sm:w-full md:w-[48%] w-full items-start max-sm:items-center max-sm:justify-center p-3'>
                     <PieChart chartDataX={chartData} cData={data} />
                   </div>
                 </div>
