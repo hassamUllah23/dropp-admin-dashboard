@@ -264,7 +264,7 @@ export default function page() {
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 20 20'
                     fill='currentColor'
-                    className=' absolute z-30 top-2 right-2 cursor-pointer'
+                    className=' absolute z-30 top-3 right-2 cursor-pointer'
                   >
                     <path
                       fillRule='evenodd'
