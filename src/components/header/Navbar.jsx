@@ -109,7 +109,7 @@ export default function Navbar() {
   return (
     <>
       <section className='pt-4 pb-2 md:px-2.5 flex justify-between max-w-screen-3xl m-auto min-w-80 z-10'>
-        <Link href='/dashboard' className='pl-4 md:pl-10'>
+        <Link href='/dashboard' className='pl-3 md:pl-10'>
           <img
             src='/assets/images/navbar/logo.png'
             className=' w-14 md:w-[5.5rem]'
@@ -117,7 +117,7 @@ export default function Navbar() {
         </Link>
         <div className=' flex justify-center items-center gap-2 pr-2 md:pr-10'>
           {auth?.isLogin ? (
-            <div className='flex pr-1'>
+            <div className='flex pr-0 md:pr-1'>
               <span
                 ref={notificationRef}
                 title='Notifications'
@@ -139,7 +139,7 @@ export default function Navbar() {
                   />
                 </svg>
                 {showNotificationDot && (
-                  <span className='inline-block bg-red-700 top-2 right-1 w-3 h-3 rounded-full absolute'></span>
+                  <span className='inline-block bg-red-700 top-[1px] right-1 w-2 h-2 rounded-full absolute'></span>
                 )}
 
                 {showNotification && (
