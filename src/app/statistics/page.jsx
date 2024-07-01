@@ -3,7 +3,6 @@ import { useEffect, useState, useRef } from 'react';
 import { PieChart } from './PieChart';
 import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
-import { data } from 'autoprefixer';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import LoadingRotatingLines from '@/components/common/LoadingRotatingLines';
@@ -96,6 +95,7 @@ export default function page() {
         start.setHours(0, 0, 0, 0);
         end = new Date(start);
         end.setHours(23, 59, 59, 999);
+        end.setHours(24, 0, 0, 0);
         break;
       case 'yesterday':
         start = new Date();
@@ -103,28 +103,34 @@ export default function page() {
         start.setHours(0, 0, 0, 0);
         end = new Date(start);
         end.setHours(23, 59, 59, 999);
+        end.setHours(24, 0, 0, 0);
         break;
       case 'lastWeek':
         start = new Date();
         start.setHours(0, 0, 0, 0);
         start.setDate(start.getDate() - 7);
         end = new Date();
+        end.setHours(24, 0, 0, 0);
         break;
       case 'lastMonth':
         start = new Date();
         start.setMonth(start.getMonth() - 1);
         start.setHours(0, 0, 0, 0);
         end = new Date();
+        end.setHours(24, 0, 0, 0);
         break;
       case 'custom':
         setShowCustomDateFields(true);
         start = startDate;
         start.setHours(0, 0, 0, 0);
         end = endDate;
+        end.setHours(24, 0, 0, 0);
         break;
       default:
         start = new Date();
+        start.setHours(0, 0, 0, 0);
         end = new Date();
+        end.setHours(24, 0, 0, 0);
     }
 
     setStartDate(start);
