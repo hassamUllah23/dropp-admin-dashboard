@@ -439,7 +439,7 @@ export default function page() {
                       );
                     })}
                   </div>
-                  <div className='pieChart min-h-[300px] flex justify-center max-sm:w-full md:w-[48%] w-full items-start max-sm:items-center max-sm:justify-center p-3'>
+                  <div className='pieChart min-h-[300px] flexCenter max-sm:w-full md:w-[48%] w-full p-3'>
                     <BarChart chartDataX={chartData} cData={data} />
                   </div>
                 </div>

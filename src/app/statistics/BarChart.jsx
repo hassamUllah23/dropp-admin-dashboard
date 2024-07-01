@@ -101,6 +101,11 @@ export function BarChart({ chartDataX, cData }) {
         data: [cData?.connectedWalletCount],
         backgroundColor: '#FFCE53',
       },
+      {
+        label: 'Registrations',
+        data: [cData?.newSignupsCount],
+        backgroundColor: '#14C7FF',
+      },
     ],
   };
 
