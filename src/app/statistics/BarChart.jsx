@@ -61,6 +61,7 @@ export function BarChart({ chartDataX, cData }) {
   // };
 
   const options = {
+    type: 'bar',
     responsive: true,
     plugins: {
       legend: false,
@@ -73,38 +74,27 @@ export function BarChart({ chartDataX, cData }) {
         },
       },
       y: {
+        beginAtZero: true,
         title: {
           display: true,
           text: 'Total Registrations',
         },
-        ticks: {
-          display: true,
-          callback: function (value) {
-            return value;
-          },
-        },
-        suggestedMax: cData?.newSignupsCount,
       },
     },
   };
-  const data = [10, 20];
   const chartData = {
-    labels: ['Activations', 'Wallet Connectins'],
+    labels: ['Registrations', 'Activations', 'Wallet Connectins'],
     datasets: [
       {
-        label: 'Activations',
-        data: [cData?.newActivationsCount],
-        backgroundColor: '#67C24B',
-      },
-      {
-        label: 'Wallet Connectins',
-        data: [cData?.connectedWalletCount],
-        backgroundColor: '#FFCE53',
-      },
-      {
-        label: 'Registrations',
-        data: [cData?.newSignupsCount],
-        backgroundColor: '#14C7FF',
+        label: [],
+        data: [
+          cData?.newSignupsCount,
+          cData?.newActivationsCount,
+          cData?.connectedWalletCount,
+        ],
+        backgroundColor: ['#14C7FF', '#67C24B', '#FFCE53'],
+        barPercentage: 0.85, // Increase the width of bars
+        categoryPercentage: 1.0,
       },
     ],
   };
