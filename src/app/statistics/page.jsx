@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import { PieChart } from './PieChart';
+import { BarChart } from './BarChart';
 import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
 import { data } from 'autoprefixer';
@@ -9,6 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import LoadingRotatingLines from '@/components/common/LoadingRotatingLines';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { isMobile } from 'react-device-detect';
 
 export default function page() {
   const [showCustomDateFields, setShowCustomDateFields] = useState(false);
@@ -60,6 +61,12 @@ export default function page() {
     );
 
     const input = contentRef.current;
+    if (input && isMobile) {
+      const firstDiv = input.querySelector('.page-1');
+      if (firstDiv) {
+        firstDiv.style.height = '550px';
+      }
+    }
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -70,8 +77,8 @@ export default function page() {
     const imgProps = pdf.getImageProperties(imgData);
     let imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-    // Adjust image height if needed
-    if (imgHeight > 250) imgHeight = imgHeight - 15;
+    // // Adjust image height if needed
+    // if (imgHeight > 250) imgHeight = imgHeight - 15;
 
     let heightLeft = imgHeight;
     let position = 0;
@@ -98,6 +105,12 @@ export default function page() {
     designChangeDropdown.forEach((el) =>
       el.classList.remove('bg-neutral-800', 'border-0')
     );
+    if (input && isMobile) {
+      const firstDiv = input.querySelector('.page-1');
+      if (firstDiv) {
+        firstDiv.style.height = 'auto';
+      }
+    }
 
     setShowLoading(false);
   };
@@ -230,7 +243,7 @@ export default function page() {
       </h2>
       <div className='grid grid-cols-7 max-sm:grid-cols-1 text-white px-4 items-stretch'>
         <div
-          className='col-span-2 max-sm:col-span-1 text-white px-4'
+          className='col-span-2 max-sm:col-span-1 text-white px-4 page-1'
           id='page-1'
         >
           {chartData.map((element) => {
@@ -245,10 +258,7 @@ export default function page() {
           })}
         </div>
         {/* <div className='md:hidden lg:hidden' id='page-break'></div> */}
-        <div
-          className='col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4 h-full'
-          id='page-1'
-        >
+        <div className='col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4 h-full page-1'>
           <div className='bg-neutral-800 p-4 rounded-md'>
             <div className='flex text-white w-full justify-between'>
               <button
@@ -429,8 +439,8 @@ export default function page() {
                       );
                     })}
                   </div>
-                  <div className='pieChart flex justify-center max-sm:w-full md:w-[48%] w-full items-start max-sm:items-center max-sm:justify-center p-3'>
-                    <PieChart chartDataX={chartData} cData={data} />
+                  <div className='pieChart min-h-[300px] flex justify-center max-sm:w-full md:w-[48%] w-full items-start max-sm:items-center max-sm:justify-center p-3'>
+                    <BarChart chartDataX={chartData} cData={data} />
                   </div>
                 </div>
               ) : null}
