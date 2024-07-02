@@ -22,7 +22,7 @@ const ViewJobAsset = ({
   jobKeys,
   setLoading,
   status,
-  showMinting
+  showMinting,
 }) => {
   const [uploadedVideoCount] = useState(!!url ? 1 : 0);
   const [savedVideos, setSavedVideos] = useState(null);
@@ -98,23 +98,23 @@ const ViewJobAsset = ({
   const handleStatusClick = async (status) => {
     setLoading(true);
     setShowJobStatus(false);
-    
+
     const result = await handleApiCall({
       method: 'PUT',
       url: `/jobs/${jobKeys?.id}/update-status/`,
       data: { status: status, jobId: jobKeys?.id },
     })
-    
-    .then((res) => {
-      if (res.status === 200) {
-        setJobStatus(status);
-        setShowJobStatus(false);
-      }
-      return res;
-    })
-    .catch((error) => {
-      toast.error(error?.response?.data?.errors);
-    }).finally(() => setLoading(false));
+      .then((res) => {
+        if (res.status === 200) {
+          setJobStatus(status);
+          setShowJobStatus(false);
+        }
+        return res;
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.errors);
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -162,6 +162,9 @@ const ViewJobAsset = ({
           </svg>
           <span className='inline-block pl-2'>Back to dashboard</span>
         </Link>
+        <button className='bg-white rounded-xl py-2 px-3 text-black text-sm font-semibold mr-2 md:mr-5'>
+          Tokenize
+        </button>
       </div>
       <div
         className='pl-0 pr-2 md:px-5 pb-1 mt-3 md:mt-10 text-white'
@@ -417,16 +420,15 @@ const ViewJobAsset = ({
                 <div>
                   {uploadedBy === 'admin' && (
                     <div
-                        className={`bg-gray-100 absolute right-0 bottom-2 rounded-xl px-2 py-1 `}
-                      >
-                        <span className='inline-block text-sm pl-1 max-w-56 text-white'>
-                          Asset is being tokenized...
-                        </span>
-                      </div>
-                      )}
+                      className={`bg-gray-100 absolute right-0 bottom-2 rounded-xl px-2 py-1 `}
+                    >
+                      <span className='inline-block text-sm pl-1 max-w-56 text-white'>
+                        Asset is being tokenized...
+                      </span>
+                    </div>
+                  )}
                 </div>
-                  
-                )}
+              )}
             </div>
           </div>
         </div>

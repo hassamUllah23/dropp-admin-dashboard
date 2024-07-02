@@ -56,6 +56,8 @@ const RewardsForm = () => {
             leaderboardEndDate: new Date(res?.data?.leaderboardEndDate),
             retweetPoints: res.data?.retweetPoints,
             tweetUrl: res.data?.tweetUrl,
+            initialParanormaDeduction: res.data?.initialParanormaDeduction,
+            refineParanormaDeduction: res.data?.refineParanormaDeduction,
             settingsId: res?.data?._id,
           });
         }
@@ -80,6 +82,8 @@ const RewardsForm = () => {
     walletPoints: Yup.number().required('Required'),
     followDiscordPoints: Yup.number().required('Required'),
     followTwitterPoints: Yup.number().required('Required'),
+    initialParanormaDeduction: Yup.number().required('Required'),
+    refineParanormaDeduction: Yup.number().required('Required'),
     leaderboardStartDate: Yup.date().required('Required'),
     leaderboardEndDate: Yup.date()
       .required('Required')
@@ -114,6 +118,8 @@ const RewardsForm = () => {
     walletPoints: 'Wallet Connection Points',
     tweetUrl: 'Twitter Tweet ID',
     retweetPoints: 'Twitter Retweet Points',
+    initialParanormaDeduction: 'Points for Initial 3D Model',
+    refineParanormaDeduction: 'Points for Refining 3D Model',
     settingsId: 'Settings ID',
   };
 
@@ -169,7 +175,7 @@ const RewardsForm = () => {
                       <div></div>
                     ) : key === 'tweetUrl' ? (
                       <div className='relative'>
-                        <span className='text-white/70 absolute left-2 top-[.6rem] text-base'>
+                        <span className='text-white/70 absolute left-2 top-[.55rem] text-base'>
                           x.com/droppgroup/status/
                         </span>
                         <Field
@@ -177,7 +183,7 @@ const RewardsForm = () => {
                           name={key}
                           id={key}
                           placeholder={`Enter Tweet Id`}
-                          className='mt-2 px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6 pl-[12rem]'
+                          className='mt-2  text-[.9rem] px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white leading-6 pl-[11.7rem]'
                         />
                       </div>
                     ) : (
