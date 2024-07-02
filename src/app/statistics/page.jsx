@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import { BarChart } from './BarChart';
+import BarChart from './BarChart';
 import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
 import { data } from 'autoprefixer';
@@ -45,8 +45,6 @@ export default function page() {
   const dropdownRef = useRef(null);
 
   const handleDownloadPDF = async () => {
-    setShowLoading(true);
-
     // Hide non-printable elements temporarily for PDF generation
     const noPrintElements = document.querySelectorAll('.no-print');
     noPrintElements.forEach((el) => el.classList.add('hidden'));
@@ -111,8 +109,6 @@ export default function page() {
         firstDiv.style.height = 'auto';
       }
     }
-
-    setShowLoading(false);
   };
 
   const handleOptionClick = async (type, value2) => {
@@ -156,7 +152,6 @@ export default function page() {
         start = new Date();
         end = new Date();
     }
-
     setStartDate(start);
     setEndDate(end);
 
@@ -215,7 +210,7 @@ export default function page() {
 
   useEffect(() => {
     getUsersStats();
-    // Add event listener to handle clicks outside of the dropdown
+    //Add event listener to handle clicks outside of the dropdown
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
