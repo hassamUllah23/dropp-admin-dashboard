@@ -9,6 +9,7 @@ const UpdateJobStatus = ({
   handleStatusClick,
   setShowJobStatus,
   isFromDashboard,
+  tokenizeAsset,
 }) => {
   const assignTaskPopupRef = useRef(null);
   const [showAssignTaskPopup, setShowAssignTaskPopup] = useState(false);
