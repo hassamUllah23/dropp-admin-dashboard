@@ -590,7 +590,9 @@ input[type='number'] {
   color: black;
 }
 
-.page-break {
+#page-break {
+  display: block;
+  height: 0;
   page-break-before: always;
 }
 
@@ -605,9 +607,12 @@ input[type='number'] {
   margin-top: 30%;
 }
 .pieChart canvas{
-  width: 80% !important;
-  height: 80% !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 .stats-chart-green{
   background-color: #67C24B;
+}
+#page-1, #page-2{
+  // height: 570px;
 }

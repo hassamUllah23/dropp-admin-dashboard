@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import { PieChart } from './PieChart';
+import { BarChart } from './BarChart';
 import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
 import DatePicker from 'react-datepicker';
@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import LoadingRotatingLines from '@/components/common/LoadingRotatingLines';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { isMobile } from 'react-device-detect';
 
 export default function page() {
   const [showCustomDateFields, setShowCustomDateFields] = useState(false);
@@ -34,30 +35,50 @@ export default function page() {
   const handleEndDate = (date) => {
     setEndDate(date);
   };
+  const handleCustomFilter = () => {
+    setShowCustomDateFields(!showCustomDateFields);
+    setSelectedOption('Custom');
+    setIsOpen(false);
+  };
+
   const dropdownRef = useRef(null);
 
   const handleDownloadPDF = async () => {
+    setShowLoading(true);
+
+    // Hide non-printable elements temporarily for PDF generation
     const noPrintElements = document.querySelectorAll('.no-print');
     noPrintElements.forEach((el) => el.classList.add('hidden'));
+
+    // Modify styles for PDF generation (if needed)
     const designChangeElements = document.querySelectorAll('.user-stats');
     designChangeElements.forEach((el) => el.classList.add('text-black'));
+
     const designChangeDropdown = document.querySelectorAll('.change-bg');
     designChangeDropdown.forEach((el) =>
       el.classList.add('bg-neutral-800', 'border-0')
     );
 
     const input = contentRef.current;
+    if (input && isMobile) {
+      const firstDiv = input.querySelector('.page-1');
+      if (firstDiv) {
+        firstDiv.style.height = '550px';
+      }
+    }
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
-    const element = input.getElementsByClassName('page-break');
+    const element = document.getElementById('page-break');
 
     const canvas = await html2canvas(input);
     const imgData = canvas.toDataURL('image/png');
     const imgProps = pdf.getImageProperties(imgData);
     let imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    console.log(imgHeight, 'img height');
-    if (imgHeight > 250) imgHeight = imgHeight - 15;
+
+    // // Adjust image height if needed
+    // if (imgHeight > 250) imgHeight = imgHeight - 15;
+
     let heightLeft = imgHeight;
     let position = 0;
     let index = 0;
@@ -67,21 +88,30 @@ export default function page() {
 
     while (heightLeft > 0) {
       position = heightLeft - imgHeight;
-      if (index > 0) position = position + 10;
-      const breakPos = element.offsetTop * (pdfWidth / imgProps.width);
+      if (index > 0) position = position + 10; // Adjust for margin between pages
       pdf.addPage();
       pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
       heightLeft -= pdfHeight;
       index++;
     }
 
+    // Save the PDF file
     pdf.save('statistics.pdf');
 
+    // Restore original styles and visibility of non-printable elements
     noPrintElements.forEach((el) => el.classList.remove('hidden'));
     designChangeElements.forEach((el) => el.classList.remove('text-black'));
     designChangeDropdown.forEach((el) =>
       el.classList.remove('bg-neutral-800', 'border-0')
     );
+    if (input && isMobile) {
+      const firstDiv = input.querySelector('.page-1');
+      if (firstDiv) {
+        firstDiv.style.height = 'auto';
+      }
+    }
+
+    setShowLoading(false);
   };
 
   const handleOptionClick = async (type, value2) => {
@@ -218,7 +248,10 @@ export default function page() {
         User Statistics
       </h2>
       <div className='grid grid-cols-7 max-sm:grid-cols-1 text-white px-4 items-stretch'>
-        <div className='col-span-2 max-sm:col-span-1 text-white px-4 h-full'>
+        <div
+          className='col-span-2 max-sm:col-span-1 text-white px-4 page-1'
+          id='page-1'
+        >
           {chartData.map((element) => {
             return (
               <div className='flex flex-wrap flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-8 first:mb-4 last:mt-4'>
@@ -230,7 +263,8 @@ export default function page() {
             );
           })}
         </div>
-        <div className='col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4 h-full'>
+        {/* <div className='md:hidden lg:hidden' id='page-break'></div> */}
+        <div className='col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4 h-full page-1'>
           <div className='bg-neutral-800 p-4 rounded-md'>
             <div className='flex text-white w-full justify-between'>
               <button
@@ -310,9 +344,7 @@ export default function page() {
                       Last Month
                     </li>
                     <li
-                      onClick={() =>
-                        setShowCustomDateFields(!showCustomDateFields)
-                      }
+                      onClick={handleCustomFilter}
                       className='cursor-pointer px-3 py-1 hover:bg-gray-100'
                     >
                       Custom
@@ -321,7 +353,7 @@ export default function page() {
                 )}
               </div>
             </div>
-            <div className='flex flex-row flex-wrap'>
+            <div className='flex flex-row flex-wrap no-print'>
               <div>
                 {showCustomDateFields ? (
                   <>
@@ -413,8 +445,8 @@ export default function page() {
                       );
                     })}
                   </div>
-                  <div className='pieChart flex justify-center max-sm:w-full md:w-[48%] w-full items-start max-sm:items-center max-sm:justify-center p-3'>
-                    <PieChart chartDataX={chartData} cData={data} />
+                  <div className='pieChart min-h-[300px] flexCenter max-sm:w-full md:w-[48%] w-full p-3'>
+                    <BarChart chartDataX={chartData} cData={data} />
                   </div>
                 </div>
               ) : null}
