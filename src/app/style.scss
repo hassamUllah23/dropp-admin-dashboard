@@ -478,70 +478,207 @@ input:-webkit-autofill:active {
   flex: 0 0 48px;
 }
 
+.Toastify__toast-container {
+  min-width: 300px !important;
+}
+
 .Toastify__toast--error {
+  border-left: 3px solid #EF1616;
   position: relative;
-  background-color: #ffd9d5 !important;
-  // background-image: url('./assets/svgs/cross.svg');
-  color: red !important;
+  background-color: #262626 !important;
+  color: #ffffff !important;
+  font-size: 16px !important;
+  padding: 16px !important;
+
   &::before {
     content: '';
     position: absolute;
-    width: 4px;
-    height: 100%;
-    background: red;
-    top: 0;
-    left: 0;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-image: url('/assets/images/toastify/error-icon.svg');
+    /* Path to your success icon */
+    background-size: contain;
+    background-repeat: no-repeat;
   }
+
   .Toastify__progress-bar {
     background: red;
   }
+
+  img {
+    max-width: 40px !important;
+    max-height: 40px !important;
+  }
+
+  .Toastify__toast-icon {
+    width: 25px !important;
+  }
+
+  .Toastify__toast-icon svg,
+  .Toastify__close-button svg {
+    display: none;
+  }
+
+  .custom-close-button {
+    margin-top: -30px;
+  }
+
   .Toastify__close-button {
-    color: red;
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-right: 8px;
+  }
+
+  .Toastify__toast-body>div:last-child {
+    padding: 12px 0;
+  }
+
+  .Toastify__close-button::before {
+    content: 'DISMISS';
+    font-size: 12px;
   }
 }
 
 .Toastify__toast--success {
+  border-left: 3px solid #67C24B;
   position: relative;
-  background-color: rgba(244, 255, 242, 0.844) !important;
-  // background-image: url('./assets/svgs/tick.svg');
-  color: green !important;
+  font-size: 16px !important;
+  padding: 16px !important;
+  position: relative;
+  background-color: #262626 !important;
+  color: #ffffff !important;
+
   &::before {
     content: '';
     position: absolute;
-    width: 4px;
-    height: 100%;
-    background: green;
-    top: 0;
-    left: 0;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-image: url('/assets/images/toastify/success-icon.svg');
+
+    background-size: contain;
+    background-repeat: no-repeat;
   }
+
   .Toastify__progress-bar {
     background: green;
   }
+
   .Toastify__close-button {
     color: green;
+  }
+
+  .Toastify__toast-icon {
+    width: 25px !important;
+  }
+
+  .Toastify__toast-icon svg,
+  .Toastify__close-button svg {
+    display: none;
+  }
+
+  .custom-close-button {
+    margin-top: -30px;
+  }
+
+  .Toastify__close-button {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-right: 8px;
+  }
+
+  .Toastify__toast-body>div:last-child {
+    padding: 12px 0;
+  }
+
+  .Toastify__close-button::before {
+    content: 'DISMISS';
+    font-size: 12px;
   }
 }
 
 .Toastify__toast--info {
+  border-left: 3px solid #14C7FF;
   position: relative;
-  background-color: rgba(169, 227, 248, 0.85) !important;
-  // background-image: url('./assets/svgs/info.svg');
-  color: #26acd5 !important;
+  font-size: 16px !important;
+  padding: 16px !important;
+  position: relative;
+  background-color: #262626 !important;
+  color: #ffffff !important;
+
   &::before {
     content: '';
     position: absolute;
-    width: 4px;
-    height: 100%;
-    background: #26acd5;
-    top: 0;
-    left: 0;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-image: url('/assets/images/toastify/info-icon.svg');
+    /* Path to your success icon */
+    background-size: contain;
+    background-repeat: no-repeat;
   }
+
   .Toastify__progress-bar {
     background: #26acd5;
   }
+
   .Toastify__close-button {
-    color: 2f96b4;
+    color: #2f96b4;
   }
+
+  .Toastify__toast-icon {
+    width: 25px !important;
+  }
+
+  .Toastify__toast-icon svg,
+  .Toastify__close-button svg {
+    display: none;
+  }
+
+  .custom-close-button {
+    margin-top: -30px;
+  }
+
+  .Toastify__close-button {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-right: 8px;
+  }
+
+  .Toastify__toast-body>div:last-child {
+    padding: 12px 0;
+  }
+
+  .Toastify__close-button::before {
+    content: 'DISMISS';
+    font-size: 12px;
+  }
+
 }
 
 .screenHeightForNotifications {
