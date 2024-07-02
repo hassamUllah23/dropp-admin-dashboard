@@ -480,10 +480,21 @@ input:-webkit-autofill:active {
 
 .Toastify__toast-container {
   min-width: 300px !important;
+  width: 30% !important;
+  @media (max-width: 1024px) {
+    width: 45% !important;
+  }
+  @media (max-width: 768px) {
+    width: 80% !important;
+  }
+
+  @media (max-width: 480px) {
+    width: 99.9% !important; // Adjust for mobile devices
+  }
 }
 
 .Toastify__toast--error {
-  border-left: 3px solid #EF1616;
+  border-left: 3px solid #ef1616;
   position: relative;
   background-color: #262626 !important;
   color: #ffffff !important;
@@ -538,7 +549,7 @@ input:-webkit-autofill:active {
     margin-right: 8px;
   }
 
-  .Toastify__toast-body>div:last-child {
+  .Toastify__toast-body > div:last-child {
     padding: 12px 0;
   }
 
@@ -549,7 +560,7 @@ input:-webkit-autofill:active {
 }
 
 .Toastify__toast--success {
-  border-left: 3px solid #67C24B;
+  border-left: 3px solid #67c24b;
   position: relative;
   font-size: 16px !important;
   padding: 16px !important;
@@ -604,7 +615,7 @@ input:-webkit-autofill:active {
     margin-right: 8px;
   }
 
-  .Toastify__toast-body>div:last-child {
+  .Toastify__toast-body > div:last-child {
     padding: 12px 0;
   }
 
@@ -615,7 +626,7 @@ input:-webkit-autofill:active {
 }
 
 .Toastify__toast--info {
-  border-left: 3px solid #14C7FF;
+  border-left: 3px solid #14c7ff;
   position: relative;
   font-size: 16px !important;
   padding: 16px !important;
@@ -670,7 +681,7 @@ input:-webkit-autofill:active {
     margin-right: 8px;
   }
 
-  .Toastify__toast-body>div:last-child {
+  .Toastify__toast-body > div:last-child {
     padding: 12px 0;
   }
 
@@ -678,7 +689,6 @@ input:-webkit-autofill:active {
     content: 'DISMISS';
     font-size: 12px;
   }
-
 }
 
 .screenHeightForNotifications {
@@ -739,17 +749,18 @@ input[type='number'] {
   opacity: 0.7;
 }
 
-.download-pdf-loading-style>svg {
+.download-pdf-loading-style > svg {
   margin: 0 auto;
   margin-top: 30%;
 }
-.pieChart canvas{
+.pieChart canvas {
   width: 100% !important;
   height: 100% !important;
 }
-.stats-chart-green{
-  background-color: #67C24B;
+.stats-chart-green {
+  background-color: #67c24b;
 }
-#page-1, #page-2{
+#page-1,
+#page-2 {
   // height: 570px;
 }
