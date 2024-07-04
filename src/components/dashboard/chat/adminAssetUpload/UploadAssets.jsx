@@ -94,7 +94,7 @@ export default function UploadAssets({ onUploadCountChange, index }) {
 
                 {showUploader && (
                   <div
-                    className='flex justify-center items-center cursor-pointer'
+                    className='flex justify-center items-center cursor-pointer uploadAsset'
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                     onClick={openFileDialog}

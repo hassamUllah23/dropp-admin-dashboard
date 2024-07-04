@@ -200,12 +200,15 @@ const ViewJobAsset = ({
                   handleStatusClick={handleStatusClick}
                   setShowJobStatus={setShowJobStatus}
                 />
-                <button
-                  className='bg-white rounded-xl py-1.5 px-3 text-black text-[.7rem] sm:text-xs font-semibold mr-2 md:mr-5 absolute right-20 top-4'
-                  onClick={handleTokenizeAsset}
-                >
-                  Tokenize
-                </button>
+                {jobStatus != 'completed' && tokenizedNFTUrls?.length === 0 && (
+                  <button
+                    className='bg-white rounded-xl py-1.5 px-3 text-black text-[.7rem] sm:text-xs font-semibold mr-2 md:mr-5 absolute right-20 top-4'
+                    onClick={handleTokenizeAsset}
+                  >
+                    Tokenize
+                  </button>
+                )}
+
                 <div className=' absolute top-2 right-2 md:top-3 md:right-3 cursor-pointer'>
                   <img
                     src='/assets/images/chat/info.svg'
