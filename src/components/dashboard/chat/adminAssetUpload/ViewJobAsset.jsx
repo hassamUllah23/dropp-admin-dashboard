@@ -201,7 +201,7 @@ const ViewJobAsset = ({
                   setShowJobStatus={setShowJobStatus}
                 />
                 <button
-                  className='bg-white rounded-xl py-1.5 px-3 text-black text-xs font-semibold mr-2 md:mr-5 absolute right-20 top-4'
+                  className='bg-white rounded-xl py-1.5 px-3 text-black text-[.7rem] sm:text-xs font-semibold mr-2 md:mr-5 absolute right-20 top-4'
                   onClick={handleTokenizeAsset}
                 >
                   Tokenize
@@ -235,7 +235,7 @@ const ViewJobAsset = ({
                         <p className='pb-6'>{description}</p>
                       </>
                     )}
-                    <h1 className='text-md md:text-xl mb-5 font-bold'>
+                    <h1 className='text-md md:text-xl mb-5 font-bold pt-4 sm:pt-0'>
                       User's Input:
                     </h1>
 
@@ -444,7 +444,7 @@ const ViewJobAsset = ({
                     <div
                       className={`bg-gray-100 absolute right-0 bottom-2 rounded-xl px-2 py-1 `}
                     >
-                      <span className='inline-block text-sm pl-1 max-w-56 text-white'>
+                      <span className='inline-block text-sm pl-1 max-w-56 text-white hidden'>
                         Asset is being tokenized...
                       </span>
                     </div>
