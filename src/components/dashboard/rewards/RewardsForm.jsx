@@ -160,6 +160,8 @@ const RewardsForm = () => {
                         selected={values[key]}
                         onChange={(date) => setFieldValue(key, date)}
                         showTimeSelect
+                        date
+                        timeIntervals={5}
                         dateFormat='dd-MM-yyyy h:mm aa'
                         minDate={
                           key === 'leaderboardStartDate'
