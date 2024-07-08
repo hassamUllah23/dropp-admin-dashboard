@@ -57,7 +57,6 @@ const page = () => {
       result.data?.users.map((employee) => {
         if (employee.status === 'pending') return 'pending';
         if (employee.status === 'active') return 'active';
-        if (employee.status === 'inactive') return 'inactive';
         if (employee.status === 'deactivated') return 'deactivated';
         if (employee.status === 'requested_deactivation')
           return 'requested_deactivation';
@@ -319,7 +318,6 @@ const page = () => {
                             disabled={isApiLoading || deleting}
                           >
                             {dropdownStates[index] === 'active' && 'Active'}
-                            {dropdownStates[index] === 'inactive' && 'Inactive'}
                             {dropdownStates[index] ===
                               'requested_deactivation' &&
                               'Requested Dectivation'}
@@ -356,14 +354,6 @@ const page = () => {
                                 }
                               >
                                 Active
-                              </button>
-                              <button
-                                className='text-left block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white'
-                                onClick={() =>
-                                  handleOptionClick('inactive', index)
-                                }
-                              >
-                                Inactive
                               </button>
                               <button
                                 className='text-left block w-full px-4 py-2 text-sm hover:bg-[#850101] hover:text-white'
