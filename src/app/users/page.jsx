@@ -258,7 +258,7 @@ const page = () => {
         <table className='table-auto overflow-scroll text-white w-[1024px] lg:w-full border border-transparent mb-3'>
           <thead className='bg-[#262626] text-white rounded-[4px]'>
             <tr className=''>
-              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-center rounded-l-[4px]'>
+              <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left rounded-l-[4px]'>
                 Name
               </th>
               <th className='py-4 px-2 text-sm text-[#FFFFFF] leading-[21.74px] text-left'>
@@ -283,7 +283,7 @@ const page = () => {
               users.map((item, index) => {
                 return (
                   <tr key={index} className='my-3 row w-full darkGrayBg'>
-                    <td className='py-4 px-2 text-sm text-[#FFFFFF] text-center leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black'>
+                    <td className='py-4 px-2 text-sm text-[#FFFFFF] text-left leading-[21.74px] rounded-l-[4px] border-b-8  border-t-8 border-black'>
                       {`${item.name}`}
                     </td>
                     <td className='py-4 px-2 text-sm text-[#808080] leading-[21.74px] border-b-8 border-t-8 border-black w-[200px] sm:w-[unset] md:w-[unset] lg:w-[unset] '>
