@@ -56,6 +56,8 @@ const RewardsForm = () => {
             leaderboardEndDate: new Date(res?.data?.leaderboardEndDate),
             retweetPoints: res.data?.retweetPoints,
             tweetUrl: res.data?.tweetUrl,
+            digitalHumanCreationPoints: res.data?.digitalHumanCreationPoints,
+            imageCreationPoints: res.data?.imageCreationPoints,
             initialParanormaDeduction: res.data?.initialParanormaDeduction,
             refineParanormaDeduction: res.data?.refineParanormaDeduction,
             settingsId: res?.data?._id,
@@ -84,22 +86,10 @@ const RewardsForm = () => {
     followTwitterPoints: Yup.number().required('Required'),
     initialParanormaDeduction: Yup.number().required('Required'),
     refineParanormaDeduction: Yup.number().required('Required'),
+    digitalHumanCreationPoints: Yup.number().required('Required'),
+    imageCreationPoints: Yup.number().required('Required'),
     leaderboardStartDate: Yup.date().required('Required'),
-    leaderboardEndDate: Yup.date()
-      .required('Required')
-      .test(
-        'is-greater',
-        'End date must be at least one day after the start date',
-        function (value) {
-          const { leaderboardStartDate } = this.parent;
-          return (
-            leaderboardStartDate &&
-            value &&
-            new Date(value).getTime() >
-              new Date(leaderboardStartDate).getTime() + 24 * 60 * 60 * 1000
-          );
-        }
-      ),
+    leaderboardEndDate: Yup.date().required('Required'),
     retweetPoints: Yup.number().required('Required'),
     tweetUrl: Yup.string().required('Required'),
   });
@@ -120,6 +110,8 @@ const RewardsForm = () => {
     retweetPoints: 'Twitter Retweet Points',
     initialParanormaDeduction: 'Points for Initial 3D Model',
     refineParanormaDeduction: 'Points for Refining 3D Model',
+    digitalHumanCreationPoints: 'Points for Digital Human',
+    imageCreationPoints: 'Points for Image Creation',
     settingsId: 'Settings ID',
   };
 
@@ -163,14 +155,6 @@ const RewardsForm = () => {
                         date
                         timeIntervals={5}
                         dateFormat='dd-MM-yyyy h:mm aa'
-                        minDate={
-                          key === 'leaderboardStartDate'
-                            ? new Date()
-                            : new Date(
-                                values['leaderboardStartDate'].getTime() +
-                                  24 * 60 * 60 * 1000
-                              )
-                        }
                         className='mt-2 px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6'
                       />
                     ) : key === 'settingsId' ? (
