@@ -42,6 +42,11 @@ const RewardsForm = () => {
       .then((res) => {
         if (res.status === 200) {
           setInitialValues({
+            imageCreationPoints: res.data?.imageCreationPoints,
+            digitalHumanCreationPoints: res.data?.digitalHumanCreationPoints,
+
+            initialParanormaDeduction: res.data?.initialParanormaDeduction,
+            refineParanormaDeduction: res.data?.refineParanormaDeduction,
             initialVirtualPoints: res?.data?.initialVirtualPoints,
             skyboxGeneration: res?.data?.skyboxGeneration,
             initialWardDropPoints: res?.data?.initialWardDropPoints,
@@ -56,10 +61,7 @@ const RewardsForm = () => {
             leaderboardEndDate: new Date(res?.data?.leaderboardEndDate),
             retweetPoints: res.data?.retweetPoints,
             tweetUrl: res.data?.tweetUrl,
-            digitalHumanCreationPoints: res.data?.digitalHumanCreationPoints,
-            imageCreationPoints: res.data?.imageCreationPoints,
-            initialParanormaDeduction: res.data?.initialParanormaDeduction,
-            refineParanormaDeduction: res.data?.refineParanormaDeduction,
+
             settingsId: res?.data?._id,
           });
         }
@@ -111,7 +113,7 @@ const RewardsForm = () => {
     initialParanormaDeduction: 'Points for Initial 3D Model',
     refineParanormaDeduction: 'Points for Refining 3D Model',
     digitalHumanCreationPoints: 'Points for Digital Human',
-    imageCreationPoints: 'Points for Image Creation',
+    imageCreationPoints: 'Points for Text To Image',
     settingsId: 'Settings ID',
   };
 
