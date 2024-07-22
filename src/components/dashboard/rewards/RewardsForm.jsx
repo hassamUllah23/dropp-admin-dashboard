@@ -61,7 +61,9 @@ const RewardsForm = () => {
             leaderboardEndDate: new Date(res?.data?.leaderboardEndDate),
             retweetPoints: res.data?.retweetPoints,
             tweetUrl: res.data?.tweetUrl,
-
+            mascotPoints: res.data?.mascotPoints,
+            initialParanormaDeduction: res.data?.initialParanormaDeduction,
+            refineParanormaDeduction: res.data?.refineParanormaDeduction,
             settingsId: res?.data?._id,
           });
         }
@@ -91,8 +93,23 @@ const RewardsForm = () => {
     digitalHumanCreationPoints: Yup.number().required('Required'),
     imageCreationPoints: Yup.number().required('Required'),
     leaderboardStartDate: Yup.date().required('Required'),
-    leaderboardEndDate: Yup.date().required('Required'),
+    leaderboardEndDate: Yup.date()
+      .required('Required'),
+      // .test(
+      //   'is-greater',
+      //   'End date must be at least one day after the start date',
+      //   function (value) {
+      //     const { leaderboardStartDate } = this.parent;
+      //     return (
+      //       leaderboardStartDate &&
+      //       value &&
+      //       new Date(value).getTime() >
+      //         new Date(leaderboardStartDate).getTime() + 24 * 60 * 60 * 1000
+      //     );
+      //   }
+      // ),
     retweetPoints: Yup.number().required('Required'),
+    mascotPoints: Yup.number().required('Required'),
     tweetUrl: Yup.string().required('Required'),
   });
 
@@ -110,6 +127,7 @@ const RewardsForm = () => {
     walletPoints: 'Wallet Connection Points',
     tweetUrl: 'Twitter Tweet ID',
     retweetPoints: 'Twitter Retweet Points',
+    mascotPoints: 'APE SKEE Mascot Points',
     initialParanormaDeduction: 'Points for Initial 3D Model',
     refineParanormaDeduction: 'Points for Refining 3D Model',
     digitalHumanCreationPoints: 'Points for Digital Human',
