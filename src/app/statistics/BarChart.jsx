@@ -93,10 +93,10 @@ const BarChart = React.memo(
       }),
       []
     );
-
+    
     const chartData = useMemo(
       () => ({
-        labels: ['Registrations', 'Activations', 'Wallet Connectins'],
+        labels: ['Registrations', 'Activations', 'Wallet Connectins', 'Retween Count', 'Follow Twitter Count', 'Join Discord Count', 'Share Count', 'Panprama Image Count'],
         datasets: [
           {
             label: [],
@@ -104,8 +104,13 @@ const BarChart = React.memo(
               cData?.newSignupsCount,
               cData?.newActivationsCount,
               cData?.connectedWalletCount,
+              cData?.retweetCount,
+              cData?.followTwitterCount,
+              cData?.joinDiscordCount,
+              (cData?.shareDiscordCount || 0) + (cData?.shareTwitterCount || 0),
+              cData?.panoramaCount,
             ],
-            backgroundColor: ['#14C7FF', '#67C24B', '#FFCE53'],
+            backgroundColor: ['#EF4444', '#3B82F6', '#F59E0B', '#10B981', '#8B5CF6', '#F97316', '#6366F1', '#EC4899'],
             barPercentage: 0.85, // Increase the width of bars
             categoryPercentage: 1.0,
           },

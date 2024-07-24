@@ -9,6 +9,7 @@ import LoadingRotatingLines from '@/components/common/LoadingRotatingLines';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { isMobile } from 'react-device-detect';
+import { RotatingLines } from 'react-loader-spinner';
 
 export default function page() {
   const [showCustomDateFields, setShowCustomDateFields] = useState(false);
@@ -25,6 +26,17 @@ export default function page() {
 
   const currentDate = new Date();
 
+  const bgColors = [
+    'bg-red-500',
+    'bg-blue-500',
+    'bg-yellow-500',
+    'bg-green-500',
+    'bg-purple-500',
+    'bg-orange',
+    'bg-indigo-500',
+    'bg-pink-500',
+  ];
+
   const handleStartDate = (date) => {
     setStartDate(date);
     // Ensure end date is not before start date
@@ -32,9 +44,11 @@ export default function page() {
       setEndDate(date);
     }
   };
+
   const handleEndDate = (date) => {
     setEndDate(date);
   };
+
   const handleCustomFilter = () => {
     setShowCustomDateFields(!showCustomDateFields);
     setSelectedOption('Custom');
@@ -207,6 +221,44 @@ export default function page() {
             backgroundColor: 'rgba(255, 206, 86, 0.2)',
             borderColor: 'rgba(255, 206, 86, 1)',
           },
+          {
+            label: 'Retweet Count',
+            value: result.data?.retweetCount
+              ? result.data?.retweetCount
+              : 0,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+          },
+          {
+            label: 'Follow Twitter Count',
+            value: result.data?.followTwitterCount
+              ? result.data?.followTwitterCount
+              : 0,
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+          },
+          {
+            label: 'Join Discord Count',
+            value: result.data?.joinDiscordCount
+              ? result.data?.joinDiscordCount
+              : 0,
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+          },
+          {
+            label: 'Share Count',
+            value: (result.data?.shareDiscordCount || 0) + (result.data?.shareTwitterCount || 0),
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+          },
+          {
+            label: 'Panorama Image Count',
+            value: result.data?.panoramaCount
+              ? result.data?.panoramaCount
+              : 0,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+          }
         ]);
       }
     } catch (error) {
@@ -244,12 +296,12 @@ export default function page() {
       </h2>
       <div className='grid grid-cols-7 max-sm:grid-cols-1 text-white px-4 items-stretch'>
         <div
-          className='col-span-2 max-sm:col-span-1 text-white px-4 page-1'
+          className='col-span-2 max-sm:col-span-1 text-white px-4 page-1 overflow-y-auto max-h-[32rem] border-b border-gray-200'
           id='page-1'
         >
           {chartData.map((element) => {
             return (
-              <div className='flex flex-wrap flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-8 first:mb-4 last:mt-4'>
+              <div className='flex flex-wrap flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-8 mb-4 last:mt-4'>
                 <div className=''>{element.label}</div>
                 <div className='text-4xl font-bold text-center'>
                   {element.value}
@@ -263,7 +315,7 @@ export default function page() {
           <div className='bg-neutral-800 p-4 rounded-md'>
             <div className='flex text-white w-full justify-between'>
               <button
-                className='no-print w-40 rounded-md bg-Gradient px-7 py-2 text-sm font-semibold text-black shadow-sm'
+                className='no-print w-40 rounded-md bg-Gradient ml-0.5 mt-0.5 px-6 text-sm font-semibold text-black shadow-sm'
                 onClick={handleDownloadPDF}
               >
                 Download PDF
@@ -285,10 +337,23 @@ export default function page() {
                 <option value='custom'>Custom</option>
               </select> */}
               <div
-                className='max-sm:ml-1 relative inline-block'
+                className='relative flex'
                 ref={dropdownRef}
               >
-                <button
+                <div className='flex justify-center w-full mr-3'>
+                  {isApiLoading && (
+                    <RotatingLines
+                      height='28'
+                      width='28'
+                      color='blue'
+                      strokeWidth='5'
+                      animationDuration='0.75'
+                      ariaLabel='rotating-lines-loading'
+                    />
+                  )}
+                </div>
+                <div className='max-sm:ml-1 relative inline-block'>
+                  <button
                   onClick={toggleDropdown}
                   className='bg-black change-bg text-left text-sm inline-block px-3 py-2 h-10 rounded-lg font-light cursor-pointer w-40 border border-gray-150'
                 >
@@ -346,6 +411,7 @@ export default function page() {
                     </li>
                   </ul>
                 )}
+                </div>
               </div>
             </div>
             <div className='flex flex-row flex-wrap no-print'>
@@ -418,16 +484,16 @@ export default function page() {
                     {chartData.map((element, index) => {
                       return (
                         <div
-                          className='flex items-center w-full px-3 first:mb-4 last:mt-4'
+                          className='flex items-center w-full px-3 first:mt-4 mb-4 last:mt-4 last:mb-0'
                           key={index}
                         >
                           <div className='w-[20%]'>
                             <div
-                              className={`p-4 rounded-full w-5 h-5 ${
-                                index === 0 ? 'bg-cyan-500' : ''
-                              } ${index === 1 ? 'stats-chart-green' : ''} ${
-                                index === 2 ? 'bg-amber-400' : ''
-                              } `}
+                              className={`p-4 rounded-full w-5 h-5
+                                ${
+                                  bgColors[index]
+                                } flex items-center justify-center
+                                `}
                             ></div>
                           </div>
                           <div className='w-[100%] text-left text-base mx-2'>
@@ -440,7 +506,7 @@ export default function page() {
                       );
                     })}
                   </div>
-                  <div className='pieChart min-h-[300px] flexCenter max-sm:w-full md:w-[48%] w-full p-3'>
+                  <div className='pieChart min-h-[400px] flexCenter max-sm:w-full md:w-[60%] w-full p-3'>
                     <BarChart chartDataX={chartData} cData={data} />
                   </div>
                 </div>
