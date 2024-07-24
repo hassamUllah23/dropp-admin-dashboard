@@ -27,6 +27,9 @@ body {
 .screenHeightForEmail {
   height: calc(100vh - 198px);
 }
+.screenHeightForStatistics {
+  height: calc(100vh - 200px);
+}
 
 @media (prefers-color-scheme: dark) {
   :root {

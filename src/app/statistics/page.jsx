@@ -296,7 +296,7 @@ export default function page() {
       </h2>
       <div className='grid grid-cols-7 max-sm:grid-cols-1 text-white px-4 items-stretch'>
         <div
-          className='col-span-2 max-sm:col-span-1 text-white px-4 page-1 overflow-y-auto max-h-[32rem] border-b border-gray-200'
+          className='col-span-2 max-sm:col-span-1 text-white px-4 page-1 overflow-y-auto screenHeightForStatistics border-b border-gray-200'
           id='page-1'
         >
           {chartData.map((element) => {
@@ -311,7 +311,7 @@ export default function page() {
           })}
         </div>
         {/* <div className='md:hidden lg:hidden' id='page-break'></div> */}
-        <div className='col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4 h-full page-1'>
+        <div className={`col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4 h-full page-1 ${showCustomDateFields ? 'mb-5' : ''}`}>
           <div className='bg-neutral-800 p-4 rounded-md'>
             <div className='flex text-white w-full justify-between'>
               <button
@@ -374,7 +374,7 @@ export default function page() {
                   </svg>
                 </button>
                 {isOpen && (
-                  <ul className='absolute bg-black w-40 border border-gray-150 py-1 mt-1 rounded-lg text-xs'>
+                  <ul className='absolute bg-black w-40 border border-gray-150 pt-1 rounded-lg text-xs'>
                     <li
                       onClick={() =>
                         handleOptionClick('last24Hours', 'Last 24 Hours')
@@ -479,8 +479,8 @@ export default function page() {
             </div>
             <div className='flex w-full'>
               {chartData?.length > 0 ? (
-                <div className='flex flex-wrap justify-between items-center flex-row w-full h-auto'>
-                  <div className='md:w-[40%] w-full p-3'>
+                <div className='flex flex-wrap justify-between flex-row w-full h-auto'>
+                  <div className='md:w-[40%] w-full p-3 overflow-y-auto'>
                     {chartData.map((element, index) => {
                       return (
                         <div
