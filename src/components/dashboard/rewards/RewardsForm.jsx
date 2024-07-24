@@ -57,8 +57,6 @@ const RewardsForm = () => {
             followDiscordPoints: res?.data?.followDiscordPoints,
             followTwitterPoints: res?.data?.followTwitterPoints,
             walletPoints: res.data?.walletPoints,
-            leaderboardStartDate: new Date(res?.data?.leaderboardStartDate),
-            leaderboardEndDate: new Date(res?.data?.leaderboardEndDate),
             retweetPoints: res.data?.retweetPoints,
             tweetUrl: res.data?.tweetUrl,
             mascotPoints: res.data?.mascotPoints,
@@ -92,22 +90,6 @@ const RewardsForm = () => {
     refineParanormaDeduction: Yup.number().required('Required'),
     digitalHumanCreationPoints: Yup.number().required('Required'),
     imageCreationPoints: Yup.number().required('Required'),
-    leaderboardStartDate: Yup.date().required('Required'),
-    leaderboardEndDate: Yup.date()
-      .required('Required'),
-      // .test(
-      //   'is-greater',
-      //   'End date must be at least one day after the start date',
-      //   function (value) {
-      //     const { leaderboardStartDate } = this.parent;
-      //     return (
-      //       leaderboardStartDate &&
-      //       value &&
-      //       new Date(value).getTime() >
-      //         new Date(leaderboardStartDate).getTime() + 24 * 60 * 60 * 1000
-      //     );
-      //   }
-      // ),
     retweetPoints: Yup.number().required('Required'),
     mascotPoints: Yup.number().required('Required'),
     tweetUrl: Yup.string().required('Required'),
@@ -122,8 +104,6 @@ const RewardsForm = () => {
     followDiscordPoints: 'Follow Discord Points',
     followTwitterPoints: 'Follow Twitter Points',
     initialAccountCreationPoints: 'Account creation points',
-    leaderboardStartDate: 'Leaderboard Start Date',
-    leaderboardEndDate: 'Leaderboard End Date',
     walletPoints: 'Wallet Connection Points',
     tweetUrl: 'Twitter Tweet ID',
     retweetPoints: 'Twitter Retweet Points',
@@ -166,18 +146,7 @@ const RewardsForm = () => {
                       </label>
                     )}
 
-                    {key === 'leaderboardStartDate' ||
-                    key === 'leaderboardEndDate' ? (
-                      <DatePicker
-                        selected={values[key]}
-                        onChange={(date) => setFieldValue(key, date)}
-                        showTimeSelect
-                        date
-                        timeIntervals={5}
-                        dateFormat='dd-MM-yyyy h:mm aa'
-                        className='mt-2 px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6'
-                      />
-                    ) : key === 'settingsId' ? (
+                    {key === 'settingsId' ? (
                       <div></div>
                     ) : key === 'tweetUrl' ? (
                       <div className='relative'>
