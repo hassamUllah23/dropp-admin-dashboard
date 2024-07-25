@@ -221,44 +221,44 @@ export default function page() {
             backgroundColor: 'rgba(255, 206, 86, 0.2)',
             borderColor: 'rgba(255, 206, 86, 1)',
           },
-          {
-            label: 'Retweet Count',
-            value: result.data?.retweetCount
-              ? result.data?.retweetCount
-              : 0,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-          },
-          {
-            label: 'Follow Twitter Count',
-            value: result.data?.followTwitterCount
-              ? result.data?.followTwitterCount
-              : 0,
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            borderColor: 'rgba(153, 102, 255, 1)',
-          },
-          {
-            label: 'Join Discord Count',
-            value: result.data?.joinDiscordCount
-              ? result.data?.joinDiscordCount
-              : 0,
-            backgroundColor: 'rgba(255, 159, 64, 0.2)',
-            borderColor: 'rgba(255, 159, 64, 1)',
-          },
-          {
-            label: 'Share Count',
-            value: (result.data?.shareDiscordCount || 0) + (result.data?.shareTwitterCount || 0),
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-          },
-          {
-            label: 'Panorama Image Count',
-            value: result.data?.panoramaCount
-              ? result.data?.panoramaCount
-              : 0,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-          }
+          // {
+          //   label: 'Retweet Count',
+          //   value: result.data?.retweetCount
+          //     ? result.data?.retweetCount
+          //     : 0,
+          //   backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          //   borderColor: 'rgba(75, 192, 192, 1)',
+          // },
+          // {
+          //   label: 'Follow Twitter Count',
+          //   value: result.data?.followTwitterCount
+          //     ? result.data?.followTwitterCount
+          //     : 0,
+          //   backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          //   borderColor: 'rgba(153, 102, 255, 1)',
+          // },
+          // {
+          //   label: 'Join Discord Count',
+          //   value: result.data?.joinDiscordCount
+          //     ? result.data?.joinDiscordCount
+          //     : 0,
+          //   backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          //   borderColor: 'rgba(255, 159, 64, 1)',
+          // },
+          // {
+          //   label: 'Share Count',
+          //   value: (result.data?.shareDiscordCount || 0) + (result.data?.shareTwitterCount || 0),
+          //   backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          //   borderColor: 'rgba(255, 99, 132, 1)',
+          // },
+          // {
+          //   label: 'Panorama Image Count',
+          //   value: result.data?.panoramaCount
+          //     ? result.data?.panoramaCount
+          //     : 0,
+          //   backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          //   borderColor: 'rgba(54, 162, 235, 1)',
+          // }
         ]);
       }
     } catch (error) {
@@ -290,20 +290,20 @@ export default function page() {
   };
 
   return (
-    <div ref={contentRef} className='text-white'>
-      <h2 className=' user-stats flex font-bold  w-full px-8 py-5 mt-8'>
+    <div ref={contentRef} className="text-white">
+      <h2 className=" user-stats flex font-bold  w-full px-8 py-5 mt-8">
         User Statistics
       </h2>
-      <div className='grid grid-cols-7 max-sm:grid-cols-1 text-white px-4 items-stretch'>
+      <div className="grid grid-cols-7 max-sm:grid-cols-1 text-white px-4 items-stretch">
         <div
-          className='col-span-2 max-sm:col-span-1 text-white px-4 page-1 overflow-y-auto screenHeightForStatistics border-b border-gray-200'
-          id='page-1'
+          className="col-span-2 max-sm:col-span-1 text-white px-4 page-1 overflow-y-auto screenHeightForStatistics border-b border-gray-200"
+          id="page-1"
         >
           {chartData.map((element) => {
             return (
-              <div className='flex flex-wrap flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-8 mb-4 last:mt-4'>
-                <div className=''>{element.label}</div>
-                <div className='text-4xl font-bold text-center'>
+              <div className="flex flex-wrap flex-row justify-between items-center w-full bg-neutral-800 rounded-md px-4 py-8 mb-4 last:mt-4">
+                <div className="">{element.label}</div>
+                <div className="text-4xl font-bold text-center">
                   {element.value}
                 </div>
               </div>
@@ -311,11 +311,15 @@ export default function page() {
           })}
         </div>
         {/* <div className='md:hidden lg:hidden' id='page-break'></div> */}
-        <div className={`col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4 h-full page-1 ${showCustomDateFields ? 'mb-5' : ''}`}>
-          <div className='bg-neutral-800 p-4 rounded-md'>
-            <div className='flex text-white w-full justify-between'>
+        <div
+          className={`col-span-5 max-sm:col-span-1 max-sm:mt-4 text-white px-4 h-full page-1 ${
+            showCustomDateFields ? 'mb-5' : ''
+          }`}
+        >
+          <div className="bg-neutral-800 p-4 rounded-md">
+            <div className="flex text-white w-full justify-between">
               <button
-                className='no-print w-40 rounded-md bg-Gradient ml-0.5 mt-0.5 px-6 text-sm font-semibold text-black shadow-sm'
+                className="no-print w-40 rounded-md bg-Gradient ml-0.5 mt-0.5 px-6 text-sm font-semibold text-black shadow-sm"
                 onClick={handleDownloadPDF}
               >
                 Download PDF
@@ -336,113 +340,112 @@ export default function page() {
                 <option value='lastMonth'>Last Month</option>
                 <option value='custom'>Custom</option>
               </select> */}
-              <div
-                className='relative flex'
-                ref={dropdownRef}
-              >
-                <div className='flex justify-center w-full mr-3'>
+              <div className="relative flex" ref={dropdownRef}>
+                <div className="flex justify-center w-full mr-3">
                   {isApiLoading && (
                     <RotatingLines
-                      height='28'
-                      width='28'
-                      color='blue'
-                      strokeWidth='5'
-                      animationDuration='0.75'
-                      ariaLabel='rotating-lines-loading'
+                      height="28"
+                      width="28"
+                      color="blue"
+                      strokeWidth="5"
+                      animationDuration="0.75"
+                      ariaLabel="rotating-lines-loading"
                     />
                   )}
                 </div>
-                <div className='max-sm:ml-1 relative inline-block'>
+                <div className="max-sm:ml-1 relative inline-block">
                   <button
-                  onClick={toggleDropdown}
-                  className='bg-black change-bg text-left text-sm inline-block px-3 py-2 h-10 rounded-lg font-light cursor-pointer w-40 border border-gray-150'
-                >
-                  {selectedOption}
-                  <svg
-                    width='16'
-                    height='16'
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 20 20'
-                    fill='currentColor'
-                    className=' absolute z-30 top-3 right-2 cursor-pointer'
+                    onClick={toggleDropdown}
+                    className="bg-black change-bg text-left text-sm inline-block px-3 py-2 h-10 rounded-lg font-light cursor-pointer w-40 border border-gray-150"
                   >
-                    <path
-                      fillRule='evenodd'
-                      d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z'
-                      clipRule='evenodd'
-                    ></path>
-                  </svg>
-                </button>
-                {isOpen && (
-                  <ul className='absolute bg-black w-40 border border-gray-150 pt-1 rounded-lg text-xs'>
-                    <li
-                      onClick={() =>
-                        handleOptionClick('last24Hours', 'Last 24 Hours')
-                      }
-                      className='cursor-pointer px-3 py-1 hover:bg-gray-100'
+                    {selectedOption}
+                    <svg
+                      width="16"
+                      height="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className=" absolute z-30 top-3 right-2 cursor-pointer"
                     >
-                      Last 24 Hours
-                    </li>
-                    {/* <li
+                      <path
+                        fillRule="evenodd"
+                        d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                  </button>
+                  {isOpen && (
+                    <ul className="absolute bg-black w-40 border border-gray-150 pt-1 rounded-lg text-xs">
+                      <li
+                        onClick={() =>
+                          handleOptionClick('last24Hours', 'Last 24 Hours')
+                        }
+                        className="cursor-pointer px-3 py-1 hover:bg-gray-100"
+                      >
+                        Last 24 Hours
+                      </li>
+                      {/* <li
                       onClick={() => handleOptionClick('yestery', 'Yesterday')}
                       className='cursor-pointer px-3 py-1 hover:bg-gray-100'
                     >
                       Yesterday
                     </li> */}
-                    <li
-                      onClick={() => handleOptionClick('lastWeek', 'Last Week')}
-                      className='cursor-pointer px-3 py-1 hover:bg-gray-100'
-                    >
-                      Last Week
-                    </li>
-                    <li
-                      onClick={() =>
-                        handleOptionClick('lastMonth', 'Last Month')
-                      }
-                      className='cursor-pointer px-3 py-1 hover:bg-gray-100'
-                    >
-                      Last Month
-                    </li>
-                    <li
-                      onClick={handleCustomFilter}
-                      className='cursor-pointer px-3 py-1 hover:bg-gray-100'
-                    >
-                      Custom
-                    </li>
-                  </ul>
-                )}
+                      <li
+                        onClick={() =>
+                          handleOptionClick('lastWeek', 'Last Week')
+                        }
+                        className="cursor-pointer px-3 py-1 hover:bg-gray-100"
+                      >
+                        Last Week
+                      </li>
+                      <li
+                        onClick={() =>
+                          handleOptionClick('lastMonth', 'Last Month')
+                        }
+                        className="cursor-pointer px-3 py-1 hover:bg-gray-100"
+                      >
+                        Last Month
+                      </li>
+                      <li
+                        onClick={handleCustomFilter}
+                        className="cursor-pointer px-3 py-1 hover:bg-gray-100"
+                      >
+                        Custom
+                      </li>
+                    </ul>
+                  )}
                 </div>
               </div>
             </div>
-            <div className='flex flex-row flex-wrap no-print'>
+            <div className="flex flex-row flex-wrap no-print">
               <div>
                 {showCustomDateFields ? (
                   <>
-                    <div className='flex h-auto mt-3'>
-                      <div className='flex flex-wrap'>
-                        <div className='text-white max-sm:w-full mt-3 md:w-[35%]'>
+                    <div className="flex h-auto mt-3">
+                      <div className="flex flex-wrap">
+                        <div className="text-white max-sm:w-full mt-3 md:w-[35%]">
                           Start Date:
                           <DatePicker
-                            name='startDate'
+                            name="startDate"
                             showYearDropdown
                             showMonthDropdown
-                            dropdownMode='select'
+                            dropdownMode="select"
                             selected={startDate}
                             selectsStart
                             startDate={startDate}
                             endDate={endDate}
                             onChange={handleStartDate}
-                            dateFormat='dd-MM-yyyy'
-                            className='mt-2 px-3 md:mr-2 rounded-md border-0 bg-white/5 py-1 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
+                            dateFormat="dd-MM-yyyy"
+                            className="mt-2 px-3 md:mr-2 rounded-md border-0 bg-white/5 py-1 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6"
                           />
                         </div>
-                        <div className='text-white max-sm:w-full mt-3 md:w-[35%]'>
+                        <div className="text-white max-sm:w-full mt-3 md:w-[35%]">
                           End Date:
                           <DatePicker
-                            name='endDate'
+                            name="endDate"
                             showYearDropdown
                             showMonthDropdown
-                            dropdownMode='select'
+                            dropdownMode="select"
                             selected={endDate}
                             selectsEnd
                             startDate={startDate}
@@ -450,14 +453,14 @@ export default function page() {
                             minDate={startDate}
                             maxDate={currentDate}
                             onChange={handleEndDate}
-                            dateFormat='dd-MM-yyyy'
-                            className='mt-2 px-3 md:mr-2 rounded-md border-0 bg-white/5 py-1 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6'
+                            dateFormat="dd-MM-yyyy"
+                            className="mt-2 px-3 md:mr-2 rounded-md border-0 bg-white/5 py-1 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white text-sm sm:leading-6"
                           />
                         </div>
-                        <div className='text-white max-sm:w-full mt-3  md:w-[20%]'>
-                          <div className='hidden'>&nbsp</div>
+                        <div className="text-white max-sm:w-full mt-3  md:w-[20%]">
+                          <div className="hidden">&nbsp</div>
                           <button
-                            className='md:mt-7 ml-2 max-sm:ml-0 rounded-md bg-Gradient px-10 py-2  text-sm font-semibold text-black shadow-sm'
+                            className="md:mt-7 ml-2 max-sm:ml-0 rounded-md bg-Gradient px-10 py-2  text-sm font-semibold text-black shadow-sm"
                             onClick={() =>
                               handleOptionClick('custom', 'Custom')
                             }
@@ -477,36 +480,34 @@ export default function page() {
                 )}
               </div>
             </div>
-            <div className='flex w-full'>
+            <div className="flex w-full">
               {chartData?.length > 0 ? (
-                <div className='flex flex-wrap justify-between flex-row w-full h-auto'>
-                  <div className='md:w-[40%] w-full p-3 overflow-y-auto'>
+                <div className="flex flex-wrap justify-between flex-row w-full h-auto">
+                  <div className="md:w-[40%] w-full p-3 overflow-y-auto">
                     {chartData.map((element, index) => {
                       return (
                         <div
-                          className='flex items-center w-full px-3 first:mt-4 mb-4 last:mt-4 last:mb-0'
+                          className="flex items-center w-full px-3 first:mt-4 mb-4 last:mt-4 last:mb-0"
                           key={index}
                         >
-                          <div className='w-[20%]'>
+                          <div className="w-[20%]">
                             <div
                               className={`p-4 rounded-full w-5 h-5
-                                ${
-                                  bgColors[index]
-                                } flex items-center justify-center
+                                ${bgColors[index]} flex items-center justify-center
                                 `}
                             ></div>
                           </div>
-                          <div className='w-[100%] text-left text-base mx-2'>
+                          <div className="w-[100%] text-left text-base mx-2">
                             {element.label}
                           </div>
-                          <div className='w-[40%] md:w-full text-center text-base'>
+                          <div className="w-[40%] md:w-full text-center text-base">
                             {element.value}
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                  <div className='pieChart min-h-[400px] flexCenter max-sm:w-full md:w-[60%] w-full p-3'>
+                  <div className="pieChart min-h-[400px] flexCenter max-sm:w-full md:w-[60%] w-full p-3">
                     <BarChart chartDataX={chartData} cData={data} />
                   </div>
                 </div>

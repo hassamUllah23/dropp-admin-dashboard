@@ -6,8 +6,6 @@ import useApiHook from '@/hooks/useApiHook';
 import { toast } from 'react-toastify';
 import { RotatingLines } from 'react-loader-spinner';
 import * as Yup from 'yup';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
 const RewardsForm = () => {
   const [showLoading, setShowLoading] = useState(false);
