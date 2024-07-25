@@ -219,42 +219,42 @@ export default function page() {
             backgroundColor: 'rgba(255, 206, 86, 0.2)',
             borderColor: 'rgba(255, 206, 86, 1)',
           },
-          {
-            label: 'Retweet Count',
-            value: result.data?.retweetCount ? result.data?.retweetCount : 0,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-          },
-          {
-            label: 'Follow Twitter Count',
-            value: result.data?.followTwitterCount
-              ? result.data?.followTwitterCount
-              : 0,
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            borderColor: 'rgba(153, 102, 255, 1)',
-          },
-          {
-            label: 'Join Discord Count',
-            value: result.data?.joinDiscordCount
-              ? result.data?.joinDiscordCount
-              : 0,
-            backgroundColor: 'rgba(255, 159, 64, 0.2)',
-            borderColor: 'rgba(255, 159, 64, 1)',
-          },
-          {
-            label: 'Share Count',
-            value:
-              (result.data?.shareDiscordCount || 0) +
-              (result.data?.shareTwitterCount || 0),
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-          },
-          {
-            label: 'Panorama Image Count',
-            value: result.data?.panoramaCount ? result.data?.panoramaCount : 0,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-          },
+          // {
+          //   label: 'Retweet Count',
+          //   value: result.data?.retweetCount ? result.data?.retweetCount : 0,
+          //   backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          //   borderColor: 'rgba(75, 192, 192, 1)',
+          // },
+          // {
+          //   label: 'Follow Twitter Count',
+          //   value: result.data?.followTwitterCount
+          //     ? result.data?.followTwitterCount
+          //     : 0,
+          //   backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          //   borderColor: 'rgba(153, 102, 255, 1)',
+          // },
+          // {
+          //   label: 'Join Discord Count',
+          //   value: result.data?.joinDiscordCount
+          //     ? result.data?.joinDiscordCount
+          //     : 0,
+          //   backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          //   borderColor: 'rgba(255, 159, 64, 1)',
+          // },
+          // {
+          //   label: 'Share Count',
+          //   value:
+          //     (result.data?.shareDiscordCount || 0) +
+          //     (result.data?.shareTwitterCount || 0),
+          //   backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          //   borderColor: 'rgba(255, 99, 132, 1)',
+          // },
+          // {
+          //   label: 'Panorama Image Count',
+          //   value: result.data?.panoramaCount ? result.data?.panoramaCount : 0,
+          //   backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          //   borderColor: 'rgba(54, 162, 235, 1)',
+          // },
         ]);
       }
     } catch (error) {
