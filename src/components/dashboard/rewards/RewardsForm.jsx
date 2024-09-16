@@ -20,6 +20,8 @@ const RewardsForm = () => {
         annotationSettings: {
           positive: values?.annotationYesPoints,
           negative: values?.annotationNoPoints,
+          boost: values?.annotationBoostPoints,
+          maxAnswers: values?.maxAnnotationAnswersLimit
         },
       },
     })
@@ -66,6 +68,9 @@ const RewardsForm = () => {
             photoCreationLimit: res?.data?.photoCreationLimit,
             annotationYesPoints: res?.data?.annotationSettings?.positive,
             annotationNoPoints: res?.data?.annotationSettings?.negative,
+            annotationBoostPoints: res?.data?.annotationSettings?.boost,
+            maxAnnotationAnswersLimit:
+              res?.data?.annotationSettings?.maxAnswers,
           });
         }
         return res;
@@ -101,6 +106,8 @@ const RewardsForm = () => {
     photoCreationLimit: Yup.string().required("Required"),
     annotationNoPoints: Yup.number().required("Required"),
     annotationYesPoints: Yup.number().required("Required"),
+    annotationBoostPoints: Yup.number().required("Required"),
+    maxAnnotationAnswersLimit: Yup.number().required("Required"),
   });
 
   const titles = {
@@ -125,6 +132,8 @@ const RewardsForm = () => {
     photoCreationLimit: "AI Photomaker Creation Limit",
     annotationYesPoints: `Annotation Points for "Yes" answer`,
     annotationNoPoints: `Annotation Points for "No" answer`,
+    annotationBoostPoints: `Annotation Points for Boost`,
+    maxAnnotationAnswersLimit: `Max Answers for an Annotation`,
   };
 
   const getFieldType = (key) => {
