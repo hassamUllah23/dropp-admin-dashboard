@@ -1,10 +1,11 @@
 'use client';
-import { useState, useEffect, useId } from 'react';
+import { useState, useEffect,  } from 'react';
 import useApiHook from '@/hooks/useApiHook';
 import { RotatingLines } from 'react-loader-spinner';
 import { toast } from 'react-toastify';
 import BalanceEditor from '@/components/userList/BalanceEditor';
 import useDebounceHook from '@/hooks/useDebounceHook';
+import { Heading } from '@/components/common/Heading';
 
 const page = () => {
   const { handleApiCall, isApiLoading } = useApiHook();
@@ -230,9 +231,7 @@ const page = () => {
   return (
     <div className='px-3 md:px-14 py-6 w-full m-auto flex flex-col text-white'>
       <div className='flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between my-4'>
-        <h1 className='flex items-center text-[20px] font-[700] leading-[23.48px]'>
-          Users
-        </h1>
+        <Heading text={"Users"}/>
 
         <div className='max-w-[334px] w-full flex items-center border border-white rounded-lg p-2'>
           <input
