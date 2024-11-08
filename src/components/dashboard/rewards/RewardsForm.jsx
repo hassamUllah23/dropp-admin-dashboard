@@ -60,6 +60,8 @@ const RewardsForm = () => {
             walletPoints: res.data?.walletPoints,
             retweetPoints: res.data?.retweetPoints,
             tweetUrl: res.data?.tweetUrl,
+            joineePoints: res.data?.joineePoints,
+            referrerPoints: res.data?.referrerPoints,
             // mascotPoints: res.data?.mascotPoints,
             initialParanormaDeduction: res.data?.initialParanormaDeduction,
             refineParanormaDeduction: res.data?.refineParanormaDeduction,
@@ -94,6 +96,8 @@ const RewardsForm = () => {
     walletPoints: Yup.number().required("Required"),
     followDiscordPoints: Yup.number().required("Required"),
     followTwitterPoints: Yup.number().required("Required"),
+    joineePoints: Yup.number().required("Required"),
+    referrerPoints: Yup.number().required("Required"),
     initialParanormaDeduction: Yup.number().required("Required"),
     refineParanormaDeduction: Yup.number().required("Required"),
     digitalHumanCreationPoints: Yup.number().required("Required"),
@@ -134,6 +138,9 @@ const RewardsForm = () => {
     annotationNoPoints: `Annotation Points for "No" answer`,
     annotationBoostPoints: `Annotation Points for Boost`,
     maxAnnotationAnswersLimit: `Max Answers for an Annotation`,
+    joineePoints: `Points earned by the joinee via referral`,
+    referrerPoints: `Points earned by the referrer`,
+    
   };
 
   const getFieldType = (key) => {
