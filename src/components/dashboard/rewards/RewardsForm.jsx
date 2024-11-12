@@ -17,6 +17,7 @@ const RewardsForm = () => {
       url: "/settings/change",
       data: {
         ...values,
+        referrals: values?.referrals === "true",
         annotationSettings: {
           positive: values?.annotationYesPoints,
           negative: values?.annotationNoPoints,
@@ -73,6 +74,7 @@ const RewardsForm = () => {
             annotationBoostPoints: res?.data?.annotationSettings?.boost,
             maxAnnotationAnswersLimit:
               res?.data?.annotationSettings?.maxAnswers,
+            referrals: res?.data?.referrals,
           });
         }
         return res;
@@ -112,6 +114,7 @@ const RewardsForm = () => {
     annotationYesPoints: Yup.number().required("Required"),
     annotationBoostPoints: Yup.number().required("Required"),
     maxAnnotationAnswersLimit: Yup.number().required("Required"),
+    referrals: Yup.string().required("Required"),
   });
 
   const titles = {
@@ -140,14 +143,19 @@ const RewardsForm = () => {
     maxAnnotationAnswersLimit: `Max Answers for an Annotation`,
     joineePoints: `Points earned by the joinee via referral`,
     referrerPoints: `Points earned by the referrer`,
-    
+    referrals: "Referrals",
   };
 
   const getFieldType = (key) => {
     if (key === "tweetUrl") {
       return "text";
-    }
-    return "number";
+    } else if (
+      ["referrals"].includes(
+        key
+      )
+    ) {
+      return "select";
+    } else return "number";
   };
 
   return (
@@ -157,6 +165,7 @@ const RewardsForm = () => {
           initialValues={initialValues}
           onSubmit={saveRewards}
           validationSchema={validationSchema}
+          enableReinitialize
         >
           {({ setFieldValue, values }) => (
             <Form className="md:col-span-2 w-full block">
@@ -183,6 +192,22 @@ const RewardsForm = () => {
                           className="mt-2  text-[.9rem] px-3 block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white leading-6 pl-[11.7rem]"
                         />
                       </div>
+                    ) : ["referrals"].includes(key) ? (
+                      <Field
+                        as="select"
+                        id={key}
+                        name={key}
+                        className="mt-2 text-[.9rem] px-3 py-2.5 block w-full bg-green-500 rounded-md border-0 bg-white/5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-white leading-6"
+                      >
+                        {['true', 'false'].map((item, index) => (
+                          <option
+                            key={index}
+                            value={item}
+                          >
+                            {item}
+                          </option>
+                        ))}
+                      </Field>
                     ) : (
                       <Field
                         type={getFieldType(key)}
