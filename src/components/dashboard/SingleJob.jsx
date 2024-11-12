@@ -47,7 +47,7 @@ export default function SingleJob({ jobKeys }) {
       data: { status: status, jobId: jobId },
     })
     .then((res) => {
-      if (res.status === 201) {
+      if (res.status === 200) {
         setJobStatus(status);
         setShowJobStatus(false);
       }
@@ -311,7 +311,7 @@ export default function SingleJob({ jobKeys }) {
           </div>
         ) : (
           <div
-            className='flex items-center pt-4 justify-between relative'
+            className='flex items-center pt-4 justify-between relative yessss'
             ref={assignTaskPopupRef}
           >
             <UpdateJobStatus
