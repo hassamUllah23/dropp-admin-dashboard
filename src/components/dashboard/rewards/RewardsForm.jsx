@@ -8,7 +8,37 @@ import { RotatingLines } from "react-loader-spinner";
 import * as Yup from "yup";
 
 const RewardsForm = () => {
-  const [initialValues, setInitialValues] = useState(null);
+  const [initialValues, setInitialValues] = useState({
+    imageCreationPoints: 0,
+    digitalHumanCreationPoints: 0,
+    initialParanormaDeduction: 0,
+    refineParanormaDeduction: 0,
+    initialVirtualPoints: 0,
+    skyboxGeneration: 0,
+    // initialWardDropPoints: res?.data?.initialWardDropPoints,
+    shareDiscordPoints: 0,
+    shareTwitterPoints: 0,
+    initialAccountCreationPoints: 0,
+    followDiscordPoints: 0,
+    followTwitterPoints: 0,
+    walletPoints: 0,
+    retweetPoints: 0,
+    tweetUrl: '',
+    joineePoints: 0,
+    referrerPoints: 0,
+    // mascotPoints: res.data?.mascotPoints,
+    initialParanormaDeduction: 0,
+    refineParanormaDeduction: 0,
+    // photoSharePoints: res?.data?.photoSharePoints,
+    photoCreatePoints: 0,
+    photoCreationLimit: 0,
+    annotationYesPoints: 0,
+    annotationNoPoints: 0,
+    annotationBoostPoints: 0,
+    maxAnnotationAnswersLimit: 0,
+    referrals: false,
+
+  });
   const { handleApiCall, isApiLoading } = useApiHook();
 
   const saveRewards = async (values) => {
@@ -89,30 +119,76 @@ const RewardsForm = () => {
   }, []);
 
   const validationSchema = Yup.object().shape({
-    initialVirtualPoints: Yup.number().required("Required"),
-    skyboxGeneration: Yup.number().required("Required"),
+    initialVirtualPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    skyboxGeneration: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
     // initialWardDropPoints: Yup.number().required("Required"),
-    shareDiscordPoints: Yup.number().required("Required"),
-    shareTwitterPoints: Yup.number().required("Required"),
-    initialAccountCreationPoints: Yup.number().required("Required"),
-    walletPoints: Yup.number().required("Required"),
-    followDiscordPoints: Yup.number().required("Required"),
-    followTwitterPoints: Yup.number().required("Required"),
-    joineePoints: Yup.number().required("Required"),
-    referrerPoints: Yup.number().required("Required"),
-    initialParanormaDeduction: Yup.number().required("Required"),
-    refineParanormaDeduction: Yup.number().required("Required"),
-    digitalHumanCreationPoints: Yup.number().required("Required"),
-    imageCreationPoints: Yup.number().required("Required"),
-    retweetPoints: Yup.number().required("Required"),
+    shareDiscordPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    shareTwitterPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    initialAccountCreationPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    walletPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    followDiscordPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    followTwitterPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    joineePoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    referrerPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    initialParanormaDeduction: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    refineParanormaDeduction: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    digitalHumanCreationPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    imageCreationPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    retweetPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
     // mascotPoints: Yup.number().required("Required"),
     tweetUrl: Yup.string().required("Required"),
     // photoSharePoints: Yup.number().required("Required"),
-    photoCreatePoints: Yup.string().required("Required"),
-    photoCreationLimit: Yup.string().required("Required"),
-    annotationNoPoints: Yup.number().required("Required"),
-    annotationYesPoints: Yup.number().required("Required"),
-    annotationBoostPoints: Yup.number().required("Required"),
+    photoCreatePoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    photoCreationLimit: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    annotationNoPoints: Yup.number()
+      .transform((value, originalValue) =>
+        originalValue === "" ? undefined : Number(originalValue)
+      )
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    annotationYesPoints: Yup.number()
+      .transform((value, originalValue) =>
+        originalValue === "" ? undefined : Number(originalValue)
+      )
+      .required("Required")
+      .min(1, "Must be greater than 0"),
+    annotationBoostPoints: Yup.number()
+      .required("Required")
+      .min(1, "Must be greater than 0"),
     maxAnnotationAnswersLimit: Yup.number().required("Required"),
     referrals: Yup.string().required("Required"),
   });
